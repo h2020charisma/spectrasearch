@@ -1,0 +1,45 @@
+export default function SideBarToggle() {
+  return (
+    <svg
+      width="32"
+      height="29"
+      viewBox="0 0 32 29"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="30"
+        height="26.4444"
+        rx="4"
+        stroke="#00C2FF"
+        strokeWidth="2"
+      />
+      <line
+        x1="11.6666"
+        y1="0.91748"
+        x2="11.6666"
+        y2="28.4444"
+        stroke="#00C2FF"
+        strokeWidth="2"
+      />
+      <line
+        x1="8.88892"
+        y1="7.42297"
+        x2="3.55558"
+        y2="7.42297"
+        stroke="#00C2FF"
+        strokeWidth="2"
+      />
+      <line
+        x1="8.88892"
+        y1="11.0933"
+        x2="3.55558"
+        y2="11.0933"
+        stroke="#00C2FF"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+}
