@@ -19,13 +19,13 @@ export default function Chart({ imageSelected }) {
     import.meta.env.VITE_BaseURL
   }dataset?domain=${imageSelected}&values=True`;
 
-  const { data } = useSWR(datasetQuery, fetcher, {
+  const { data } = useSWR(imageSelected && datasetQuery, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
 
-  console.log(data);
+  console.log(imageSelected);
 
   useEffect(() => {
     if (data === undefined) return;
