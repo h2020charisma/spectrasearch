@@ -25,7 +25,8 @@ export default function Chart({ imageSelected }) {
     revalidateOnReconnect: false,
   });
 
-  console.log(imageSelected);
+  // console.log(data.datasets[0].value[0]);
+  // console.log(data.datasets[0].value[1]);
 
   useEffect(() => {
     if (data === undefined) return;
@@ -42,34 +43,29 @@ export default function Chart({ imageSelected }) {
           // marginLeft: "240px",
         }),
         Plot.ruleY([0], { stroke: "gray" }),
-        Plot.lineX(dataset.datasets[0].value[1], {
-          x: dataset.datasets[0].value[0],
-          y: dataset.datasets[0].value[1],
+        Plot.lineX(data && data.datasets[0].value[0], {
+          x: data && data.datasets[0].value[0],
+          y: data && data.datasets[0].value[1],
           stroke: "orange",
         }),
-        // Plot.dot(data, { x: "Date", y: "Close", stroke: "Close" }),
       ],
     });
     const plot2 = Plot.plot({
       caption: "Raman Shift [1/cm]",
-
+      grid: true,
       color: { scheme: "burd" },
       marks: [
-        Plot.frame({ fill: "#eaeaea" }),
         Plot.axisY({ label: "Normalized", labelAnchor: "center" }),
-        Plot.gridX({ stroke: "white", strokeOpacity: 1 }),
-        Plot.gridY({ stroke: "white", strokeOpacity: 1 }),
         Plot.ruleY([0], { stroke: "gray" }),
-        Plot.lineX(dataset.datasets[0].value[1], {
-          x: dataset.datasets[1].value[0],
-          y: dataset.datasets[1].value[1],
+        Plot.lineX(data && data.datasets[1].value[0], {
+          x: data && data.datasets[1].value[0],
+          y: data && data.datasets[1].value[1],
           stroke: "blue",
         }),
-        // Plot.dot(data, { x: "Date", y: "Close", stroke: "Close" }),
       ],
     });
-    containerRefOne.current.append(plot);
-    containerRefTwo.current.append(plot2);
+    data && containerRefOne.current.append(plot);
+    data && containerRefTwo.current.append(plot2);
     return () => {
       plot.remove();
       plot2.remove();

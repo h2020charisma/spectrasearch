@@ -1,13 +1,12 @@
 /* eslint-disable react/prop-types */
-import Checkbox from "../UI/Checkbox";
 import Expander from "../UI/Expander";
 import SelectNumber from "../UI/SelectNumber";
 
-import Select from "../UI/Select";
 import SearchSelect from "../UI/SearchSelect";
+import Select from "../UI/Select";
 
-import { referenceList } from "../../data/reference";
 import { providersList } from "../../data/providers";
+import { referenceList } from "../../data/reference";
 import UploadFile from "../UploadFile/UploadFile";
 
 export default function Sidebar({

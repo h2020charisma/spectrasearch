@@ -4,7 +4,6 @@ import Close from "../Icons/Close";
 export default function UploadFile() {
   const [file, setFile] = useState(null);
   const [data, setData] = useState(null);
-  console.log(data);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
