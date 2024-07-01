@@ -53,6 +53,7 @@ export default function Chart({ imageSelected }) {
     const plot2 = Plot.plot({
       caption: "Raman Shift [1/cm]",
       grid: true,
+      marginLeft: 60,
       color: { scheme: "burd" },
       marks: [
         Plot.axisY({ label: "Normalized", labelAnchor: "center" }),
