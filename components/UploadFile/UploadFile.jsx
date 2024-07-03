@@ -8,7 +8,7 @@ export default function UploadFile() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file[]", file);
     const response = await fetch(
       "https://api.charisma.ideaconsult.net/download?what=knnquery",
       {
@@ -48,7 +48,7 @@ export default function UploadFile() {
           />
         </label>
         <button type="submit" disabled={!file} className="fileNameBtn">
-          Upload File
+          Search
         </button>
       </div>
     </form>
