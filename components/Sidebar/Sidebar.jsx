@@ -29,21 +29,21 @@ export default function Sidebar({
         bottom: "0",
       }}
     >
-      <Expander title="Search" status={false}>
-        <SearchSelect setqQuery={setqQuery} qQuery={qQuery} />
-      </Expander>
-      <Expander title="Upload Spectrum File" status={false}>
+      <Expander title="Search by  Spectrum File" status={false}>
         <UploadFile />
       </Expander>
-      <Expander title="Investigation" status={false}>
+      <Expander title="Search by sample" status={false}>
+        <SearchSelect setqQuery={setqQuery} qQuery={qQuery} />
+      </Expander>
+      <Expander title="Search by data provider">
+        <Select items={providersList} value={provider} setValue={setProvider} />
+      </Expander>      
+      <Expander title="Search by investigation" status={false}>
         <Select
           items={referenceList}
           value={reference}
           setValue={setReference}
         />
-      </Expander>
-      <Expander title="Data Provider">
-        <Select items={providersList} value={provider} setValue={setProvider} />
       </Expander>
       <Expander title="Pages">
         <div style={{ display: "flex", justifyContent: "space-between" }}>
