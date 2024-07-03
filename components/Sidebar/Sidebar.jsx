@@ -32,7 +32,7 @@ export default function Sidebar({
       <Expander title="Search" status={false}>
         <SearchSelect setqQuery={setqQuery} qQuery={qQuery} />
       </Expander>
-      <Expander title="Upload Spectrun File" status={false}>
+      <Expander title="Upload Spectrum File" status={false}>
         <UploadFile />
       </Expander>
       <Expander title="Investigation" status={false}>
