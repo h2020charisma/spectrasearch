@@ -3,17 +3,12 @@ import * as Plot from "@observablehq/plot";
 // import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
-import { aapl } from "../../data/placeholder";
-
-import dataset from "../../data/sample.json";
-// https://api-dev.charisma.ideaconsult.net/dataset?domain=/SANDBOX/CSIC-ICV/BWTEK_iRaman/785/PST02_iRPlus785_Z020_010_1300ms.cha&values=True
 
 export default function Chart({ imageSelected }) {
   const fetcher = (url) => fetch(url).then((res) => res.json());
 
   const containerRefOne = useRef();
   const containerRefTwo = useRef();
-  // const [data, setData] = useState(aapl);
 
   const datasetQuery = `${
     import.meta.env.VITE_BaseURL
@@ -25,31 +20,49 @@ export default function Chart({ imageSelected }) {
     revalidateOnReconnect: false,
   });
 
-  // console.log(data.datasets[0].value[0]);
-  // console.log(data.datasets[0].value[1]);
+  const [dataset, setDataset] = useState(null);
+  const [valuesX, setValuesX] = useState([]);
+  const [valuesY, setValuesY] = useState([]);
+
+  console.log(data);
+  console.log(dataset, data && data.datasets[0].key);
+
+  useEffect(() => {
+    data && imageSelected && setDataset(data.datasets[0].key);
+  }, [data, imageSelected]);
+
+  useEffect(() => {
+    data &&
+      data.datasets.map((k, i) => {
+        if (dataset == k.key) {
+          setValuesX([...k.value[0]]);
+          setValuesY([...k.value[1]]);
+        }
+      });
+  }, [data, dataset]);
 
   useEffect(() => {
     if (data === undefined) return;
+
     const plot = Plot.plot({
       caption: "PST",
-
       grid: true,
       color: { scheme: "burd" },
-
       marks: [
         Plot.axisY({
           label: "Raw Counts",
           labelAnchor: "center",
-          // marginLeft: "240px",
+          marginLeft: 60,
         }),
         Plot.ruleY([0], { stroke: "gray" }),
-        Plot.lineX(data && data.datasets[0].value[0], {
-          x: data && data.datasets[0].value[0],
-          y: data && data.datasets[0].value[1],
+        Plot.lineX(valuesX, {
+          x: valuesX,
+          y: valuesY,
           stroke: "orange",
         }),
       ],
     });
+
     const plot2 = Plot.plot({
       caption: "Raman Shift [1/cm]",
       grid: true,
@@ -65,15 +78,31 @@ export default function Chart({ imageSelected }) {
         }),
       ],
     });
-    data && containerRefOne.current.append(plot);
-    data && containerRefTwo.current.append(plot2);
+    data && dataset & containerRefOne.current.append(plot);
+    data && dataset & containerRefTwo.current.append(plot2);
     return () => {
       plot.remove();
       plot2.remove();
     };
-  }, [data]);
+  }, [data, valuesX, valuesY, imageSelected, dataset]);
+
   return (
     <>
+      <div className="datasetsTabs">
+        <span className="fileName">Datasets</span>
+        {data &&
+          data.datasets.map((k, i) => (
+            <p
+              className={`${dataset == k.key ? "datasetActive" : "dataset"}`}
+              key={i}
+              onClick={() => {
+                setDataset(k.key);
+              }}
+            >
+              {k.key.replace(/_/g, " ")}
+            </p>
+          ))}
+      </div>
       <div ref={containerRefOne} />
       <div ref={containerRefTwo} />
     </>

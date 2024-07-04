@@ -4,6 +4,7 @@ import SelectNumber from "../UI/SelectNumber";
 
 import SearchSelect from "../UI/SearchSelect";
 import Select from "../UI/Select";
+import ImageSelect from "../ImageSelect/ImageSelect";
 
 import { providersList } from "../../data/providers";
 import { referenceList } from "../../data/reference";
@@ -20,6 +21,9 @@ export default function Sidebar({
   setPagesize,
   setqQuery,
   qQuery,
+  imageSelected,
+  setImageSelected,
+  data,
 }) {
   return (
     <div
@@ -27,8 +31,17 @@ export default function Sidebar({
         position: "sticky",
         top: "4rem",
         bottom: "0",
+        height: "100vh",
+        marginTop: "3.6rem",
       }}
     >
+      <Expander title="Select Spectra" status={true}>
+        <ImageSelect
+          data={data}
+          imageSelected={imageSelected}
+          setImageSelected={setImageSelected}
+        />
+      </Expander>
       <Expander title="Search" status={false}>
         <SearchSelect setqQuery={setqQuery} qQuery={qQuery} />
       </Expander>

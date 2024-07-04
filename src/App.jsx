@@ -70,13 +70,13 @@ function App() {
         )}
       </AnimatePresence>
       <div className="content">
-        <Expander title="Select Spectra" status={true}>
+        {/* <Expander title="Select Spectra" status={true}>
           <ImageSelect
             data={data}
             imageSelected={imageSelected}
             setImageSelected={setImageSelected}
           />
-        </Expander>
+        </Expander> */}
         <Chart imageSelected={imageSelected} />
       </div>
     </div>

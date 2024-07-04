@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Close from "../Icons/Close";
 
 export default function UploadFile() {
   const [file, setFile] = useState(null);
   const [data, setData] = useState(null);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async () => {
+    // event.preventDefault();
     const formData = new FormData();
     formData.append("file", file);
     const response = await fetch(
@@ -18,6 +18,12 @@ export default function UploadFile() {
     );
     setData(response);
   };
+
+  console.log(data);
+
+  useEffect(() => {
+    if (file) handleSubmit();
+  }, [file]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -47,9 +53,9 @@ export default function UploadFile() {
             onChange={(e) => setFile(e.target.files[0])}
           />
         </label>
-        <button type="submit" disabled={!file} className="fileNameBtn">
+        {/* <button type="submit" disabled={!file} className="fileNameBtn">
           Upload File
-        </button>
+        </button> */}
       </div>
     </form>
   );
