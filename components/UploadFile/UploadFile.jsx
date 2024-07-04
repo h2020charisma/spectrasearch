@@ -1,48 +1,51 @@
 import { useEffect, useState } from "react";
 import Close from "../Icons/Close";
 
-export default function UploadFile() {
+// eslint-disable-next-line react/prop-types
+export default function UploadFile({ imageData, setImageData }) {
   const [file, setFile] = useState(null);
-  const [data, setData] = useState(null);
 
-  const handleSubmit = async () => {
-    // event.preventDefault();
+  const fileQuery = `${import.meta.env.VITE_BaseURL}download?what=knnquery`;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const formData = new FormData();
-    formData.append("file", file);
-    const response = await fetch(
-      "https://api.charisma.ideaconsult.net/download?what=knnquery",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-    setData(response);
+    formData.append("file[]", file);
+    const response = await fetch(fileQuery, {
+      method: "POST",
+      body: formData,
+    });
+    const img = await response.json();
+    setImageData(img);
   };
-
-  console.log(data);
-
-  useEffect(() => {
-    if (file) handleSubmit();
-  }, [file]);
+  useEffect(() => {}, [file]);
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="fileNameWrap">
         <p>
           {file ? (
-            <>
+            <div>
               <span className="fileName">File Name</span>
-              <span>{file.name}</span>
-            </>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span className="fileNameStr">{file.name}</span>
+                {file && (
+                  <div className="closeBtn" onClick={() => setFile(null)}>
+                    <Close />
+                  </div>
+                )}
+              </div>
+            </div>
           ) : (
             <span className="uploadPlaceholder">No file selected</span>
           )}
         </p>
-        {file && (
-          <div className="closeBtn" onClick={() => setFile(null)}>
-            <Close />
-          </div>
-        )}
       </div>
       <div className="uploadBtnsWrap">
         <label className="fileNameBtn">
@@ -53,9 +56,9 @@ export default function UploadFile() {
             onChange={(e) => setFile(e.target.files[0])}
           />
         </label>
-        {/* <button type="submit" disabled={!file} className="fileNameBtn">
-          Upload File
-        </button> */}
+        <button type="submit" disabled={!file} className="fileNameBtn">
+          Search
+        </button>
       </div>
     </form>
   );

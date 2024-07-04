@@ -24,6 +24,8 @@ export default function Sidebar({
   imageSelected,
   setImageSelected,
   data,
+  setImageData,
+  imageData,
 }) {
   return (
     <div
@@ -35,28 +37,21 @@ export default function Sidebar({
         marginTop: "3.6rem",
       }}
     >
-      <Expander title="Select Spectra" status={true}>
-        <ImageSelect
-          data={data}
-          imageSelected={imageSelected}
-          setImageSelected={setImageSelected}
-        />
+      <Expander title="Search by  Spectrum File" status={false}>
+        <UploadFile setImageData={setImageData} imageData={imageData} />
       </Expander>
-      <Expander title="Search" status={false}>
+      <Expander title="Search by sample" status={false}>
         <SearchSelect setqQuery={setqQuery} qQuery={qQuery} />
       </Expander>
-      <Expander title="Upload Spectrun File" status={false}>
-        <UploadFile />
+      <Expander title="Search by data provider">
+        <Select items={providersList} value={provider} setValue={setProvider} />
       </Expander>
-      <Expander title="Investigation" status={false}>
+      <Expander title="Search by investigation" status={false}>
         <Select
           items={referenceList}
           value={reference}
           setValue={setReference}
         />
-      </Expander>
-      <Expander title="Data Provider">
-        <Select items={providersList} value={provider} setValue={setProvider} />
       </Expander>
       <Expander title="Pages">
         <div style={{ display: "flex", justifyContent: "space-between" }}>

@@ -89,7 +89,7 @@ export default function Chart({ imageSelected }) {
   return (
     <>
       <div className="datasetsTabs">
-        <span className="fileName">Datasets</span>
+        {imageSelected && <span className="fileName">Datasets</span>}
         {data &&
           data.datasets.map((k, i) => (
             <p

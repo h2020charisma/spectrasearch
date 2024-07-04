@@ -22,7 +22,7 @@ function App() {
   let [pagesize, setPagesize] = useState("10");
   let [qQuery, setqQuery] = useState("PST");
 
-  console.log(imageSelected);
+  let [imageData, setImageData] = useState(null);
 
   const metadataQuery = `${
     import.meta.env.VITE_BaseURL
@@ -65,18 +65,23 @@ function App() {
               setPagesize={setPagesize}
               setqQuery={setqQuery}
               qQuery={qQuery}
+              setImageData={setImageData}
+              imageData={imageData}
             />
           </motion.div>
         )}
       </AnimatePresence>
       <div className="content">
-        {/* <Expander title="Select Spectra" status={true}>
+        <div className="imageUploded">
+          <img src={imageData && imageData.imageLink} />
+        </div>
+        <Expander title="Select Spectrum" status={true}>
           <ImageSelect
             data={data}
             imageSelected={imageSelected}
             setImageSelected={setImageSelected}
           />
-        </Expander> */}
+        </Expander>
         <Chart imageSelected={imageSelected} />
       </div>
     </div>
