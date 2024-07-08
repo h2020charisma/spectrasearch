@@ -2,13 +2,12 @@
 import Expander from "../UI/Expander";
 import SelectNumber from "../UI/SelectNumber";
 
-import SearchSelect from "../UI/SearchSelect";
-import Select from "../UI/Select";
-import ImageSelect from "../ImageSelect/ImageSelect";
-
-import { providersList } from "../../data/providers";
-import { referenceList } from "../../data/reference";
+import DataProvider from "../DataProvider/DataProvider";
+import Instrument from "../Instrument/Instrument";
+import Investigations from "../Investigations/Investigations";
+import Sample from "../Sample/Sample";
 import UploadFile from "../UploadFile/UploadFile";
+import Wavelengths from "../Wavelengths/Wavelengths";
 
 export default function Sidebar({
   reference,
@@ -21,11 +20,13 @@ export default function Sidebar({
   setPagesize,
   setqQuery,
   qQuery,
-  imageSelected,
-  setImageSelected,
-  data,
+  instrument,
+  setInstrument,
+
   setImageData,
   imageData,
+  wavelengths,
+  setWavelengths,
 }) {
   return (
     <div
@@ -40,17 +41,22 @@ export default function Sidebar({
       <Expander title="Search by  Spectrum File" status={false}>
         <UploadFile setImageData={setImageData} imageData={imageData} />
       </Expander>
-      <Expander title="Search by sample" status={false}>
-        <SearchSelect setqQuery={setqQuery} qQuery={qQuery} />
+      <Expander title="Search by Sample" status={false}>
+        <Sample setqQuery={setqQuery} qQuery={qQuery} />
       </Expander>
-      <Expander title="Search by data provider">
-        <Select items={providersList} value={provider} setValue={setProvider} />
+      <Expander title="Search by Data provider">
+        <DataProvider provider={provider} setProvider={setProvider} />
       </Expander>
-      <Expander title="Search by investigation" status={false}>
-        <Select
-          items={referenceList}
-          value={reference}
-          setValue={setReference}
+      <Expander title="Search by Investigation" status={false}>
+        <Investigations reference={reference} setReference={setReference} />
+      </Expander>
+      <Expander title="Search by Instrument" status={false}>
+        <Instrument instrument={instrument} setInstrument={setInstrument} />
+      </Expander>
+      <Expander title="Search by Wavelenth" status={false}>
+        <Wavelengths
+          wavelengths={wavelengths}
+          setWavelengths={setWavelengths}
         />
       </Expander>
       <Expander title="Pages">

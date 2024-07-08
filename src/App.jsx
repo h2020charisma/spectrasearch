@@ -1,13 +1,11 @@
-import { useState, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import useSWR from "swr";
+import Chart from "../components/Chart/Chart";
 import SideBarToggle from "../components/Icons/SideBarToggle";
 import ImageSelect from "../components/ImageSelect/ImageSelect";
 import Expander from "../components/UI/Expander";
-import Chart from "../components/Chart/Chart";
-import { motion, AnimatePresence } from "framer-motion";
-import useSWR from "swr";
 import "./App.css";
-
-import { referenceList } from "../data/reference";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -21,12 +19,14 @@ function App() {
   let [pages, setPages] = useState("0");
   let [pagesize, setPagesize] = useState("10");
   let [qQuery, setqQuery] = useState("PST");
+  let [instrument, setInstrument] = useState("*");
+  let [wavelengths, setWavelengths] = useState("*");
 
   let [imageData, setImageData] = useState(null);
 
   const metadataQuery = `${
     import.meta.env.VITE_BaseURL
-  }query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&page=${pages}&pagesize=${pagesize}`;
+  }query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
 
   const picturesQuery =
     "https://api.charisma.ideaconsult.net/download?what=thumbnail&domain=/SANDBOX/CSIC-ICV/BWTEK_iRaman/785/PST02_iRPlus785_Z020_020_1300ms.cha&extra=";
@@ -67,6 +67,10 @@ function App() {
               qQuery={qQuery}
               setImageData={setImageData}
               imageData={imageData}
+              instrument={instrument}
+              setInstrument={setInstrument}
+              wavelengths={wavelengths}
+              setWavelengths={setWavelengths}
             />
           </motion.div>
         )}

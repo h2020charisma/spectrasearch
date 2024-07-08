@@ -2,17 +2,18 @@
 export default function Select({ items, value, setValue }) {
   return (
     <div>
-      {items.map((item, i) => (
-        <p
-          className={`${
-            item.name === value ? "selectItemActive" : "selectItem"
-          }`}
-          onClick={() => setValue(item.name)}
-          key={i}
-        >
-          {item.name === "*" ? "All" : item.name}
-        </p>
-      ))}
+      {items &&
+        items.map((item, i) => (
+          <p
+            className={`${
+              item.value === value ? "selectItemActive" : "selectItem"
+            }`}
+            onClick={() => setValue(item.value)}
+            key={i}
+          >
+            {item.value === "*" ? "All" : item.value}
+          </p>
+        ))}
     </div>
   );
 }

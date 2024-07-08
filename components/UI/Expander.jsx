@@ -28,7 +28,14 @@ export default function Expander({ children, title, status }) {
           cursor: "pointer",
         }}
       >
-        <p style={{ margin: "0", cursor: "pointer", fontWeight: "700" }}>
+        <p
+          style={{
+            margin: "0",
+            cursor: "pointer",
+            fontWeight: "700",
+            userSelect: "none",
+          }}
+        >
           {title}
         </p>
 
