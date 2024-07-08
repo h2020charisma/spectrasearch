@@ -3,6 +3,7 @@ FROM node:lts-alpine AS requirements-stage
 WORKDIR /tmp
 
 COPY \
+      ./.env \
       ./.eslintrc.cjs \
       ./index.html \
       ./package*.json \
