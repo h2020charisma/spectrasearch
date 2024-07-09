@@ -17,7 +17,12 @@ export default function Sample({ qQuery, setqQuery }) {
 
   return (
     <div>
-      <SearchSelect setqQuery={setqQuery} qQuery={qQuery} />
+      <SearchSelect
+        data={data}
+        setqQuery={setqQuery}
+        qQuery={qQuery}
+        label="Samples"
+      />
     </div>
   );
 }

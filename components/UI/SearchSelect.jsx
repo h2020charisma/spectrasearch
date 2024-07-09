@@ -7,19 +7,23 @@ import "./Select.css";
 
 import { q_query } from "../../data/q_query";
 
-export default function SearchSelect({ setqQuery, qQuery }) {
+export default function SearchSelect({ data, setqQuery, qQuery, label }) {
   const [open, setOpen] = useState(false);
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
 
+  console.log(search ? search : "_");
+
   useEffect(
     () =>
       setFiltered(
-        q_query &&
-          q_query.filter((item) =>
-            item.toLocaleLowerCase().includes(search.toLocaleLowerCase())
-          )
+        data &&
+          data.filter((item) => {
+            return item.value
+              .toLocaleLowerCase()
+              .includes(search.toLocaleLowerCase());
+          })
       ),
     [search]
   );
@@ -31,26 +35,48 @@ export default function SearchSelect({ setqQuery, qQuery }) {
         <input
           id="projectSearch"
           className="searchSelectInput"
-          value={qQuery}
+          value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder={`Search`}
+          placeholder={`Search for ${label}`}
         />
       </div>
 
       {open && (
         <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
-          {filtered &&
-            filtered.map((item) => (
+          <p className="selectItem" onClick={() => setqQuery("*")}>
+            {`All ${label}`}
+          </p>
+          <hr />
+          {!search &&
+            data &&
+            data.map((item, i) => (
               <p
-                data-project={item.id}
+                data-project={item}
                 className="selectItem"
-                key={item.id}
+                key={i}
                 onClick={() => {
-                  setqQuery(item);
+                  setqQuery(item.value);
                   setOpen(false);
+                  setSearch("");
                 }}
               >
-                {item}
+                {item.value}
+              </p>
+            ))}
+          {search &&
+            filtered &&
+            filtered.map((item, i) => (
+              <p
+                data-project={item}
+                className="selectItem"
+                key={i}
+                onClick={() => {
+                  setqQuery(item.value);
+                  setOpen(false);
+                  setSearch("");
+                }}
+              >
+                {item.value}
               </p>
             ))}
         </div>

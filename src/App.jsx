@@ -18,7 +18,7 @@ function App() {
   let [provider, setProvider] = useState("*");
   let [pages, setPages] = useState("0");
   let [pagesize, setPagesize] = useState("10");
-  let [qQuery, setqQuery] = useState("PST");
+  let [qQuery, setqQuery] = useState("*");
   let [instrument, setInstrument] = useState("*");
   let [wavelengths, setWavelengths] = useState("*");
 

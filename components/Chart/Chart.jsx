@@ -30,7 +30,7 @@ export default function Chart({ imageSelected }) {
 
   useEffect(() => {
     data &&
-      data.datasets.map((k, i) => {
+      data?.datasets.map((k, i) => {
         if (dataset == k.key) {
           setValuesX([...k.value[0]]);
           setValuesY([...k.value[1]]);
@@ -88,7 +88,7 @@ export default function Chart({ imageSelected }) {
       <div className="datasetsTabs">
         {imageSelected && <span className="fileName">Datasets</span>}
         {data &&
-          data.datasets.map((k, i) => (
+          data?.datasets.map((k, i) => (
             <p
               className={`${dataset == k.key ? "datasetActive" : "dataset"}`}
               key={i}

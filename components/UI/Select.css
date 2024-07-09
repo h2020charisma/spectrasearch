@@ -20,6 +20,11 @@
   width: 100%;
 }
 
+.searchSelectInput:focus {
+  border: 1px solid #0083ab;
+  outline: #0083ab;
+}
+
 .selectOptions {
   border-radius: 6px;
   padding: 0.6rem 1.2rem;
