@@ -26,16 +26,20 @@ function App() {
 
   const metadataQuery = `${
     import.meta.env.VITE_BaseURL
-  }query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
+  }query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
+    imageData?.cdf
+  }&query_type=knnquery`;
 
   const picturesQuery =
     "https://api.charisma.ideaconsult.net/download?what=thumbnail&domain=/SANDBOX/CSIC-ICV/BWTEK_iRaman/785/PST02_iRPlus785_Z020_020_1300ms.cha&extra=";
 
-  const { data } = useSWR(metadataQuery, fetcher, {
+  const { data, error } = useSWR(metadataQuery, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
+
+  console.log(error);
 
   return (
     <div className="main">
@@ -86,7 +90,7 @@ function App() {
             setImageSelected={setImageSelected}
           />
         </Expander>
-        <Chart imageSelected={imageSelected} />
+        {!error ? <Chart imageSelected={imageSelected} /> : <p>Sorry</p>}
       </div>
     </div>
   );

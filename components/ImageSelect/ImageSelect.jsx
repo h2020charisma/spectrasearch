@@ -17,5 +17,13 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
         />
       </div>
     ));
-  return <div className="imageSelectWrap">{renderImageSelect}</div>;
+  return (
+    <div className="imageSelectWrap">
+      {data && data.length > 0 ? (
+        renderImageSelect
+      ) : (
+        <p style={{ color: "darkred" }}>Sorry, no data avaible</p>
+      )}
+    </div>
+  );
 }

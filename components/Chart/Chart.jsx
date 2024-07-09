@@ -14,7 +14,7 @@ export default function Chart({ imageSelected }) {
     import.meta.env.VITE_BaseURL
   }dataset?domain=${imageSelected}&values=True`;
 
-  const { data } = useSWR(imageSelected && datasetQuery, fetcher, {
+  const { data, error } = useSWR(imageSelected && datasetQuery, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -23,9 +23,6 @@ export default function Chart({ imageSelected }) {
   const [dataset, setDataset] = useState(null);
   const [valuesX, setValuesX] = useState([]);
   const [valuesY, setValuesY] = useState([]);
-
-  console.log(data);
-  console.log(dataset, data && data.datasets[0].key);
 
   useEffect(() => {
     data && imageSelected && setDataset(data.datasets[0].key);
@@ -78,8 +75,8 @@ export default function Chart({ imageSelected }) {
         }),
       ],
     });
-    data && dataset & containerRefOne.current.append(plot);
-    data && dataset & containerRefTwo.current.append(plot2);
+    !error && data && dataset & containerRefOne.current.append(plot);
+    !error && data && dataset & containerRefTwo.current.append(plot2);
     return () => {
       plot.remove();
       plot2.remove();
@@ -87,7 +84,7 @@ export default function Chart({ imageSelected }) {
   }, [data, valuesX, valuesY, imageSelected, dataset]);
 
   return (
-    <>
+    <div>
       <div className="datasetsTabs">
         {imageSelected && <span className="fileName">Datasets</span>}
         {data &&
@@ -105,6 +102,6 @@ export default function Chart({ imageSelected }) {
       </div>
       <div ref={containerRefOne} />
       <div ref={containerRefTwo} />
-    </>
+    </div>
   );
 }
