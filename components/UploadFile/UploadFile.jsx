@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Close from "../Icons/Close";
 
 // eslint-disable-next-line react/prop-types
-export default function UploadFile({ imageData, setImageData }) {
+export default function UploadFile({ imageData, setImageData, type, setType }) {
   const [file, setFile] = useState(null);
 
   const fileQuery = `${import.meta.env.VITE_BaseURL}download?what=knnquery`;
@@ -59,6 +59,45 @@ export default function UploadFile({ imageData, setImageData }) {
         <button type="submit" disabled={!file} className="fileNameBtn">
           Search
         </button>
+      </div>
+      <div className="searchOptions">
+        <label
+          onClick={() => setType("text")}
+          htmlFor="tx"
+          style={{
+            fontSize: "16px",
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <input
+            id="tx"
+            type="radio"
+            name="searchType"
+            style={{ width: "16px", height: "16px", marginRight: "12px" }}
+          />
+          Text search
+        </label>
+
+        <label
+          onClick={() => setType("spectrum")}
+          htmlFor="sp"
+          style={{
+            fontSize: "16px",
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <input
+            id="sp"
+            type="radio"
+            name="searchType"
+            style={{ width: "16px", height: "16px", marginRight: "12px" }}
+          />
+          Spectrum search
+        </label>
       </div>
     </form>
   );

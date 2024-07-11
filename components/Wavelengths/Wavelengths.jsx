@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import Select from "../UI/Select";
+import SearchSelect from "../UI/SearchSelect";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -17,7 +18,12 @@ export default function Wavelengths({ wavelengths, setWavelengths }) {
 
   return (
     <div>
-      <Select items={data} value={wavelengths} setValue={setWavelengths} />
+      <SearchSelect
+        data={data}
+        setqQuery={setWavelengths}
+        qQuery={wavelengths}
+        label="Wavelengths"
+      />
     </div>
   );
 }

@@ -10,6 +10,11 @@ import "./App.css";
 import Sidebar from "../components/Sidebar/Sidebar";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
+// query_type=knnquery
+// text or spectrum search
+// metadata - text
+// spectrum similarity - knnquery
+
 function App() {
   // let modalRef = useRef();
   let [open, setOpen] = useState(true);
@@ -23,12 +28,15 @@ function App() {
   let [wavelengths, setWavelengths] = useState("*");
 
   let [imageData, setImageData] = useState(null);
+  let [type, setType] = useState("text");
+
+  let query_type = type === "spectrum" ? "knnquery" : "text";
 
   const metadataQuery = `${
     import.meta.env.VITE_BaseURL
-  }query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
+  }query?q=${qQuery}&img=thumbnail&query_type=${query_type}t&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
     imageData?.cdf
-  }&query_type=knnquery`;
+  }`;
 
   const picturesQuery =
     "https://api.charisma.ideaconsult.net/download?what=thumbnail&domain=/SANDBOX/CSIC-ICV/BWTEK_iRaman/785/PST02_iRPlus785_Z020_020_1300ms.cha&extra=";
@@ -75,6 +83,8 @@ function App() {
               setInstrument={setInstrument}
               wavelengths={wavelengths}
               setWavelengths={setWavelengths}
+              type={type}
+              setType={setType}
             />
           </motion.div>
         )}

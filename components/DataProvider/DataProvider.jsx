@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import Select from "../UI/Select";
+import SearchSelect from "../UI/SearchSelect";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -17,7 +18,13 @@ export default function DataProvider({ provider, setProvider }) {
 
   return (
     <div>
-      <Select items={data} value={provider} setValue={setProvider} />
+      {/* <Select items={data} value={provider} setValue={setProvider} /> */}
+      <SearchSelect
+        data={data}
+        setqQuery={setProvider}
+        qQuery={provider}
+        label="Providers"
+      />
     </div>
   );
 }

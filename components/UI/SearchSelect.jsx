@@ -43,7 +43,13 @@ export default function SearchSelect({ data, setqQuery, qQuery, label }) {
 
       {open && (
         <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
-          <p className="selectItem" onClick={() => setqQuery("*")}>
+          <p
+            className="selectItem"
+            onClick={() => {
+              setqQuery("*");
+              setSearch("");
+            }}
+          >
             {`All ${label}`}
           </p>
           <hr />
@@ -57,7 +63,7 @@ export default function SearchSelect({ data, setqQuery, qQuery, label }) {
                 onClick={() => {
                   setqQuery(item.value);
                   setOpen(false);
-                  setSearch("");
+                  setSearch(item.value);
                 }}
               >
                 {item.value}

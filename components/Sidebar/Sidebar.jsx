@@ -27,6 +27,8 @@ export default function Sidebar({
   imageData,
   wavelengths,
   setWavelengths,
+  type,
+  setType,
 }) {
   return (
     <div
@@ -39,7 +41,12 @@ export default function Sidebar({
       }}
     >
       <Expander title="Search by  Spectrum File" status={false}>
-        <UploadFile setImageData={setImageData} imageData={imageData} />
+        <UploadFile
+          setImageData={setImageData}
+          imageData={imageData}
+          type={type}
+          setType={setType}
+        />
       </Expander>
       <Expander title="Search by Sample" status={false}>
         <Sample setqQuery={setqQuery} qQuery={qQuery} />

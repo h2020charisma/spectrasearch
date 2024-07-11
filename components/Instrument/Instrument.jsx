@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import Select from "../UI/Select";
+import SearchSelect from "../UI/SearchSelect";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -17,7 +18,12 @@ export default function Instrument({ instrument, setInstrument }) {
 
   return (
     <div>
-      <Select items={data} value={instrument} setValue={setInstrument} />
+      <SearchSelect
+        data={data}
+        setqQuery={setInstrument}
+        qQuery={instrument}
+        label="Instruments"
+      />
     </div>
   );
 }

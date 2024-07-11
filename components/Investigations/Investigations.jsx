@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import Select from "../UI/Select";
+import SearchSelect from "../UI/SearchSelect";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -17,7 +18,12 @@ export default function Investigations({ reference, setReference }) {
 
   return (
     <div>
-      <Select items={data} value={reference} setValue={setReference} />
+      <SearchSelect
+        data={data}
+        setqQuery={setReference}
+        qQuery={reference}
+        label="Investigations"
+      />
     </div>
   );
 }
