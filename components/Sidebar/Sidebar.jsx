@@ -40,7 +40,7 @@ export default function Sidebar({
         marginTop: "3.6rem",
       }}
     >
-      <Expander title="Search by  Spectrum File" status={false}>
+      <Expander title="Search by Spectrum File" status={false}>
         <UploadFile
           setImageData={setImageData}
           imageData={imageData}

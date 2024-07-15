@@ -90,9 +90,11 @@ function App() {
         )}
       </AnimatePresence>
       <div className="content">
-        <div className="imageUploded">
-          <img src={imageData && imageData.imageLink} />
-        </div>
+        {imageData && (
+          <div className="imageUploded">
+            <img src={imageData && imageData.imageLink} />
+          </div>
+        )}
         <Expander title="Select Spectrum" status={true}>
           <ImageSelect
             data={data}

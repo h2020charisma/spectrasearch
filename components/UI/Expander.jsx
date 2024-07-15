@@ -2,6 +2,14 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useMeasure } from "@uidotdev/usehooks";
 import ArrowOpen from "../Icons/Arrow";
+import { IconContext } from "react-icons";
+
+import { MdFileUpload } from "react-icons/md";
+import { PiEyedropperFill, PiWaveSineBold } from "react-icons/pi";
+import { AiFillDatabase, AiFillTool } from "react-icons/ai";
+import { TbZoomCodeFilled } from "react-icons/tb";
+import { SiPowerpages } from "react-icons/si";
+import { FaChartBar } from "react-icons/fa";
 
 // eslint-disable-next-line react/prop-types
 export default function Expander({ children, title, status }) {
@@ -36,7 +44,19 @@ export default function Expander({ children, title, status }) {
             userSelect: "none",
           }}
         >
-          {title}
+          <IconContext.Provider value={{ size: "1.6rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              {title == "Search by Spectrum File" && <MdFileUpload />}
+              {title == "Search by Sample" && <PiEyedropperFill />}
+              {title == "Search by Data provider" && <AiFillDatabase />}
+              {title == "Search by Investigation" && <TbZoomCodeFilled />}
+              {title == "Search by Instrument" && <AiFillTool />}
+              {title == "Search by Wavelenth" && <PiWaveSineBold />}
+              {title == "Pages" && <SiPowerpages />}
+              {title == "Select Spectrum" && <FaChartBar />}
+              {title}
+            </div>
+          </IconContext.Provider>
         </p>
 
         <ArrowOpen open={open} />
