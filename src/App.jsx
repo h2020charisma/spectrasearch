@@ -5,6 +5,7 @@ import Chart from "../components/Chart/Chart";
 import SideBarToggle from "../components/Icons/SideBarToggle";
 import ImageSelect from "../components/ImageSelect/ImageSelect";
 import Expander from "../components/UI/Expander";
+import UnderDevelopent from "../components/UnderDevelopent/UnderDevelopent";
 import "./App.css";
 
 import Sidebar from "../components/Sidebar/Sidebar";
@@ -90,6 +91,7 @@ function App() {
         )}
       </AnimatePresence>
       <div className="content">
+        <UnderDevelopent />
         {imageData && (
           <div className="imageUploded">
             <img src={imageData && imageData.imageLink} />
