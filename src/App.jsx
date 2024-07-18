@@ -35,7 +35,7 @@ function App() {
 
   const metadataQuery = `${
     import.meta.env.VITE_BaseURL
-  }query?q=${qQuery}&img=thumbnail&query_type=${query_type}t&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
+  }query?q=${qQuery}&img=thumbnail&query_type=${query_type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
     imageData?.cdf
   }`;
 
