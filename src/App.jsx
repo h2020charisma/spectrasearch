@@ -28,28 +28,32 @@ function App() {
   let [wavelengths, setWavelengths] = useState("*");
 
   let [imageData, setImageData] = useState(null);
-  let [type, setType] = useState("knnquery");
+  let [type, setType] = useState("spectrum");
 
   const [file, setFile] = useState(null);
 
-  // let query_type = type === "spectrum" ? "knnquery" : "text";
+  let query_type = file && type === "spectrum" ? "knnquery" : "text";
+  console.log(imageData, file);
 
-  console.log(type, file);
-
-  const metadataQuery = `${
+  const searchQuery = `${
     import.meta.env.VITE_BaseURL
-  }query?q=${qQuery}&img=thumbnail&query_type=${type}t&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
+  }query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
+
+  const fileSearchQuery = `${
+    import.meta.env.VITE_BaseURL
+  }query?q=${qQuery}&img=thumbnail&query_type=${query_type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
     imageData?.cdf
   }`;
 
-  // const picturesQuery =
-  //   "https://api.charisma.ideaconsult.net/download?what=thumbnail&domain=/SANDBOX/CSIC-ICV/BWTEK_iRaman/785/PST02_iRPlus785_Z020_020_1300ms.cha&extra=";
-
-  const { data, error } = useSWR(metadataQuery, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
+  const { data, error } = useSWR(
+    (imageData && fileSearchQuery) || (!imageData && searchQuery),
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
 
   return (
     <div className="main">

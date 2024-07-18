@@ -10,8 +10,6 @@ export default function UploadFile({
   file,
   setFile,
 }) {
-  // const [file, setFile] = useState(null);
-
   const fileQuery = `${import.meta.env.VITE_BaseURL}download?what=knnquery`;
 
   useEffect(() => {
@@ -26,13 +24,12 @@ export default function UploadFile({
       setImageData(img);
     }
     if (file) fetchDate();
-    if (!file) setType("knnquery");
   }, [file, fileQuery, setImageData, setType]);
 
   return (
     <form>
       <div className="fileNameWrap">
-        <p>
+        <div>
           {file ? (
             <div>
               <span className="fileName">File Name</span>
@@ -54,7 +51,7 @@ export default function UploadFile({
           ) : (
             <span className="uploadPlaceholder">No file selected</span>
           )}
-        </p>
+        </div>
       </div>
       <div className="uploadBtnsWrap">
         <label className="fileNameBtn">
