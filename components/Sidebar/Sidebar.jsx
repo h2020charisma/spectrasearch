@@ -29,6 +29,8 @@ export default function Sidebar({
   setWavelengths,
   type,
   setType,
+  file,
+  setFile,
 }) {
   return (
     <div
@@ -46,6 +48,8 @@ export default function Sidebar({
           imageData={imageData}
           type={type}
           setType={setType}
+          file={file}
+          setFile={setFile}
         />
       </Expander>
       <Expander title="Search by Sample" status={false}>

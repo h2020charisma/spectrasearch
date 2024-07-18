@@ -36,7 +36,7 @@ export default function Expander({ children, title, status }) {
           cursor: "pointer",
         }}
       >
-        <p
+        <div
           style={{
             margin: "0",
             cursor: "pointer",
@@ -57,7 +57,7 @@ export default function Expander({ children, title, status }) {
               {title}
             </div>
           </IconContext.Provider>
-        </p>
+        </div>
 
         <ArrowOpen open={open} />
       </div>

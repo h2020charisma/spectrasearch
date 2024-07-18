@@ -17,7 +17,6 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 // spectrum similarity - knnquery
 
 function App() {
-  // let modalRef = useRef();
   let [open, setOpen] = useState(true);
   let [imageSelected, setImageSelected] = useState("");
   let [reference, setReference] = useState("*");
@@ -29,26 +28,28 @@ function App() {
   let [wavelengths, setWavelengths] = useState("*");
 
   let [imageData, setImageData] = useState(null);
-  let [type, setType] = useState("text");
+  let [type, setType] = useState("knnquery");
 
-  let query_type = type === "spectrum" ? "knnquery" : "text";
+  const [file, setFile] = useState(null);
+
+  // let query_type = type === "spectrum" ? "knnquery" : "text";
+
+  console.log(type, file);
 
   const metadataQuery = `${
     import.meta.env.VITE_BaseURL
-  }query?q=${qQuery}&img=thumbnail&query_type=${query_type}t&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
+  }query?q=${qQuery}&img=thumbnail&query_type=${type}t&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
     imageData?.cdf
   }`;
 
-  const picturesQuery =
-    "https://api.charisma.ideaconsult.net/download?what=thumbnail&domain=/SANDBOX/CSIC-ICV/BWTEK_iRaman/785/PST02_iRPlus785_Z020_020_1300ms.cha&extra=";
+  // const picturesQuery =
+  //   "https://api.charisma.ideaconsult.net/download?what=thumbnail&domain=/SANDBOX/CSIC-ICV/BWTEK_iRaman/785/PST02_iRPlus785_Z020_020_1300ms.cha&extra=";
 
   const { data, error } = useSWR(metadataQuery, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
-
-  console.log(error);
 
   return (
     <div className="main">
@@ -86,13 +87,15 @@ function App() {
               setWavelengths={setWavelengths}
               type={type}
               setType={setType}
+              file={file}
+              setFile={setFile}
             />
           </motion.div>
         )}
       </AnimatePresence>
       <div className="content">
         <UnderDevelopent />
-        {imageData && (
+        {file && imageData && (
           <div className="imageUploded">
             <img src={imageData && imageData.imageLink} />
           </div>
