@@ -25,7 +25,7 @@ export default function SearchSelect({ data, setqQuery, qQuery, label }) {
               .includes(search.toLocaleLowerCase());
           })
       ),
-    [search]
+    [data, search]
   );
 
   return (
@@ -53,6 +53,7 @@ export default function SearchSelect({ data, setqQuery, qQuery, label }) {
             {`All ${label}`}
           </p>
           <hr />
+          {data.length < 1 && "No data to display"}
           {!search &&
             data &&
             data.map((item, i) => (

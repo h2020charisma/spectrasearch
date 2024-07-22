@@ -3,6 +3,7 @@ import * as Plot from "@observablehq/plot";
 // import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
+import { ErrorBoundary } from "react-error-boundary";
 
 export default function Chart({ imageSelected }) {
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -24,8 +25,13 @@ export default function Chart({ imageSelected }) {
   const [valuesX, setValuesX] = useState([]);
   const [valuesY, setValuesY] = useState([]);
 
+  console.log(
+    "ERROR",
+    data && Object.prototype.hasOwnProperty.call(data, "error")
+  );
+
   useEffect(() => {
-    data && imageSelected && setDataset(data.datasets[0].key);
+    data && imageSelected && setDataset(data?.datasets[0].key);
   }, [data, imageSelected]);
 
   useEffect(() => {
@@ -75,8 +81,10 @@ export default function Chart({ imageSelected }) {
         }),
       ],
     });
-    !error && data && dataset & containerRefOne.current.append(plot);
-    !error && data && dataset & containerRefTwo.current.append(plot2);
+
+    data && dataset & containerRefOne.current.append(plot);
+
+    data && dataset & containerRefTwo.current.append(plot2);
     return () => {
       plot.remove();
       plot2.remove();

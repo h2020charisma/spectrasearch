@@ -19,6 +19,9 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
     ));
   return (
     <div className="imageSelectWrap">
+      {data && Object.prototype.hasOwnProperty.call(data, "error") && (
+        <p>Sorry</p>
+      )}
       {data && data.length > 0 ? (
         renderImageSelect
       ) : (

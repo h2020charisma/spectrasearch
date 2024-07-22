@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
+import { ErrorBoundary } from "react-error-boundary";
 import Chart from "../components/Chart/Chart";
 import SideBarToggle from "../components/Icons/SideBarToggle";
 import ImageSelect from "../components/ImageSelect/ImageSelect";
@@ -10,11 +11,6 @@ import "./App.css";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 const fetcher = (url) => fetch(url).then((res) => res.json());
-
-// query_type=knnquery
-// text or spectrum search
-// metadata - text
-// spectrum similarity - knnquery
 
 function App() {
   let [open, setOpen] = useState(true);
@@ -32,8 +28,9 @@ function App() {
 
   const [file, setFile] = useState(null);
 
+  const { mutate } = useSWRConfig();
+
   let query_type = file && type === "spectrum" ? "knnquery" : "text";
-  console.log(imageData, file);
 
   const searchQuery = `${
     import.meta.env.VITE_BaseURL
@@ -45,11 +42,11 @@ function App() {
     imageData?.cdf
   }`;
 
-  const { data, error } = useSWR(
+  const { data } = useSWR(
     (imageData && fileSearchQuery) || (!imageData && searchQuery),
     fetcher,
     {
-      revalidateIfStale: false,
+      revalidateIfStale: true,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     }
@@ -97,6 +94,7 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
       <div className="content">
         <UnderDevelopent />
         {file && imageData && (
@@ -105,13 +103,41 @@ function App() {
           </div>
         )}
         <Expander title="Select Spectrum" status={true}>
-          <ImageSelect
-            data={data}
-            imageSelected={imageSelected}
-            setImageSelected={setImageSelected}
-          />
+          <ErrorBoundary
+            fallback={
+              <div className="errorMessage">
+                <p>Sorry, something went wrong</p>
+                <button onClick={() => setImageData(null)}>
+                  Please Try Again
+                </button>
+              </div>
+            }
+          >
+            <ImageSelect
+              data={data}
+              imageSelected={imageSelected}
+              setImageSelected={setImageSelected}
+            />
+          </ErrorBoundary>
         </Expander>
-        {!error ? <Chart imageSelected={imageSelected} /> : <p>Sorry</p>}
+        {imageSelected ? (
+          <ErrorBoundary
+            fallback={
+              <div className="errorMessage">
+                <p>Sorry, something went wrong</p>
+                <button onClick={() => setImageSelected(null)}>
+                  Please Try Again
+                </button>
+              </div>
+            }
+          >
+            <Chart imageSelected={imageSelected} />
+          </ErrorBoundary>
+        ) : (
+          <div className="errorMessage">
+            <p>No image selected</p>
+          </div>
+        )}
       </div>
     </div>
   );
