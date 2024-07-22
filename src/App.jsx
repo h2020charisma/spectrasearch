@@ -28,8 +28,6 @@ function App() {
 
   const [file, setFile] = useState(null);
 
-  const { mutate } = useSWRConfig();
-
   let query_type = file && type === "spectrum" ? "knnquery" : "text";
 
   const searchQuery = `${

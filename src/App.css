@@ -122,6 +122,15 @@ h1 {
   border-radius: 4px;
   margin: 0;
 }
+.imgCaption {
+  text-align: center;
+  background-color: #f0f8ff;
+  color: #12194b;
+  padding: 0.4rem 0.2rem;
+
+  font-size: 14px;
+  font-weight: 500;
+}
 
 .fileNameWrap {
   display: flex;

@@ -1,19 +1,14 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import SearchIcon from "../Icons/SearchIcon";
 import "./Select.css";
-// import SearchIcon from "@/IconsComponents/SearchIcon";
-// import CloseIcon from "@/IconsComponents/CloseIcon";
 
-import { q_query } from "../../data/q_query";
-
-export default function SearchSelect({ data, setqQuery, qQuery, label }) {
+export default function SearchSelect({ data, setqQuery, label }) {
   const [open, setOpen] = useState(false);
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
-
-  console.log(search ? search : "_");
 
   useEffect(
     () =>
@@ -53,7 +48,7 @@ export default function SearchSelect({ data, setqQuery, qQuery, label }) {
             {`All ${label}`}
           </p>
           <hr />
-          {data.length < 1 && "No data to display"}
+
           {!search &&
             data &&
             data.map((item, i) => (

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import Expander from "../UI/Expander";
 import SelectNumber from "../UI/SelectNumber";
+import { ErrorBoundary } from "react-error-boundary";
 
 import DataProvider from "../DataProvider/DataProvider";
 import Instrument from "../Instrument/Instrument";
@@ -8,6 +9,8 @@ import Investigations from "../Investigations/Investigations";
 import Sample from "../Sample/Sample";
 import UploadFile from "../UploadFile/UploadFile";
 import Wavelengths from "../Wavelengths/Wavelengths";
+
+const errorMsg = "Sorry, no data avaible";
 
 export default function Sidebar({
   reference,
@@ -53,22 +56,42 @@ export default function Sidebar({
         />
       </Expander>
       <Expander title="Search by Sample" status={false}>
-        <Sample setqQuery={setqQuery} qQuery={qQuery} />
+        <ErrorBoundary
+          fallback={<div className="errorMessage">{errorMsg}</div>}
+        >
+          <Sample setqQuery={setqQuery} qQuery={qQuery} />
+        </ErrorBoundary>
       </Expander>
       <Expander title="Search by Data provider">
-        <DataProvider provider={provider} setProvider={setProvider} />
+        <ErrorBoundary
+          fallback={<div className="errorMessage">{errorMsg}</div>}
+        >
+          <DataProvider provider={provider} setProvider={setProvider} />
+        </ErrorBoundary>
       </Expander>
       <Expander title="Search by Investigation" status={false}>
-        <Investigations reference={reference} setReference={setReference} />
+        <ErrorBoundary
+          fallback={<div className="errorMessage">{errorMsg}</div>}
+        >
+          <Investigations reference={reference} setReference={setReference} />
+        </ErrorBoundary>
       </Expander>
       <Expander title="Search by Instrument" status={false}>
-        <Instrument instrument={instrument} setInstrument={setInstrument} />
+        <ErrorBoundary
+          fallback={<div className="errorMessage">{errorMsg}</div>}
+        >
+          <Instrument instrument={instrument} setInstrument={setInstrument} />
+        </ErrorBoundary>
       </Expander>
       <Expander title="Search by Wavelenth" status={false}>
-        <Wavelengths
-          wavelengths={wavelengths}
-          setWavelengths={setWavelengths}
-        />
+        <ErrorBoundary
+          fallback={<div className="errorMessage">{errorMsg}</div>}
+        >
+          <Wavelengths
+            wavelengths={wavelengths}
+            setWavelengths={setWavelengths}
+          />
+        </ErrorBoundary>
       </Expander>
       <Expander title="Pages">
         <div style={{ display: "flex", justifyContent: "space-between" }}>

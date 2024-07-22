@@ -3,7 +3,6 @@ import * as Plot from "@observablehq/plot";
 // import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
-import { ErrorBoundary } from "react-error-boundary";
 
 export default function Chart({ imageSelected }) {
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -15,7 +14,7 @@ export default function Chart({ imageSelected }) {
     import.meta.env.VITE_BaseURL
   }dataset?domain=${imageSelected}&values=True`;
 
-  const { data, error } = useSWR(imageSelected && datasetQuery, fetcher, {
+  const { data } = useSWR(imageSelected && datasetQuery, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -24,11 +23,6 @@ export default function Chart({ imageSelected }) {
   const [dataset, setDataset] = useState(null);
   const [valuesX, setValuesX] = useState([]);
   const [valuesY, setValuesY] = useState([]);
-
-  console.log(
-    "ERROR",
-    data && Object.prototype.hasOwnProperty.call(data, "error")
-  );
 
   useEffect(() => {
     data && imageSelected && setDataset(data?.datasets[0].key);

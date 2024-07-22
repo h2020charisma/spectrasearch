@@ -15,6 +15,7 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
           width={200}
           height={"auto"}
         />
+        <p className="imgCaption">{img.text}</p>
       </div>
     ));
   return (
