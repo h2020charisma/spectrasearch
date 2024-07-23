@@ -1,14 +1,12 @@
 /* eslint-disable react/prop-types */
 import * as Plot from "@observablehq/plot";
-// import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 
 export default function Chart({ imageSelected }) {
   const fetcher = (url) => fetch(url).then((res) => res.json());
 
-  const containerRefOne = useRef();
-  const containerRefTwo = useRef();
+  const containerRef = useRef();
 
   const datasetQuery = `${
     import.meta.env.VITE_BaseURL
@@ -30,8 +28,8 @@ export default function Chart({ imageSelected }) {
 
   useEffect(() => {
     data &&
-      data?.datasets.map((k, i) => {
-        if (dataset == k.key) {
+      data?.datasets.map((k) => {
+        if (dataset === k.key) {
           setValuesX([...k.value[0]]);
           setValuesY([...k.value[1]]);
         }
@@ -42,7 +40,7 @@ export default function Chart({ imageSelected }) {
     if (data === undefined) return;
 
     const plot = Plot.plot({
-      caption: "PST",
+      // caption: dataset,
       grid: true,
       color: { scheme: "burd" },
       marks: [
@@ -60,28 +58,10 @@ export default function Chart({ imageSelected }) {
       ],
     });
 
-    const plot2 = Plot.plot({
-      caption: "Raman Shift [1/cm]",
-      grid: true,
-      marginLeft: 60,
-      color: { scheme: "burd" },
-      marks: [
-        Plot.axisY({ label: "Normalized", labelAnchor: "center" }),
-        Plot.ruleY([0], { stroke: "gray" }),
-        Plot.lineX(data && data.datasets[1].value[0], {
-          x: data && data.datasets[1].value[0],
-          y: data && data.datasets[1].value[1],
-          stroke: "blue",
-        }),
-      ],
-    });
+    data && dataset & containerRef.current.append(plot);
 
-    data && dataset & containerRefOne.current.append(plot);
-
-    data && dataset & containerRefTwo.current.append(plot2);
     return () => {
       plot.remove();
-      plot2.remove();
     };
   }, [data, valuesX, valuesY, imageSelected, dataset]);
 
@@ -102,8 +82,7 @@ export default function Chart({ imageSelected }) {
             </p>
           ))}
       </div>
-      <div ref={containerRefOne} />
-      <div ref={containerRefTwo} />
+      <div ref={containerRef} />
     </div>
   );
 }

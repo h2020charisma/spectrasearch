@@ -22,7 +22,7 @@ export default function Investigations({ reference, setReference }) {
         data={data}
         setqQuery={setReference}
         qQuery={reference}
-        label="Investigations"
+        label="Dataset"
       />
     </div>
   );

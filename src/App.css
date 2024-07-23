@@ -127,7 +127,7 @@ h1 {
   background-color: #f0f8ff;
   color: #12194b;
   padding: 0.4rem 0.2rem;
-
+  margin-bottom: 0;
   font-size: 14px;
   font-weight: 500;
 }
@@ -209,14 +209,19 @@ h1 {
 .dataset::first-letter {
   text-transform: uppercase;
 }
+.datasetActive::first-letter {
+  text-transform: uppercase;
+}
 .datasetActive {
   color: brown;
   text-decoration: underline;
   text-underline-offset: 8px;
   text-decoration-thickness: 4px;
-  text-transform: capitalize;
 }
-
+.dataset,
+.datasetActive {
+  user-select: none;
+}
 .underDev {
   background: #ea5252;
   color: #fff;

@@ -69,7 +69,7 @@ export default function Sidebar({
           <DataProvider provider={provider} setProvider={setProvider} />
         </ErrorBoundary>
       </Expander>
-      <Expander title="Search by Investigation" status={false}>
+      <Expander title="Search by Dataset" status={false}>
         <ErrorBoundary
           fallback={<div className="errorMessage">{errorMsg}</div>}
         >

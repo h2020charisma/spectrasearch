@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import { ErrorBoundary } from "react-error-boundary";
 import SearchIcon from "../Icons/SearchIcon";
 import "./Select.css";
 

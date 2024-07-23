@@ -49,7 +49,7 @@ export default function Expander({ children, title, status }) {
               {title == "Search by Spectrum File" && <MdFileUpload />}
               {title == "Search by Sample" && <PiEyedropperFill />}
               {title == "Search by Data provider" && <AiFillDatabase />}
-              {title == "Search by Investigation" && <TbZoomCodeFilled />}
+              {title == "Search by Dataset" && <TbZoomCodeFilled />}
               {title == "Search by Instrument" && <AiFillTool />}
               {title == "Search by Wavelenth" && <PiWaveSineBold />}
               {title == "Pages" && <SiPowerpages />}
