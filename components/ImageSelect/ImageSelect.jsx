@@ -5,16 +5,12 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
     data.map((img, i) => (
       <div
         key={i}
+        onClick={() => setImageSelected(img.value)}
         className={`${
           imageSelected == img.value ? "imageSelected" : "imageNonSelected"
         }`}
       >
-        <img
-          onClick={() => setImageSelected(img.value)}
-          src={img.imageLink}
-          width={200}
-          height={"auto"}
-        />
+        <img src={img.imageLink} width={200} height={"auto"} />
         <p className="imgCaption">{img.text}</p>
       </div>
     ));
