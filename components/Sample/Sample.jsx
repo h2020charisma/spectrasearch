@@ -4,7 +4,7 @@ import SearchSelect from "../UI/SearchSelect";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 // eslint-disable-next-line react/prop-types
-export default function Sample({ qQuery, setqQuery }) {
+export default function Sample({ qQuery, setqQuery, setImageSelected }) {
   const providerURL = `${
     import.meta.env.VITE_BaseURL
   }query/field?name=publicname_s`;
@@ -21,6 +21,7 @@ export default function Sample({ qQuery, setqQuery }) {
         data={data}
         setqQuery={setqQuery}
         qQuery={qQuery}
+        setImageSelected={setImageSelected}
         label="Samples"
       />
     </div>

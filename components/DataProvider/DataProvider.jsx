@@ -5,7 +5,11 @@ import SearchSelect from "../UI/SearchSelect";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 // eslint-disable-next-line react/prop-types
-export default function DataProvider({ provider, setProvider }) {
+export default function DataProvider({
+  provider,
+  setProvider,
+  setImageSelected,
+}) {
   const providerURL = `${
     import.meta.env.VITE_BaseURL
   }query/field?name=reference_owner_s`;
@@ -23,6 +27,7 @@ export default function DataProvider({ provider, setProvider }) {
         data={data}
         setqQuery={setProvider}
         qQuery={provider}
+        setImageSelected={setImageSelected}
         label="Providers"
       />
     </div>

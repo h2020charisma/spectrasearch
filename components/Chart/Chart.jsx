@@ -8,6 +8,8 @@ export default function Chart({ imageSelected }) {
 
   const containerRef = useRef();
 
+  console.log("chart", imageSelected);
+
   const datasetQuery = `${
     import.meta.env.VITE_BaseURL
   }dataset?domain=${imageSelected}&values=True`;

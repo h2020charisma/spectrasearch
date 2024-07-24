@@ -5,7 +5,11 @@ import SearchSelect from "../UI/SearchSelect";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 // eslint-disable-next-line react/prop-types
-export default function Wavelengths({ wavelengths, setWavelengths }) {
+export default function Wavelengths({
+  wavelengths,
+  setWavelengths,
+  setImageSelected,
+}) {
   const providerURL = `${
     import.meta.env.VITE_BaseURL
   }query/field?name=wavelength_s`;
@@ -22,6 +26,7 @@ export default function Wavelengths({ wavelengths, setWavelengths }) {
         data={data}
         setqQuery={setWavelengths}
         qQuery={wavelengths}
+        setImageSelected={setImageSelected}
         label="Wavelengths"
       />
     </div>

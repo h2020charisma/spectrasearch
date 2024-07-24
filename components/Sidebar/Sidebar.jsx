@@ -25,7 +25,7 @@ export default function Sidebar({
   qQuery,
   instrument,
   setInstrument,
-
+  setImageSelected,
   setImageData,
   imageData,
   wavelengths,
@@ -59,28 +59,44 @@ export default function Sidebar({
         <ErrorBoundary
           fallback={<div className="errorMessage">{errorMsg}</div>}
         >
-          <Sample setqQuery={setqQuery} qQuery={qQuery} />
+          <Sample
+            setqQuery={setqQuery}
+            qQuery={qQuery}
+            setImageSelected={setImageSelected}
+          />
         </ErrorBoundary>
       </Expander>
       <Expander title="Search by Data provider">
         <ErrorBoundary
           fallback={<div className="errorMessage">{errorMsg}</div>}
         >
-          <DataProvider provider={provider} setProvider={setProvider} />
+          <DataProvider
+            provider={provider}
+            setProvider={setProvider}
+            setImageSelected={setImageSelected}
+          />
         </ErrorBoundary>
       </Expander>
       <Expander title="Search by Dataset" status={false}>
         <ErrorBoundary
           fallback={<div className="errorMessage">{errorMsg}</div>}
         >
-          <Investigations reference={reference} setReference={setReference} />
+          <Investigations
+            reference={reference}
+            setReference={setReference}
+            setImageSelected={setImageSelected}
+          />
         </ErrorBoundary>
       </Expander>
       <Expander title="Search by Instrument" status={false}>
         <ErrorBoundary
           fallback={<div className="errorMessage">{errorMsg}</div>}
         >
-          <Instrument instrument={instrument} setInstrument={setInstrument} />
+          <Instrument
+            instrument={instrument}
+            setInstrument={setInstrument}
+            setImageSelected={setImageSelected}
+          />
         </ErrorBoundary>
       </Expander>
       <Expander title="Search by Wavelenth" status={false}>
@@ -90,6 +106,7 @@ export default function Sidebar({
           <Wavelengths
             wavelengths={wavelengths}
             setWavelengths={setWavelengths}
+            setImageSelected={setImageSelected}
           />
         </ErrorBoundary>
       </Expander>

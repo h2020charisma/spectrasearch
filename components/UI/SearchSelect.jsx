@@ -3,7 +3,12 @@ import { useEffect, useState } from "react";
 import SearchIcon from "../Icons/SearchIcon";
 import "./Select.css";
 
-export default function SearchSelect({ data, setqQuery, label }) {
+export default function SearchSelect({
+  data,
+  setqQuery,
+  setImageSelected,
+  label,
+}) {
   const [open, setOpen] = useState(false);
 
   const [filtered, setFiltered] = useState([]);
@@ -42,6 +47,7 @@ export default function SearchSelect({ data, setqQuery, label }) {
             onClick={() => {
               setqQuery("*");
               setSearch("");
+              setImageSelected("");
             }}
           >
             {`All ${label}`}
@@ -59,6 +65,7 @@ export default function SearchSelect({ data, setqQuery, label }) {
                   setqQuery(item.value);
                   setOpen(false);
                   setSearch(item.value);
+                  setImageSelected("");
                 }}
               >
                 {item.value}
@@ -75,6 +82,7 @@ export default function SearchSelect({ data, setqQuery, label }) {
                   setqQuery(item.value);
                   setOpen(false);
                   setSearch("");
+                  setImageSelected("");
                 }}
               >
                 {item.value}

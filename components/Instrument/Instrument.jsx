@@ -5,7 +5,11 @@ import SearchSelect from "../UI/SearchSelect";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 // eslint-disable-next-line react/prop-types
-export default function Instrument({ instrument, setInstrument }) {
+export default function Instrument({
+  instrument,
+  setInstrument,
+  setImageSelected,
+}) {
   const providerURL = `${
     import.meta.env.VITE_BaseURL
   }query/field?name=instrument_s`;
@@ -22,6 +26,7 @@ export default function Instrument({ instrument, setInstrument }) {
         data={data}
         setqQuery={setInstrument}
         qQuery={instrument}
+        setImageSelected={setImageSelected}
         label="Instruments"
       />
     </div>
