@@ -69,8 +69,73 @@ export default function Chart({ imageSelected }) {
 
   return (
     <div>
+      <div className="domainInfo">
+        <span className="fileName">Domain</span>
+        <span className="metadataInfoValue">{data && data.domain}</span>
+      </div>
+      {data &&
+        data.annotation.map((ann, k) => (
+          <div key={k} className="metadataSection">
+            {/* <h3 className="metadataTitle">Metadata</h3> */}
+            <div className="annotationInfo">
+              {ann.sample && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Sample</span>
+                  <span className="metadataInfoValue"> {ann.sample}</span>
+                </div>
+              )}
+              {ann.instrument && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Instrument</span>
+                  <span className="metadataInfoValue"> {ann.instrument}</span>
+                </div>
+              )}
+              {ann.investigation && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Investigation</span>
+                  <span className="metadataInfoValue">
+                    {" "}
+                    {ann.investigation}
+                  </span>
+                </div>
+              )}
+              {ann.laser_power && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Laser power</span>
+                  <span className="metadataInfoValue"> {ann.laser_power}</span>
+                </div>
+              )}
+              {ann.optical_path && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Optical path</span>
+                  <span className="metadataInfoValue"> {ann.optical_path}</span>
+                </div>
+              )}
+              {ann.provider && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Provider</span>
+                  <span className="metadataInfoValue"> {ann.provider}</span>
+                </div>
+              )}
+              {ann.wavelength && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Wavelength</span>
+                  <span className="metadataInfoValue"> {ann.wavelength}</span>
+                </div>
+              )}
+              {ann.native_filename && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Native filename</span>
+                  <span className="metadataInfoValue">
+                    {ann.native_filename}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
       <div className="datasetsTabs">
-        {imageSelected && <span className="fileName">Datasets</span>}
+        {/* {imageSelected && <span className="fileName">Datasets</span>} */}
         {data &&
           data?.datasets.map((k, i) => (
             <p
