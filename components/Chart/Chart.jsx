@@ -68,7 +68,7 @@ export default function Chart({ imageSelected }) {
   }, [data, valuesX, valuesY, imageSelected, dataset]);
 
   return (
-    <div>
+    <div className="chartWrap">
       <div className="domainInfo">
         <span className="fileName">Domain</span>
         <span className="metadataInfoValue">{data && data.domain}</span>

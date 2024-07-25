@@ -32,6 +32,7 @@ h1 {
   position: relative;
   padding: 10px 20px;
   border-right: 1px solid #74deff;
+  overflow: hidden;
 }
 .content {
   width: 100%;
@@ -59,7 +60,7 @@ h1 {
 .toggleSidebar {
   position: fixed;
   background-color: aliceblue;
-  padding: 10px 20px;
+  padding: 10px 30px 10px 20px;
   z-index: 999;
   cursor: pointer;
   display: flex;
@@ -233,7 +234,9 @@ h1 {
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
 }
-
+.chartWrap {
+  margin: 0 0 4rem 0;
+}
 .domainInfo {
   display: flex;
   align-items: baseline;
@@ -279,6 +282,46 @@ h1 {
   font-weight: 500;
   margin: 0.3rem 0;
   display: inline-block;
+}
+
+.footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 60px;
+  padding: 1rem 2rem;
+  border-top: 4px solid #74deff;
+}
+
+.acknowledgements {
+  width: 30%;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #12194b;
+  /* border-top: 4px solid #00ace1;
+  padding-top: 1rem; */
+}
+.company {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #12194b;
+}
+
+.website {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.contactsLink {
+  color: #12194b !important;
+}
+
+.contactsLink:hover {
+  color: #00546e !important;
 }
 
 @keyframes logo-spin {
