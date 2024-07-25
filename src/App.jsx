@@ -27,7 +27,7 @@ function App() {
   let [wavelengths, setWavelengths] = useState("*");
 
   let [imageData, setImageData] = useState(null);
-  let [type, setType] = useState("spectrum");
+  let [type, setType] = useState("knnquery");
 
   const [file, setFile] = useState(null);
 
