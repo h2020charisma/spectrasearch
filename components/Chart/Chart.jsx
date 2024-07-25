@@ -150,6 +150,9 @@ export default function Chart({ imageSelected }) {
           ))}
       </div>
       <div ref={containerRef} />
+      <div className="shiftLabel">
+        Raman shift (cm<sup>&ndash;1</sup>)
+      </div>
     </div>
   );
 }

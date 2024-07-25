@@ -302,6 +302,10 @@ h1 {
   /* border-top: 4px solid #00ace1;
   padding-top: 1rem; */
 }
+.shiftLabel {
+  font-weight: 500;
+  margin: 1rem 0 0 3rem;
+}
 .company {
   font-size: 15px;
   font-weight: 500;
