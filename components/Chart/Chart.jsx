@@ -8,8 +8,6 @@ export default function Chart({ imageSelected }) {
 
   const containerRef = useRef();
 
-  console.log("chart", imageSelected);
-
   const datasetQuery = `${
     import.meta.env.VITE_BaseURL
   }dataset?domain=${imageSelected}&values=True`;
@@ -19,6 +17,20 @@ export default function Chart({ imageSelected }) {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
+
+  const [copied, setCopied] = useState(false);
+
+  setTimeout(() => {
+    setCopied(false);
+  }, 3000);
+
+  const urlToCopy = import.meta.env.PROD
+    ? `${window.location.href}?domain=${imageSelected}`
+    : `http://localhost:5173/search?domain=${imageSelected}`;
+
+  const copyLink = () => {
+    imageSelected && navigator.clipboard.writeText(urlToCopy);
+  };
 
   const [dataset, setDataset] = useState(null);
   const [valuesX, setValuesX] = useState([]);
@@ -70,8 +82,19 @@ export default function Chart({ imageSelected }) {
   return (
     <div className="chartWrap">
       <div className="domainInfo">
-        <span className="fileName">Domain</span>
-        <span className="metadataInfoValue">{data && data.domain}</span>
+        <div>
+          <span className="fileName">Domain</span>
+          <span className="metadataInfoValue">{data && data.domain}</span>
+        </div>
+        <button
+          className="shareBtn"
+          onClick={() => {
+            copyLink();
+            setCopied(true);
+          }}
+        >
+          {copied ? "Copied to clipboard" : "Share a link"}
+        </button>
       </div>
       {data &&
         data.annotation.map((ann, k) => (
