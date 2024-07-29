@@ -25,7 +25,7 @@ export default function Chart({ imageSelected }) {
   }, 3000);
 
   const urlToCopy = import.meta.env.PROD
-    ? `${window.location.href}?domain=${imageSelected}`
+    ? `${window.location.href}`
     : `http://localhost:5173/search?domain=${imageSelected}`;
 
   const copyLink = () => {
