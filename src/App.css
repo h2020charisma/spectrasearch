@@ -229,7 +229,7 @@ h1 {
   width: fit-content;
   text-align: center;
   margin: 0 auto;
-  margin-bottom: 35px;
+  margin-bottom: 41px;
   padding: 0.3rem 0.8rem;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
@@ -241,18 +241,19 @@ h1 {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin: 1rem 0;
 }
 
 .shareBtn {
   background-color: #fff;
-  padding: 6px 12px;
+  padding: 6px 12px 8px 12px;
   color: #00ace1;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   font-size: 13px;
-  letter-spacing: 0.4px;
+  /* letter-spacing: 0.4px; */
   border: 1px solid #00ace1;
+  border-radius: 5px;
 }
 
 .shareBtn:hover {

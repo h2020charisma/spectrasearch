@@ -12,6 +12,7 @@
     "preview": "rimraf dist && vite build --base /search --outDir dist/search && http-server -a localhost -p 0 -o /search dist"
   },
   "dependencies": {
+    "@h5web/app": "^12.0.1",
     "@observablehq/plot": "^0.6.15",
     "@uidotdev/usehooks": "^2.4.1",
     "framer-motion": "^11.2.10",

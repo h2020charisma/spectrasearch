@@ -1,12 +1,14 @@
 /* eslint-disable react/prop-types */
 import * as Plot from "@observablehq/plot";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 
 export default function Chart({ imageSelected }) {
   const fetcher = (url) => fetch(url).then((res) => res.json());
 
   const containerRef = useRef();
+  const navigate = useNavigate();
 
   const datasetQuery = `${
     import.meta.env.VITE_BaseURL
@@ -86,15 +88,24 @@ export default function Chart({ imageSelected }) {
           <span className="fileName">Domain</span>
           <span className="metadataInfoValue">{data && data.domain}</span>
         </div>
-        <button
-          className="shareBtn"
-          onClick={() => {
-            copyLink();
-            setCopied(true);
-          }}
-        >
-          {copied ? "Copied to clipboard" : "Share a link"}
-        </button>
+        <div>
+          <button
+            className="shareBtn"
+            onClick={() => {
+              copyLink();
+              setCopied(true);
+            }}
+          >
+            {copied ? "Copied to clipboard" : "Share a link"}
+          </button>
+          <button
+            className="shareBtn"
+            style={{ marginLeft: "16px" }}
+            onClick={() => navigate(`?h5web=${imageSelected}`)}
+          >
+            Explore in h5web
+          </button>
+        </div>
       </div>
       {data &&
         data.annotation.map((ann, k) => (
