@@ -42,7 +42,7 @@ export default function Sidebar({
         top: "4rem",
         bottom: "0",
         height: "100vh",
-        marginTop: "3.6rem",
+        marginTop: "0.6rem",
       }}
     >
       <Expander title="Search by Spectrum File" status={false}>

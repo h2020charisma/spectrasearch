@@ -11,33 +11,31 @@ h1 {
 .logo {
   display: flex;
   justify-content: flex-start;
-  align-items: flex-end;
+  align-items: center;
   gap: 12px;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  background-color: #fff;
+  height: 60px;
+  padding: 0 20px;
+  border-bottom: 1px solid #dadada;
+  cursor: pointer;
 }
 
 /* Main Layout */
 .main {
   display: flex;
+  margin: 0 1rem;
 }
 .sidebar {
-  background-color: aliceblue;
-  width: 500px;
+  /* background-color: aliceblue; */
+  width: 400px;
   max-height: max-content;
   position: relative;
-  padding: 10px 20px;
-  border-right: 1px solid #74deff;
-  overflow: hidden;
+  padding: 0.5rem 1rem 0 0;
+  margin-top: -17px;
 }
 .content {
   width: 100%;
   background-color: #fff;
-  padding: 0 2rem;
 }
 
 .errorMessage {
@@ -58,15 +56,11 @@ h1 {
 /* Sidebar */
 
 .toggleSidebar {
-  position: fixed;
-  background-color: aliceblue;
-  padding: 10px 30px 10px 20px;
+  padding: 10px 30px 10px 0;
   z-index: 999;
   cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 22px;
+  position: absolute;
+  top: 60px;
 }
 
 /* Header */
@@ -229,7 +223,7 @@ h1 {
   width: fit-content;
   text-align: center;
   margin: 0 auto;
-  margin-bottom: 41px;
+  margin-bottom: 20px;
   padding: 0.3rem 0.8rem;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;

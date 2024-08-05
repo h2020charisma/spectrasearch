@@ -8,7 +8,7 @@ import SideBarToggle from "../Icons/SideBarToggle";
 import ImageSelect from "../ImageSelect/ImageSelect";
 import Expander from "../UI/Expander";
 import SelectNumber from "../UI/SelectNumber";
-import UnderDevelopent from "../UnderDevelopent/UnderDevelopent";
+
 import "../../src/App.css";
 
 import Sidebar from "../Sidebar/Sidebar";
@@ -58,49 +58,51 @@ export default function SearchComp() {
 
   return (
     <div className="main">
-      <div className="toggleSidebar" onClick={() => setOpen(!open)}>
-        <SideBarToggle /> <h1>Raman Spectra Search</h1>
+      <div>
+        <div className="toggleSidebar" onClick={() => setOpen(!open)}>
+          <SideBarToggle />
+          {/* <h1>Raman Spectra Search</h1> */}
+        </div>
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, x: "-100%" }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: "-100%" }}
+              transition={{ type: "tween", stiffness: 100 }}
+              className="sidebar"
+            >
+              <Sidebar
+                data={data}
+                imageSelected={imageSelected}
+                setImageSelected={setImageSelected}
+                reference={reference}
+                setReference={setReference}
+                provider={provider}
+                setProvider={setProvider}
+                pages={pages}
+                setPages={setPages}
+                pagesize={pagesize}
+                setPagesize={setPagesize}
+                setqQuery={setqQuery}
+                qQuery={qQuery}
+                setImageData={setImageData}
+                imageData={imageData}
+                instrument={instrument}
+                setInstrument={setInstrument}
+                wavelengths={wavelengths}
+                setWavelengths={setWavelengths}
+                type={type}
+                setType={setType}
+                file={file}
+                setFile={setFile}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, x: "-100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "-100%" }}
-            transition={{ type: "tween", stiffness: 100 }}
-            className="sidebar"
-          >
-            <Sidebar
-              data={data}
-              imageSelected={imageSelected}
-              setImageSelected={setImageSelected}
-              reference={reference}
-              setReference={setReference}
-              provider={provider}
-              setProvider={setProvider}
-              pages={pages}
-              setPages={setPages}
-              pagesize={pagesize}
-              setPagesize={setPagesize}
-              setqQuery={setqQuery}
-              qQuery={qQuery}
-              setImageData={setImageData}
-              imageData={imageData}
-              instrument={instrument}
-              setInstrument={setInstrument}
-              wavelengths={wavelengths}
-              setWavelengths={setWavelengths}
-              type={type}
-              setType={setType}
-              file={file}
-              setFile={setFile}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <div className="content">
-        <UnderDevelopent />
         {file && imageData && (
           <div className="imageUploded">
             <img src={imageData && imageData.imageLink} />

@@ -1,24 +1,21 @@
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 import "@h5web/app/dist/styles.css";
 
-import { App, MockProvider } from "@h5web/app";
+import { App, HsdsProvider } from "@h5web/app";
 
 export default function H5web() {
-  const navigate = useNavigate();
   return (
     <div>
-      <button
-        className="shareBtn"
-        style={{ marginLeft: "16px" }}
-        onClick={() => navigate(`/`)}
-      >
-        Back
-      </button>
-      <div style={{ height: "100vh" }}>
-        <MockProvider>
+      <div style={{ height: "90vh" }}>
+        <HsdsProvider
+          url="https://hsds.adma.ai"
+          username="system-public-user"
+          password="system-public-user"
+          filepath="/TEST/129aac84-3015-4333-af39-9efa544d54f6.nxs"
+        >
           <App />
-        </MockProvider>
+        </HsdsProvider>
       </div>
     </div>
   );
