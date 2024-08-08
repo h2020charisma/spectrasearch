@@ -2,15 +2,17 @@ import "@h5web/app/dist/styles.css";
 
 import { App, HsdsProvider } from "@h5web/app";
 
-export default function H5web() {
+// eslint-disable-next-line react/prop-types
+export default function H5web({ domain }) {
+  console.log("h5web", domain);
   return (
     <div>
       <div style={{ height: "90vh" }}>
         <HsdsProvider
-          url="https://hsds.adma.ai"
+          url="https://hsds-kc.ideaconsult.net"
           username="system-public-user"
           password="system-public-user"
-          filepath="/TEST/129aac84-3015-4333-af39-9efa544d54f6.nxs"
+          filepath={`${domain}`}
         >
           <App />
         </HsdsProvider>

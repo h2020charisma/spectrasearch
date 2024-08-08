@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -14,7 +15,7 @@ import "../../src/App.css";
 import Sidebar from "../Sidebar/Sidebar";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-export default function SearchComp() {
+export default function SearchComp({ setDomain }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const domainParams = queryParams.get("domain");
@@ -23,6 +24,7 @@ export default function SearchComp() {
   let [imageSelected, setImageSelected] = useState(
     domainParams ? domainParams : ""
   );
+
   let [reference, setReference] = useState("*");
   let [provider, setProvider] = useState("*");
   let [pages, setPages] = useState("0");
@@ -147,7 +149,7 @@ export default function SearchComp() {
               </div>
             }
           >
-            <Chart imageSelected={imageSelected} />
+            <Chart imageSelected={imageSelected} setDomain={setDomain} />
           </ErrorBoundary>
         ) : (
           <div className="errorMessage">

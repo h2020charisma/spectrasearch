@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 
-export default function Chart({ imageSelected }) {
+export default function Chart({ imageSelected, setDomain }) {
   const fetcher = (url) => fetch(url).then((res) => res.json());
 
   const containerRef = useRef();
@@ -58,7 +58,8 @@ export default function Chart({ imageSelected }) {
     const plot = Plot.plot({
       // caption: dataset,
       grid: true,
-      color: { scheme: "burd" },
+      color: "#454545",
+      stroke: "#454545",
       marks: [
         Plot.axisY({
           label: "Raw Counts",
@@ -101,7 +102,10 @@ export default function Chart({ imageSelected }) {
           <button
             className="shareBtn"
             style={{ marginLeft: "16px" }}
-            onClick={() => navigate(`?h5web=${imageSelected}`)}
+            onClick={() => {
+              navigate(`?h5web=${imageSelected}`);
+              setDomain(data.domain);
+            }}
           >
             Explore in h5web
           </button>

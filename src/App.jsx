@@ -1,5 +1,5 @@
 import "./App.css";
-
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import SearchComp from "../components/SearchComp/SearchComp";
@@ -14,16 +14,18 @@ function App() {
   const queryParams = new URLSearchParams(location.search);
   const h5webParams = queryParams.get("h5web");
 
+  let [domain, setDomain] = useState(null);
+
   return (
     <>
       <Header />
       <UnderDevelopent />
       <div>
         {h5webParams ? (
-          <H5web />
+          <H5web domain={domain} />
         ) : (
           <div>
-            <SearchComp />
+            <SearchComp setDomain={setDomain} />
             <Footer />
           </div>
         )}

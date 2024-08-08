@@ -25,6 +25,7 @@ export default function Expander({ children, title, status }) {
         margin: "0 0 0.5rem 0",
         overflow: "hidden",
         backgroundColor: "#f8fcff",
+        color: "#454545",
       }}
     >
       <div
