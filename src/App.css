@@ -1,10 +1,11 @@
 #root {
   width: 100%;
-  background-color: #fff;
+  color-scheme: light dark;
+  background-color: light-dark(#fff, #242424);
 }
 
 h1 {
-  color: #12194b;
+  color: light-dark(#202020, #eee);
   font-size: 22px;
   font-weight: 900;
   line-height: 0.5;
@@ -14,11 +15,13 @@ h1 {
   justify-content: flex-start;
   align-items: center;
   gap: 12px;
-  background-color: #fff;
+  margin-bottom: 4rem;
   height: 60px;
   padding: 0 20px;
   border-bottom: 1px solid #dadada;
   cursor: pointer;
+  color: light-dark(#202020, #fff);
+  background-color: light-dark(#fff, #202020);
 }
 
 /* Main Layout */
@@ -36,7 +39,17 @@ h1 {
 }
 .content {
   width: 100%;
-  background-color: #fff;
+  background-color: light-dark(#fff, #202020);
+}
+
+.expander {
+  border: 1px solid light-dark(#838383, #7b7b7b);
+  padding: 0.8rem;
+  border-radius: 6px;
+  margin: 0 0 0.5rem 0;
+  overflow: hidden;
+  background-color: light-dark(#fff, #202020);
+  color: light-dark(#202020, #ccc);
 }
 
 .errorMessage {
@@ -84,18 +97,19 @@ h1 {
   align-items: flex-start;
   gap: 20px;
   height: auto;
-  /* overflow-y: scroll; */
 }
 
 .imageSelected {
   border: 4px solid #74deff;
   padding: 0.8rem;
+  background-color: #fff;
 }
 
 .imageNonSelected {
-  border: 4px solid #ffffff;
+  border: 4px solid light-dark(#fff, #3d3d3d);
   padding: 0.8rem;
   cursor: pointer;
+  background-color: #fff;
 }
 
 .selectItem {
@@ -201,6 +215,7 @@ h1 {
   justify-content: flex-start;
   gap: 22px;
   cursor: pointer;
+  background-color: light-dark(#fff, #242424);
 }
 .dataset::first-letter {
   text-transform: uppercase;
@@ -209,7 +224,7 @@ h1 {
   text-transform: uppercase;
 }
 .datasetActive {
-  color: brown;
+  color: #00ace1;
   text-decoration: underline;
   text-underline-offset: 8px;
   text-decoration-thickness: 4px;
@@ -219,6 +234,10 @@ h1 {
   user-select: none;
 }
 .underDev {
+  position: absolute;
+  top: 0;
+  left: 25%;
+  right: 25%;
   background: #ea5252;
   color: #fff;
   width: fit-content;
@@ -231,7 +250,11 @@ h1 {
 }
 .chartWrap {
   margin: 0 0 4rem 0;
-  color: #454545;
+  color: light-dark(#202020, #aaa);
+  background-color: light-dark(#fff, #242424);
+}
+.chart {
+  background-color: light-dark(#fff, #242424);
 }
 .domainInfo {
   display: flex;
@@ -242,9 +265,11 @@ h1 {
 }
 
 .shareBtn {
-  background-color: #fff;
+  /* background-color: #fff;
+  color: #00ace1; */
+  background-color: light-dark(#fff, #202020);
+  color: light-dark(#202020, #ccc);
   padding: 6px 12px 8px 12px;
-  color: #00ace1;
   /* text-transform: uppercase; */
   font-size: 13px;
   /* letter-spacing: 0.4px; */
@@ -264,7 +289,7 @@ h1 {
 .metadataSection {
   padding: 1rem;
   /* margin: 1rem 0 2rem 0; */
-  background-color: aliceblue;
+  background-color: light-dark(#74deff24, #3d3d3d);
   border-radius: 6px;
 }
 .metadataTitle {
@@ -274,7 +299,7 @@ h1 {
   font-size: 14px;
   font-weight: 500;
   margin-left: 0.2rem;
-  color: #454545;
+  color: light-dark(#3d3d3d, #fff);
 }
 
 .annotationInfo {
@@ -305,12 +330,13 @@ h1 {
 }
 
 .footer {
+  color: light-dark(#202020, #fff);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 60px;
   padding: 1rem 2rem;
-  border-top: 4px solid #74deff;
+  border-top: 4px solid #eee;
 }
 
 .acknowledgements {
@@ -318,19 +344,21 @@ h1 {
   font-size: 15px;
   font-weight: 500;
   line-height: 24px;
-  color: #12194b;
+  color: light-dark(#202020, #fff);
   /* border-top: 4px solid #00ace1;
   padding-top: 1rem; */
 }
 .shiftLabel {
   font-weight: 500;
   margin: 1rem 0 0 3rem;
+  background-color: light-dark(#fff, #242424);
 }
+
 .company {
   font-size: 15px;
   font-weight: 500;
   line-height: 24px;
-  color: #12194b;
+  color: light-dark(#202020, #fff);
 }
 
 .website {
@@ -341,11 +369,11 @@ h1 {
 }
 
 .contactsLink {
-  color: #12194b !important;
+  color: light-dark(#202020, #fff) !important;
 }
 
 .contactsLink:hover {
-  color: #00546e !important;
+  color: light-dark(#535353, #fff) !important;
 }
 
 @keyframes logo-spin {

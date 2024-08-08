@@ -18,15 +18,16 @@ export default function Expander({ children, title, status }) {
 
   return (
     <div
-      style={{
-        border: "1px solid #ccc",
-        padding: "0.8rem",
-        borderRadius: "6px",
-        margin: "0 0 0.5rem 0",
-        overflow: "hidden",
-        backgroundColor: "#f8fcff",
-        color: "#454545",
-      }}
+      // style={{
+      //   border: "1px solid #ccc",
+      //   padding: "0.8rem",
+      //   borderRadius: "6px",
+      //   margin: "0 0 0.5rem 0",
+      //   overflow: "hidden",
+      //   backgroundColor: "#f8fcff",
+      //   color: "#454545",
+      // }}
+      className="expander"
     >
       <div
         onClick={() => setOpen(!open)}

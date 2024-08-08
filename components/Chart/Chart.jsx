@@ -70,7 +70,7 @@ export default function Chart({ imageSelected, setDomain }) {
         Plot.lineX(valuesX, {
           x: valuesX,
           y: valuesY,
-          stroke: "orange",
+          stroke: "steelblue",
         }),
       ],
     });
@@ -187,7 +187,7 @@ export default function Chart({ imageSelected, setDomain }) {
             </p>
           ))}
       </div>
-      <div ref={containerRef} />
+      <div className="chart" ref={containerRef} />
       <div className="shiftLabel">
         Raman shift (cm<sup>&ndash;1</sup>)
       </div>
