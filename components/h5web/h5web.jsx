@@ -1,5 +1,3 @@
-// import { useNavigate } from "react-router-dom";
-
 import "@h5web/app/dist/styles.css";
 
 import { App, HsdsProvider } from "@h5web/app";
