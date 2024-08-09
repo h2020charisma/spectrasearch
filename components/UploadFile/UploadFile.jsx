@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Close from "../Icons/Close";
 
 // eslint-disable-next-line react/prop-types
@@ -12,7 +12,7 @@ export default function UploadFile({
 }) {
   const fileQuery = `${import.meta.env.VITE_BaseURL}download?what=knnquery`;
 
-  console.log(file);
+  const [isNotRightFile, setIsNotRightFile] = useState(false);
 
   useEffect(() => {
     async function fetchDate() {
@@ -28,9 +28,11 @@ export default function UploadFile({
 
     if (file && file.type === "text/plain") {
       fetchDate();
+      setIsNotRightFile(false);
     }
     if (file && file.type !== "text/plain") {
-      alert("Please upload a spectrum file");
+      // alert("Please upload a spectrum file");
+      setIsNotRightFile(true);
       setFile(null);
     }
   }, [file, fileQuery, setFile, setImageData, setType]);
@@ -39,7 +41,7 @@ export default function UploadFile({
     <form>
       <div className="fileNameWrap">
         <div>
-          {file ? (
+          {file && (
             <div>
               <span className="fileName">File Name</span>
               <div
@@ -57,10 +59,15 @@ export default function UploadFile({
                 )}
               </div>
             </div>
-          ) : (
-            <span className="uploadPlaceholder">No file selected</span>
           )}
+          {/* {!file ||
+            (isNotRightFile && (
+              <span className="uploadPlaceholder">No file selected</span>
+            ))} */}
         </div>
+        {isNotRightFile && (
+          <div className="wrongFileAlert">Please upload a spectrum file</div>
+        )}
       </div>
       <div className="uploadBtnsWrap">
         <label className="fileNameBtn">
