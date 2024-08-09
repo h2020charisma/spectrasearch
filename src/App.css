@@ -178,7 +178,9 @@ h1 {
 
 .fileNameBtn {
   font-size: 13px;
-  background-color: #c9f2ff;
+  background-color: light-dark(#fff, #202020);
+  color: light-dark(#202020, #ccc);
+  border: 1px solid #00ace1;
   cursor: pointer;
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
@@ -189,7 +191,8 @@ h1 {
 }
 
 .fileNameBtn:hover {
-  background-color: #adecff;
+  background-color: #00ace1;
+  color: #fff;
 }
 
 .closeBtn {

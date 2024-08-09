@@ -12,6 +12,8 @@ export default function UploadFile({
 }) {
   const fileQuery = `${import.meta.env.VITE_BaseURL}download?what=knnquery`;
 
+  console.log(file);
+
   useEffect(() => {
     async function fetchDate() {
       const formData = new FormData();
@@ -23,8 +25,15 @@ export default function UploadFile({
       const img = await response.json();
       setImageData(img);
     }
-    if (file) fetchDate();
-  }, [file, fileQuery, setImageData, setType]);
+
+    if (file && file.type === "text/plain") {
+      fetchDate();
+    }
+    if (file && file.type !== "text/plain") {
+      alert("Please upload a spectrum file");
+      setFile(null);
+    }
+  }, [file, fileQuery, setFile, setImageData, setType]);
 
   return (
     <form>
