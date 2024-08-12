@@ -177,14 +177,13 @@ h1 {
 }
 
 .fileNameBtn {
-  font-size: 13px;
+  font-size: 14px;
   background-color: light-dark(#fff, #202020);
-  color: light-dark(#202020, #ccc);
+  color: light-dark(#00ace1, #ccc);
   border: 1px solid #00ace1;
   cursor: pointer;
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
-  text-transform: uppercase;
   font-weight: 500;
   margin: 0.3rem 0;
   display: inline-block;
@@ -276,14 +275,12 @@ h1 {
 }
 
 .shareBtn {
-  /* background-color: #fff;
-  color: #00ace1; */
   background-color: light-dark(#fff, #202020);
-  color: light-dark(#202020, #ccc);
+  color: light-dark(#00ace1, #ccc);
   padding: 6px 12px 8px 12px;
-  /* text-transform: uppercase; */
-  font-size: 13px;
-  /* letter-spacing: 0.4px; */
+
+  font-size: 14px;
+
   border: 1px solid #00ace1;
   border-radius: 5px;
 }

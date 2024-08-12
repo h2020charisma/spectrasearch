@@ -1,18 +1,14 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import Close from "../Icons/Close";
+import Spinner from "../Icons/Spinner";
 
 // eslint-disable-next-line react/prop-types
-export default function UploadFile({
-  setImageData,
-
-  setType,
-  file,
-  setFile,
-}) {
+export default function UploadFile({ setImageData, setType, file, setFile }) {
   const fileQuery = `${import.meta.env.VITE_BaseURL}download?what=knnquery`;
 
   const [isNotRightFile, setIsNotRightFile] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function fetchDate() {
@@ -22,52 +18,55 @@ export default function UploadFile({
         method: "POST",
         body: formData,
       });
-      const img = await response.json();
-      setImageData(img);
-    }
+      if (response) setIsLoading(false);
 
-    if (file && file.type === "text/plain") {
+      if (file && !response.ok) {
+        setIsNotRightFile(true);
+      }
+
+      if (response.ok) {
+        setIsNotRightFile(false);
+        const img = await response.json();
+        setImageData(img);
+      }
+    }
+    if (file) {
       fetchDate();
-      setIsNotRightFile(false);
     }
-    if (file && file.type !== "text/plain") {
-      // alert("Please upload a spectrum file");
-      setIsNotRightFile(true);
-      setFile(null);
-    }
-  }, [file, fileQuery, setFile, setImageData, setType]);
+  }, [file, fileQuery, isLoading, setFile, setImageData, setType]);
 
   return (
     <form>
       <div className="fileNameWrap">
         <div>
-          {file && (
+          {file && !isNotRightFile && !isLoading && (
             <div>
-              <span className="fileName">File Name</span>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span className="fileNameStr">{file.name}</span>
-                {file && (
+              <>
+                <span className="fileName">File Name</span>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span className="fileNameStr">{file.name}</span>
+
                   <div className="closeBtn" onClick={() => setFile(null)}>
                     <Close />
                   </div>
-                )}
-              </div>
+                </div>
+              </>
             </div>
           )}
-          {/* {!file ||
-            (isNotRightFile && (
-              <span className="uploadPlaceholder">No file selected</span>
-            ))} */}
         </div>
+        {!file && <span className="uploadPlaceholder">No file selected</span>}
         {isNotRightFile && (
-          <div className="wrongFileAlert">Please upload a spectrum file</div>
+          <span className="uploadPlaceholder">
+            Please upload a spectrum file
+          </span>
         )}
+        {isLoading && <Spinner />}
       </div>
       <div className="uploadBtnsWrap">
         <label className="fileNameBtn">
@@ -75,11 +74,15 @@ export default function UploadFile({
           <input
             type="file"
             id="file"
-            onChange={(e) => setFile(e.target.files[0])}
+            onChange={(e) => {
+              setFile(e.target.files[0]);
+              setIsLoading(true);
+              setIsNotRightFile(false);
+            }}
           />
         </label>
       </div>
-      {file && (
+      {file && !isNotRightFile && (
         <div className="searchOptions">
           <label
             onClick={() => setType("text")}
