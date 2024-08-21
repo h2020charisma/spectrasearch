@@ -14,7 +14,7 @@ export default function H5web({ domain }) {
           password="system-public-user"
           filepath={`${domain}`}
         >
-          <App />
+          <App initialPath="/"/>
         </HsdsProvider>
       </div>
     </div>

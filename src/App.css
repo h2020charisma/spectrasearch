@@ -43,7 +43,7 @@ h1 {
 }
 
 .expander {
-  border: 1px solid light-dark(#838383, #7b7b7b);
+  border: 1px solid light-dark(#a5a5a5, #3c3c3c);
   padding: 0.8rem;
   border-radius: 6px;
   margin: 0 0 0.5rem 0;
