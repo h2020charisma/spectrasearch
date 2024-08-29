@@ -271,7 +271,9 @@ h1 {
   align-items: baseline;
   justify-content: space-between;
   align-items: flex-start;
+  flex-direction: column;
   margin: 1rem 0;
+  gap: 16px;
 }
 
 .shareBtn {

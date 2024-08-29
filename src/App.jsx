@@ -22,7 +22,7 @@ function App() {
       <UnderDevelopent />
       <div>
         {h5webParams ? (
-          <H5web domain={domain} />
+          <H5web domain={domain} h5webParams={h5webParams}/>
         ) : (
           <div>
             <SearchComp setDomain={setDomain} />
