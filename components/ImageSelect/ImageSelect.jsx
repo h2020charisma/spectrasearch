@@ -1,6 +1,9 @@
 /* eslint-disable react/prop-types */
 import { Navigate } from "react-router-dom";
 export default function ImageSelect({ data, imageSelected, setImageSelected }) {
+
+ 
+  
   const renderImageSelect =
     data &&
     data.map((img, i) => (

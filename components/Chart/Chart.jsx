@@ -4,15 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 
-export default function Chart({ imageSelected, setDomain }) {
+export default function Chart({ imageSelected, setDomain, isNexusFile }) {
   const fetcher = (url) => fetch(url).then((res) => res.json());
 
   const containerRef = useRef();
   const navigate = useNavigate();
 
-  const datasetQuery = `${
-    import.meta.env.VITE_BaseURL
-  }dataset?domain=${imageSelected}&values=True`;
+  const datasetQuery = !isNexusFile ? `${import.meta.env.VITE_BaseURL
+    }dataset?domain=${imageSelected}&values=True` : '';
 
   const { data } = useSWR(imageSelected && datasetQuery, fetcher, {
     revalidateIfStale: false,
@@ -39,11 +38,15 @@ export default function Chart({ imageSelected, setDomain }) {
   const [valuesY, setValuesY] = useState([]);
 
   useEffect(() => {
+    if (isNexusFile) return;
+
     data && imageSelected && setDataset(data?.datasets[0].key);
   }, [data, imageSelected]);
 
   useEffect(() => {
-    data &&
+    if (isNexusFile) return;
+
+    data && !isNexusFile &&
       data?.datasets.map((k) => {
         if (dataset === k.key) {
           setValuesX([...k.value[0]]);
@@ -54,6 +57,7 @@ export default function Chart({ imageSelected, setDomain }) {
 
   useEffect(() => {
     if (data === undefined) return;
+    if (isNexusFile) return;
 
     const plot = Plot.plot({
       // caption: dataset,
@@ -86,7 +90,7 @@ export default function Chart({ imageSelected, setDomain }) {
     <div className="chartWrap">
       <div className="domainInfo">
         <div>
-          <span className="fileName">Domain</span>
+          {!isNexusFile && <span className="fileName">Domain</span>}
           <span className="metadataInfoValue">{data && data.domain}</span>
         </div>
         <div>
@@ -104,14 +108,17 @@ export default function Chart({ imageSelected, setDomain }) {
             style={{ marginLeft: "16px" }}
             onClick={() => {
               navigate(`?h5web=${imageSelected}`);
-              setDomain(data.domain);
+              if(!isNexusFile) {
+                setDomain(data.domain);
+              }
             }}
           >
             Explore in h5web
           </button>
         </div>
       </div>
-      {data &&
+      {/* this section not displayed */}
+      {data && !isNexusFile &&
         data.annotation.map((ann, k) => (
           <div key={k} className="metadataSection">
             {/* <h3 className="metadataTitle">Metadata</h3> */}
@@ -174,7 +181,7 @@ export default function Chart({ imageSelected, setDomain }) {
         ))}
       <div className="datasetsTabs">
         {/* {imageSelected && <span className="fileName">Datasets</span>} */}
-        {data &&
+        {data && !isNexusFile &&
           data?.datasets.map((k, i) => (
             <p
               className={`${dataset == k.key ? "datasetActive" : "dataset"}`}
@@ -187,10 +194,14 @@ export default function Chart({ imageSelected, setDomain }) {
             </p>
           ))}
       </div>
-      <div className="chart" ref={containerRef} />
-      <div className="shiftLabel">
-        Raman shift (cm<sup>&ndash;1</sup>)
-      </div>
+      {!isNexusFile && (
+        <>
+          <div className="chart" ref={containerRef} />
+          <div className="shiftLabel">
+            Raman shift (cm<sup>&ndash;1</sup>)
+          </div>
+        </>
+      )}
     </div>
   );
 }

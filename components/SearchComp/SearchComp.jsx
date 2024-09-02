@@ -25,6 +25,8 @@ export default function SearchComp({ setDomain }) {
     domainParams ? domainParams : ""
   );
 
+  let isNexusFile = imageSelected.includes(".nxs");
+
   let [reference, setReference] = useState("*");
   let [provider, setProvider] = useState("*");
   let [pages, setPages] = useState("0");
@@ -38,15 +40,12 @@ export default function SearchComp({ setDomain }) {
 
   const [file, setFile] = useState(null);
 
-  const searchQuery = `${
-    import.meta.env.VITE_BaseURL
-  }query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
+  const searchQuery = `${import.meta.env.VITE_BaseURL
+    }query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
 
-  const fileSearchQuery = `${
-    import.meta.env.VITE_BaseURL
-  }query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
-    imageData?.cdf
-  }`;
+  const fileSearchQuery = `${import.meta.env.VITE_BaseURL
+    }query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf
+    }`;
 
   const { data } = useSWR(
     (imageData && fileSearchQuery) || (!imageData && searchQuery),
@@ -139,18 +138,19 @@ export default function SearchComp({ setDomain }) {
           </ErrorBoundary>
         </Expander>
         {imageSelected ? (
-          <ErrorBoundary
-            fallback={
-              <div className="errorMessage">
-                <p>Sorry, something went wrong</p>
-                <button onClick={() => setImageSelected(null)}>
-                  Please Try Again
-                </button>
-              </div>
-            }
-          >
-            <Chart imageSelected={imageSelected} setDomain={setDomain} />
-          </ErrorBoundary>
+          // <ErrorBoundary
+          //   fallback={
+          //     <div className="errorMessage">
+          //       <p>Sorry, something went wrong</p>
+          //       <button onClick={() => setImageSelected(null)}>
+          //         Please Try Again
+          //       </button>
+          //     </div>
+          //   }
+          // >
+          <Chart imageSelected={imageSelected} setDomain={setDomain}
+            isNexusFile={isNexusFile} />
+          // </ErrorBoundary>
         ) : (
           <div className="errorMessage">
             <p>No image selected</p>
