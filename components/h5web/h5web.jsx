@@ -1,7 +1,8 @@
 import "@h5web/app/dist/styles.css";
 
 import { App, HsdsProvider } from "@h5web/app";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams, useParams } from "react-router-dom";
+import { useState } from "react";
 
 // eslint-disable-next-line react/prop-types
 export default function H5web({ domain }) {
@@ -12,7 +13,14 @@ export default function H5web({ domain }) {
   const queryParams = new URLSearchParams(location.search);
   const h5webParams = queryParams.get("h5web");
 
-  const initialPathParams = searchParams.get("initialPath")
+  const initialPathParams = searchParams.get("initialPath");
+
+  const [hash, useHash] = useState(decodeURIComponent(window.location.hash.substring(1)))
+
+
+  const initialPath = initialPathParams ? initialPathParams :
+    hash ? hash : '/'
+
 
 
   return (
@@ -24,7 +32,7 @@ export default function H5web({ domain }) {
           password="system-public-user"
           filepath={`${domain ? domain : h5webParams}`}
         >
-          <App initialPath={initialPathParams ? initialPathParams : '/'} />
+          <App initialPath={initialPath} />
         </HsdsProvider>
       </div>
     </div>
