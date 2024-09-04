@@ -10,12 +10,13 @@ h1 {
   font-weight: 900;
   line-height: 0.5;
 }
+
 .logo {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 12px;
-  margin-bottom: 4rem;
+  /* margin-bottom: 4rem; */
   height: 60px;
   padding: 0 20px;
   border-bottom: 1px solid #dadada;
@@ -27,8 +28,9 @@ h1 {
 /* Main Layout */
 .main {
   display: flex;
-  margin: 0 1rem;
+  margin: 4rem 1rem 0 1rem;
 }
+
 .sidebar {
   /* background-color: aliceblue; */
   width: 400px;
@@ -37,6 +39,7 @@ h1 {
   padding: 0.5rem 1rem 0 0;
   margin-top: -17px;
 }
+
 .content {
   width: 100%;
   background-color: light-dark(#fff, #202020);
@@ -59,9 +62,11 @@ h1 {
   text-align: center;
   color: #ea5252;
 }
+
 .dialog {
   border: none;
 }
+
 .dialog::backdrop {
   background-color: #ffffff;
   opacity: 0.8;
@@ -125,6 +130,7 @@ h1 {
   padding: 0.5rem;
   margin: 0;
 }
+
 .selectItem:hover {
   background-color: #74deff;
   color: #fff;
@@ -132,6 +138,7 @@ h1 {
   border-radius: 4px;
   margin: 0;
 }
+
 .imgCaption {
   text-align: center;
   background-color: #f0f8ff;
@@ -162,9 +169,11 @@ h1 {
   font-weight: 500;
   letter-spacing: 0.6px;
 }
+
 .fileNameStr {
   font-size: 13px;
 }
+
 .uploadPlaceholder {
   color: rgb(217, 0, 0);
   font-size: 14px;
@@ -206,6 +215,13 @@ h1 {
   cursor: pointer;
 }
 
+.downloadBtn {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
 .imageUploded {
   margin: 0 0 1rem 0;
 }
@@ -227,22 +243,27 @@ h1 {
   cursor: pointer;
   background-color: light-dark(#fff, #242424);
 }
+
 .dataset::first-letter {
   text-transform: uppercase;
 }
+
 .datasetActive::first-letter {
   text-transform: uppercase;
 }
+
 .datasetActive {
   color: #00ace1;
   text-decoration: underline;
   text-underline-offset: 8px;
   text-decoration-thickness: 4px;
 }
+
 .dataset,
 .datasetActive {
   user-select: none;
 }
+
 .underDev {
   position: absolute;
   top: 0;
@@ -258,14 +279,17 @@ h1 {
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
 }
+
 .chartWrap {
   margin: 0 0 4rem 0;
   color: light-dark(#202020, #aaa);
   background-color: light-dark(#fff, #242424);
 }
+
 .chart {
   background-color: light-dark(#fff, #242424);
 }
+
 .domainInfo {
   display: flex;
   align-items: baseline;
@@ -303,9 +327,11 @@ h1 {
   background-color: light-dark(#74deff24, #3d3d3d);
   border-radius: 6px;
 }
+
 .metadataTitle {
   margin-top: 0;
 }
+
 .metadataInfoValue {
   font-size: 14px;
   font-weight: 500;
@@ -319,6 +345,7 @@ h1 {
   flex-wrap: wrap;
   gap: 20px;
 }
+
 .metadataInfo {
   display: flex;
   flex-direction: column;
@@ -326,6 +353,7 @@ h1 {
   align-items: flex-start;
   gap: 2px;
 }
+
 .metadataLabel {
   font-size: 11px;
   letter-spacing: 0.4px;
@@ -359,6 +387,7 @@ h1 {
   /* border-top: 4px solid #00ace1;
   padding-top: 1rem; */
 }
+
 .shiftLabel {
   font-weight: 500;
   margin: 1rem 0 0 3rem;
@@ -391,6 +420,7 @@ h1 {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
