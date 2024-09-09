@@ -1,8 +1,8 @@
 import "@h5web/app/dist/styles.css";
 
 import { App, HsdsProvider } from "@h5web/app";
-import { useLocation, useSearchParams, useParams } from "react-router-dom";
 import { useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 export default function H5web({ domain }) {
@@ -48,7 +48,7 @@ export default function H5web({ domain }) {
           Download the file
         </button>
       </div>
-      <div >
+      <div style={{height: "100vh"}}>
         <HsdsProvider
           url="https://hsds-kc.ideaconsult.net"
           username="system-public-user"
