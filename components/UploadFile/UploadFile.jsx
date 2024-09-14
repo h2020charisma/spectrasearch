@@ -13,7 +13,7 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
   useEffect(() => {
     async function fetchDate() {
       const formData = new FormData();
-      formData.append("file[]", file);
+      formData.append("files", file);
       const response = await fetch(fileQuery, {
         method: "POST",
         body: formData,
