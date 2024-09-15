@@ -25,7 +25,7 @@ export default function SearchComp({ setDomain }) {
     domainParams ? domainParams : ""
   );
 
-  let isNexusFile = imageSelected.includes(".nxs");
+  let isNexusFile = false;
 
   let [reference, setReference] = useState("*");
   let [provider, setProvider] = useState("*");
