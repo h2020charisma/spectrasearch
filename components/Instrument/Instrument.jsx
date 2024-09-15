@@ -12,7 +12,7 @@ export default function Instrument({
 }) {
   const providerURL = `${
     import.meta.env.VITE_BaseURL
-  }query/field?name=instrument_s`;
+  }db/query/field?name=instrument_s`;
 
   const { data } = useSWR(providerURL, fetcher, {
     revalidateIfStale: false,

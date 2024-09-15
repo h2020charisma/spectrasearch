@@ -5,7 +5,7 @@ import Spinner from "../Icons/Spinner";
 
 // eslint-disable-next-line react/prop-types
 export default function UploadFile({ setImageData, setType, file, setFile }) {
-  const fileQuery = `${import.meta.env.VITE_BaseURL}download?what=knnquery`;
+  const fileQuery = `${import.meta.env.VITE_BaseURL}db/download?what=knnquery`;
 
   const [isNotRightFile, setIsNotRightFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -13,7 +13,7 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
   useEffect(() => {
     async function fetchDate() {
       const formData = new FormData();
-      formData.append("file[]", file);
+      formData.append("files", file);
       const response = await fetch(fileQuery, {
         method: "POST",
         body: formData,

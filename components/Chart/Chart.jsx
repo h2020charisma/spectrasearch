@@ -11,7 +11,7 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
   const navigate = useNavigate();
 
   const datasetQuery = !isNexusFile ? `${import.meta.env.VITE_BaseURL
-    }dataset?domain=${imageSelected}&values=True` : '';
+    }db/dataset?domain=${encodeURIComponent(imageSelected)}&values=True` : '';
 
   const { data } = useSWR(imageSelected && datasetQuery, fetcher, {
     revalidateIfStale: false,

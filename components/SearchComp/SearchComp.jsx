@@ -25,7 +25,7 @@ export default function SearchComp({ setDomain }) {
     domainParams ? domainParams : ""
   );
 
-  let isNexusFile = imageSelected.includes(".nxs");
+  let isNexusFile = false;
 
   let [reference, setReference] = useState("*");
   let [provider, setProvider] = useState("*");
@@ -41,10 +41,10 @@ export default function SearchComp({ setDomain }) {
   const [file, setFile] = useState(null);
 
   const searchQuery = `${import.meta.env.VITE_BaseURL
-    }query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
+    }db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
 
   const fileSearchQuery = `${import.meta.env.VITE_BaseURL
-    }query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf
+    }db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf
     }`;
 
   const { data } = useSWR(
