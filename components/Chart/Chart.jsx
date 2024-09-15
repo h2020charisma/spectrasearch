@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import * as Plot from "@observablehq/plot";
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 
 export default function Chart({ imageSelected, setDomain, isNexusFile }) {
@@ -103,21 +103,12 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
           >
             {copied ? "Copied to clipboard" : "Share a link"}
           </button>
-          {/* <Link target="_blank" rel="noopener noreferrer"
-
-          onClick={() => {
-            navigate(`?h5web=${imageSelected}`);
-            if(!isNexusFile) {
-              setDomain(data.domain);
-            }
-          }}
-          >Share</Link> */}
+         
           <button
             className="shareBtn"
             target="_blank" rel="noopener noreferrer"
             style={{ marginLeft: "16px" }}
             onClick={() => {
-              // navigate(`?h5web=${imageSelected}`);
               window.open(`?h5web=${imageSelected}`, "_blank")
               if(!isNexusFile) {
                 setDomain(data.domain);
