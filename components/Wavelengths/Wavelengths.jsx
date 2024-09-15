@@ -12,7 +12,7 @@ export default function Wavelengths({
 }) {
   const providerURL = `${
     import.meta.env.VITE_BaseURL
-  }query/field?name=wavelength_s`;
+  }db/query/field?name=wavelength_s`;
 
   const { data } = useSWR(providerURL, fetcher, {
     revalidateIfStale: false,

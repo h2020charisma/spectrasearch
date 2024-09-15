@@ -22,7 +22,7 @@ export default function H5web({ domain }) {
     hash ? hash : '/'
 
   const downloadFile = () => {
-    fetch(`${import.meta.env.VITE_BaseURL}download?what=h5&domain=${domain ? domain : h5webParams}`)
+    fetch(`${import.meta.env.VITE_BaseURL}db/download?what=h5&domain=${domain ? domain : h5webParams}`)
     .then(resp => resp.blob())
       .then(blob => {
         const url = window.URL.createObjectURL(blob);

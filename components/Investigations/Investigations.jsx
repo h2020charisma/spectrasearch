@@ -12,7 +12,7 @@ export default function Investigations({
 }) {
   const providerURL = `${
     import.meta.env.VITE_BaseURL
-  }query/field?name=reference_s`;
+  }db/query/field?name=reference_s`;
 
   const { data } = useSWR(providerURL, fetcher, {
     revalidateIfStale: false,

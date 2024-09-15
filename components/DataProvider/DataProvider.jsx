@@ -12,7 +12,7 @@ export default function DataProvider({
 }) {
   const providerURL = `${
     import.meta.env.VITE_BaseURL
-  }query/field?name=reference_owner_s`;
+  }db/query/field?name=reference_owner_s`;
 
   const { data } = useSWR(providerURL, fetcher, {
     revalidateIfStale: false,

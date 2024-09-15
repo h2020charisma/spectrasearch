@@ -5,7 +5,7 @@ import Spinner from "../Icons/Spinner";
 
 // eslint-disable-next-line react/prop-types
 export default function UploadFile({ setImageData, setType, file, setFile }) {
-  const fileQuery = `${import.meta.env.VITE_BaseURL}download?what=knnquery`;
+  const fileQuery = `${import.meta.env.VITE_BaseURL}db/download?what=knnquery`;
 
   const [isNotRightFile, setIsNotRightFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
