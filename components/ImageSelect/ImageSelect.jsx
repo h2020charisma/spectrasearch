@@ -21,7 +21,12 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
         )}
 
         <img src={img.imageLink} width={200} height={"auto"} />
-        <p className="imgCaption">{img.text}</p>
+        <p className="imgCaption">
+          {img.score && 
+          <span style={{color: "#D20003", fontSize: "12px"}}>{img.score}&nbsp;&nbsp;<span style={{color: "#000"}}>|</span>&nbsp;&nbsp;</span>}
+          <span>{img.text}</span>
+
+          </p>
       </div>
     ));
   return (
