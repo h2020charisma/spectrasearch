@@ -5,7 +5,15 @@ import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 
 export default function Chart({ imageSelected, setDomain, isNexusFile }) {
-  const fetcher = (url) => fetch(url).then((res) => res.json());
+  // const fetcher = (url) => fetch(url).then((res) => res.json());
+
+  const stored_token = localStorage.getItem("token")
+
+  const fetcher = (url) => fetch(url, {
+    headers: {
+      Authorization: `Bearer ${stored_token}`
+    }
+  }).then((res) => res.json());
 
   const containerRef = useRef();
   const navigate = useNavigate();
@@ -103,14 +111,14 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
           >
             {copied ? "Copied to clipboard" : "Share a link"}
           </button>
-         
+
           <button
             className="shareBtn"
             target="_blank" rel="noopener noreferrer"
             style={{ marginLeft: "16px" }}
             onClick={() => {
               window.open(`?h5web=${imageSelected}`, "_blank")
-              if(!isNexusFile) {
+              if (!isNexusFile) {
                 setDomain(data.domain);
               }
             }}
