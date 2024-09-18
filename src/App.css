@@ -24,6 +24,19 @@ h1 {
   background-color: light-dark(#fff, #202020);
 }
 
+.usersInfo {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
 /* Main Layout */
 .main {
   display: flex;
