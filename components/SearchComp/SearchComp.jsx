@@ -16,16 +16,16 @@ import Sidebar from "../Sidebar/Sidebar";
 
 const stored_token = localStorage.getItem("token")
 
-const fetcher = (url) => fetch(url, {
-  headers: {
-    Authorization: `Bearer ${stored_token}`
-  }
-}).then((res) => res.json());
-
 export default function SearchComp({ setDomain }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const domainParams = queryParams.get("domain");
+
+  const fetcher = (url) => fetch(url, {
+    headers: {
+      Authorization: `Bearer ${stored_token}`
+    }
+  }).then((res) => res.json());
 
   let [open, setOpen] = useState(true);
   let [imageSelected, setImageSelected] = useState(

@@ -7,7 +7,8 @@ const keycloak = new Keycloak({
     "resource": "idea-ui",
     "public-client": true,
     "confidential-port": 0,
-    "clientId": 'idea-ui'
+    "clientId": 'idea-ui',
+    "tokenStore": "localStorage "
 })
 
 export default keycloak
