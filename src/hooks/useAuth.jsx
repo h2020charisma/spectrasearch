@@ -1,32 +1,49 @@
-import { useEffect, useState, useRef } from "react"
-import Keycloak from "keycloak-js"
+// // index.js or App.js
+// import React, { useEffect, useState } from 'react';
+// import ReactDOM from 'react-dom';
+// import App from './App';
+// import keycloak from './keycloak';
 
-const client = new Keycloak({
+// const Root = () => {
+//   const [authenticated, setAuthenticated] = useState(false);
 
-    "realm": "nano",
-    "url": "https://iam.ideaconsult.net/auth",
-    "ssl-required": "external",
-    "resource": "idea-ui",
-    "public-client": true,
-    "confidential-port": 0,
-    "clientId": 'nano'
+//   useEffect(() => {
+//     const initKeycloak = async () => {
+//       try {
+//         const auth = await keycloak.init({
+//           onLoad: 'login-required',
+//           checkLoginIframe: false, // Disable iframe-based token refresh
+//         });
+//         setAuthenticated(auth);
 
-})
+//         if (auth) {
+//           // Save initial token to local storage
+//           localStorage.setItem('token', keycloak.token);
 
-// const useAuth = () => {
-//     const isRun = useRef(false)
-//     const [isLogin, setIsLoging] = useState(false)
+//           // Set up token auto-refresh
+//           setInterval(async () => {
+//             try {
+//               const refreshed = await keycloak.updateToken(70); // Refresh token if valid for less than 70 seconds
+//               if (refreshed) {
+//                 console.log('Token refreshed');
+//                 localStorage.setItem('token', keycloak.token); // Save new token
+//               } else {
+//                 console.log('Token is still valid');
+//               }
+//             } catch (error) {
+//               console.error('Failed to refresh token', error);
+//             }
+//           }, 5 * 60 * 1000); // Check every 5 minutes
+//         }
+//       } catch (error) {
+//         console.error('Keycloak initialization failed', error);
+//       }
+//     };
 
-//     useEffect(() => {
-//         if (isRun.current) return
+//     initKeycloak();
+//   }, []);
 
-//         isRun.current = true;
-//         client.init({ onLoad: "login-required" }).then((res) => setIsLoging(res))
-//     }, [])
-//     return isLogin
+//   return authenticated ? <App /> : <div>Loading...</div>;
+// };
 
-// }
-
-const doLogin = () => client.init({ onLoad: "login-required" }).then((res) => setIsLoging(res));
-
-export default doLogin;
+// ReactDOM.render(<Root />, document.getElementById('root'));

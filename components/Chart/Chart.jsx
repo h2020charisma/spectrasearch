@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 
+
 export default function Chart({ imageSelected, setDomain, isNexusFile }) {
   // const fetcher = (url) => fetch(url).then((res) => res.json());
 

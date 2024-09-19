@@ -17,10 +17,20 @@ const router = createBrowserRouter(
   { basename: "/search" }
 );
 
+
+
 ReactDOM.createRoot(document.getElementById("root")).render(
 
-    <ReactKeycloakProvider authClient={keycloak}>
-      <RouterProvider router={router} />
-    </ReactKeycloakProvider>
-  
+  <ReactKeycloakProvider authClient={keycloak}
+    initOptions={{
+      onLoad: 'check-sso',
+      checkLoginIframe: false,
+      // Optionally add automatic silent refresh
+      silentCheckSsoRedirectUri:
+        window.location.origin + '/silent-check-sso.html',
+    }}
+  >
+    <RouterProvider router={router} />
+  </ReactKeycloakProvider>
+
 );
