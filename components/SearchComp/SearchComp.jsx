@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useLocation } from "react-router-dom";
 import useSWR from "swr";
-import { ErrorBoundary } from "react-error-boundary";
 import Chart from "../Chart/Chart";
 import SideBarToggle from "../Icons/SideBarToggle";
 import ImageSelect from "../ImageSelect/ImageSelect";
@@ -12,21 +12,14 @@ import SelectNumber from "../UI/SelectNumber";
 
 import "../../src/App.css";
 
+import fetcher from "../../utils/fetcher";
 import Sidebar from "../Sidebar/Sidebar";
-
-const stored_token = localStorage.getItem("token")
 
 export default function SearchComp({ setDomain }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const domainParams = queryParams.get("domain");
-
-  const fetcher = (url) => fetch(url, {
-    headers: {
-      Authorization: `Bearer ${stored_token}`
-    }
-  }).then((res) => res.json());
-
+ 
   let [open, setOpen] = useState(true);
   let [imageSelected, setImageSelected] = useState(
     domainParams ? domainParams : ""

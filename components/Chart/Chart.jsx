@@ -1,24 +1,14 @@
 /* eslint-disable react/prop-types */
 import * as Plot from "@observablehq/plot";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 
+import fetcher from "../../utils/fetcher";
 
 export default function Chart({ imageSelected, setDomain, isNexusFile }) {
-  // const fetcher = (url) => fetch(url).then((res) => res.json());
-
-  const stored_token = localStorage.getItem("token")
-
-  const fetcher = (url) => fetch(url, {
-    headers: {
-      Authorization: `Bearer ${stored_token}`
-    }
-  }).then((res) => res.json());
 
   const containerRef = useRef();
-  const navigate = useNavigate();
-
+ 
   const datasetQuery = !isNexusFile ? `${import.meta.env.VITE_BaseURL
     }db/dataset?domain=${encodeURIComponent(imageSelected)}&values=True` : '';
 
