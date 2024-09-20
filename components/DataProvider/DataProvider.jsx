@@ -2,7 +2,7 @@ import useSWR from "swr";
 import Select from "../UI/Select";
 import SearchSelect from "../UI/SearchSelect";
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+import fetcher from "../../utils/fetcher";
 
 // eslint-disable-next-line react/prop-types
 export default function DataProvider({

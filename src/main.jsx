@@ -17,11 +17,8 @@ const router = createBrowserRouter(
   { basename: "/search/" }
 );
 
-
-
 ReactDOM.createRoot(document.getElementById("root")).render(
-
-  <ReactKeycloakProvider authClient={keycloak}
+ <ReactKeycloakProvider authClient={keycloak}
     initOptions={{
       onLoad: 'check-sso',
       checkLoginIframe: false,
