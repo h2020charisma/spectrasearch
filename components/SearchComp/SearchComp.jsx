@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useLocation } from "react-router-dom";
+import { useKeycloak } from "@react-keycloak/web";
 import useSWR from "swr";
 import Chart from "../Chart/Chart";
 import SideBarToggle from "../Icons/SideBarToggle";
@@ -19,14 +20,15 @@ export default function SearchComp({ setDomain }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const domainParams = queryParams.get("domain");
- 
   let [open, setOpen] = useState(true);
   let [imageSelected, setImageSelected] = useState(
     domainParams ? domainParams : ""
   );
-
+  
   let isNexusFile = false;
 
+
+  
   let [reference, setReference] = useState("*");
   let [provider, setProvider] = useState("*");
   let [pages, setPages] = useState("0");

@@ -17,17 +17,31 @@ const router = createBrowserRouter(
   { basename: "/search" }
 );
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+      navigator.serviceWorker.register('../utils/serviceWorker.js')
+          .then(registration => {
+              console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch(error => {
+              console.log('Service Worker registration failed:', error);
+          });
+  });
+}
+
+
 ReactDOM.createRoot(document.getElementById("root")).render(
- <ReactKeycloakProvider authClient={keycloak}
+  <ReactKeycloakProvider authClient={keycloak}
     initOptions={{
       onLoad: 'check-sso',
       checkLoginIframe: false,
-      // Optionally add automatic silent refresh
       silentCheckSsoRedirectUri:
         window.location.origin + '/silent-check-sso.html',
     }}
   >
-    <RouterProvider router={router} />
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
   </ReactKeycloakProvider>
 
 );

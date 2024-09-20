@@ -8,42 +8,38 @@ export default function Header() {
   const { keycloak } = useKeycloak()
   const navigate = useNavigate();
 
-  const [authenticated, setAuthenticated] = useState(false);
+  const refreshToken = async () => {
+    try {
+      await keycloak.updateToken(30);
+    } catch (error) {
+      console.error('Failed to refresh token:', error);
+    }
+  }
 
-  
-  
+  useEffect(() => { refreshToken() }, [])
 
   if (keycloak.authenticated) {
+    localStorage.setItem("refreshToken", keycloak.refreshToken)
+    localStorage.setItem("token", keycloak.token)
     const userName = keycloak.tokenParsed.preferred_username;
     localStorage.setItem("username", userName)
   }
 
-  const [username, setUsername] = useState(() => localStorage.getItem("username"))
-
-  useEffect(() => {
-    if (keycloak.authenticated) {
-      const userName = keycloak.tokenParsed.preferred_username;
-      setUsername(userName)
-      localStorage.setItem("token", keycloak.token)
-      console.log("header", keycloak.token);
-      
-    }
-  }, [keycloak.authenticated])
-
 
   const logoutHandle = () => {
-    localStorage.removeItem("token")
+    
     localStorage.removeItem("username")
+    setIsAuthenticated(false)
   }
 
-  const stored_token = localStorage.getItem("token")
+  
 
   return (
     <div className="logo">
       <h1 onClick={() => navigate("/")}>Raman spectra search</h1>
       <div className="usersInfo">
-        <div className="username">{username}</div>
-        {stored_token ?
+        <div className="username">{localStorage.getItem("username")}</div>
+        {keycloak.authenticated ?
           <button className="shareBtn" onClick={() => {
             keycloak.logout()
             logoutHandle()
