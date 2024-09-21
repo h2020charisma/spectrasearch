@@ -27,18 +27,17 @@ export default function Header() {
 
 
   const logoutHandle = () => {
-    
     localStorage.removeItem("username")
     setIsAuthenticated(false)
   }
 
-  
+  const username = localStorage.getItem("username");
 
   return (
     <div className="logo">
       <h1 onClick={() => navigate("/")}>Raman spectra search</h1>
       <div className="usersInfo">
-        <div className="username">{localStorage.getItem("username")}</div>
+        <div className="username">{username}</div>
         {keycloak.authenticated ?
           <button className="shareBtn" onClick={() => {
             keycloak.logout()
