@@ -1,3 +1,7 @@
+import keycloak from "./keycloak";
+
+const token = keycloak.token
+
 self.addEventListener('fetch', (e) => {
     var url = new URL(e.request.url);
     if (
@@ -9,7 +13,7 @@ self.addEventListener('fetch', (e) => {
         && (url.origin !== "https://idp.ideaconsult.net")
         && (e.request.method == "GET") 
         && (e.request.headers["Authorization"] == undefined)) {
-        e.respondWith(localStorage.getItem("token").then((value) => {
+        e.respondWith(token.then((value) => {
             var _headers = {};
             var header = "Bearer "+value;
             _headers["Authorization"] = header;

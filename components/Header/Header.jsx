@@ -15,8 +15,16 @@ export default function Header() {
       console.error('Failed to refresh token:', error);
     }
   }
+  const username = localStorage.getItem("username");
+  const token = keycloak.token;
+  const storedToken = localStorage.getItem("token");
 
-  useEffect(() => { refreshToken() }, [])
+  // useEffect(() => {
+  //   if(!token || !storedToken) {
+  //     keycloak.login()
+  //   }
+  //    }, 
+  //   [keycloak.token])
 
   if (keycloak.authenticated) {
     localStorage.setItem("refreshToken", keycloak.refreshToken)
@@ -28,10 +36,12 @@ export default function Header() {
 
   const logoutHandle = () => {
     localStorage.removeItem("username")
+    localStorage.removeItem("token")
+    localStorage.removeItem("refreshToken")
     setIsAuthenticated(false)
   }
 
-  const username = localStorage.getItem("username");
+  
 
   return (
     <div className="logo">
