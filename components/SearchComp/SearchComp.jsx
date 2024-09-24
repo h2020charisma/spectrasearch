@@ -16,6 +16,8 @@ import "../../src/App.css";
 import fetcher from "../../utils/fetcher";
 import Sidebar from "../Sidebar/Sidebar";
 
+import axios from 'axios';
+
 export default function SearchComp({ setDomain }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -26,6 +28,30 @@ export default function SearchComp({ setDomain }) {
   );
   
   let isNexusFile = false;
+
+  // const [data, setData] = useState(null);
+
+  const axiosInstance = axios.create({
+    baseURL: `${import.meta.env.VITE_BaseURL}`,
+    timeout: 1000,
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  // Add a request interceptor
+axiosInstance.interceptors.request.use(
+  function (config) {
+    const token = keycloak.token;
+    const storedToken = localStorage.getItem('authToken'); // taking auth token from local Storage
+     if (token) {
+      config.headers.Authorization = `Bearer ${token || storedToken}`;
+    }
+    return config;
+  },
+  function (error) {
+    // Handle the error
+    return Promise.reject(error);
+  }
+);
 
 
   
@@ -48,6 +74,16 @@ export default function SearchComp({ setDomain }) {
   const fileSearchQuery = `${import.meta.env.VITE_BaseURL
     }db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf
     }`;
+
+    // useEffect(() => {
+    //   axiosInstance.get(`db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`) // Replace with your API endpoint
+    //     .then(response => {
+    //       setData(response.data);
+    //     })
+    //     .catch(error => {
+    //       console.error('Error fetching data:', error);
+    //     });
+    // }, []);
 
   const { data } = useSWR(
     (imageData && fileSearchQuery) || (!imageData && searchQuery),
