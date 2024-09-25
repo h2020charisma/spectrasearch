@@ -22,13 +22,15 @@ export default function Header() {
     localStorage.removeItem("token")
     localStorage.removeItem("refreshToken")
   }
+  
+
 
   return (
     <div className="logo">
       <h1 onClick={() => navigate("/")}>Raman spectra search</h1>
       <div className="usersInfo">
         <div className="username">{username}</div>
-        {keycloak.authenticated ?
+        {keycloak.authenticated || username ?
           <button className="shareBtn" onClick={() => {
             keycloak.logout()
             logoutHandle()
