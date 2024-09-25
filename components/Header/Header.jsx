@@ -15,30 +15,25 @@ export default function Header() {
       console.error('Failed to refresh token:', error);
     }
   }
-  const username = localStorage.getItem("username");
-  const token = keycloak.token;
-  const storedToken = localStorage.getItem("token");
-
-  // useEffect(() => {
-  //   if(!token || !storedToken) {
-  //     keycloak.login()
-  //   }
-  //    }, 
-  //   [keycloak.token])
-
+  
   if (keycloak.authenticated) {
     localStorage.setItem("refreshToken", keycloak.refreshToken)
     localStorage.setItem("token", keycloak.token)
-    const userName = keycloak.tokenParsed.preferred_username;
-    localStorage.setItem("username", userName)
+    localStorage.setItem("username", keycloak.tokenParsed.preferred_username)
   }
+  
+  const username = keycloak.tokenParsed?.preferred_username 
+      ? keycloak.tokenParsed?.preferred_username 
+      : localStorage.getItem("username");
+
+  const token = keycloak.token;
+  const storedToken = localStorage.getItem("token");
 
 
   const logoutHandle = () => {
     localStorage.removeItem("username")
     localStorage.removeItem("token")
     localStorage.removeItem("refreshToken")
-    setIsAuthenticated(false)
   }
 
   
