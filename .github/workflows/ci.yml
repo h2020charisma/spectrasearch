@@ -5,9 +5,11 @@ on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - main
+      - develop
   pull_request:
     branches:
       - main
+      - develop
     tags:
       - v*.*.*
     workflow_dispatch:
@@ -40,7 +42,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: sigstore/cosign-installer@v3.6.0
         with:
-          cosign-release: 'v2.2.4'
+          cosign-release: 'v2.4.0'
 
       # Workaround: https://github.com/docker/build-push-action/issues/461
       - name: Setup Docker buildx
