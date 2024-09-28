@@ -40,7 +40,7 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
   useEffect(() => {
     if (isNexusFile) return;
 
-    data && imageSelected && setDataset(data?.datasets[0].key);
+    data && imageSelected && setDataset(data?.datasets[0]?.key);
   }, [data, imageSelected]);
 
   useEffect(() => {
