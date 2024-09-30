@@ -41,8 +41,8 @@ export default function Header() {
           <button
             className="shareBtn"
             onClick={() => {
+              navigate("/");
               keycloak.logout();
-              logoutHandle();
             }}
           >
             Log out
