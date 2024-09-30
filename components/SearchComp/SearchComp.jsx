@@ -1,10 +1,8 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useLocation } from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
-import useSWR from "swr";
 import Chart from "../Chart/Chart";
 import SideBarToggle from "../Icons/SideBarToggle";
 import ImageSelect from "../ImageSelect/ImageSelect";
@@ -16,7 +14,7 @@ import "../../src/App.css";
 import fetcher from "../../utils/fetcher";
 import Sidebar from "../Sidebar/Sidebar";
 
-import axios from 'axios';
+import useFetch from "../../utils/useFetch";
 
 export default function SearchComp({ setDomain }) {
   const location = useLocation();
@@ -26,35 +24,9 @@ export default function SearchComp({ setDomain }) {
   let [imageSelected, setImageSelected] = useState(
     domainParams ? domainParams : ""
   );
-  
+
   let isNexusFile = false;
 
-  // const [data, setData] = useState(null);
-
-  const axiosInstance = axios.create({
-    baseURL: `${import.meta.env.VITE_BaseURL}`,
-    timeout: 1000,
-    headers: { 'Content-Type': 'application/json' }
-  });
-
-  // Add a request interceptor
-axiosInstance.interceptors.request.use(
-  function (config) {
-    const token = keycloak.token;
-    const storedToken = localStorage.getItem('authToken'); // taking auth token from local Storage
-     if (token) {
-      config.headers.Authorization = `Bearer ${token || storedToken}`;
-    }
-    return config;
-  },
-  function (error) {
-    // Handle the error
-    return Promise.reject(error);
-  }
-);
-
-
-  
   let [reference, setReference] = useState("*");
   let [provider, setProvider] = useState("*");
   let [pages, setPages] = useState("0");
@@ -68,32 +40,24 @@ axiosInstance.interceptors.request.use(
 
   const [file, setFile] = useState(null);
 
-  const searchQuery = `${import.meta.env.VITE_BaseURL
-    }db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
+  const searchQuery = `${
+    import.meta.env.VITE_BaseURL
+  }db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
 
-  const fileSearchQuery = `${import.meta.env.VITE_BaseURL
-    }db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf
-    }`;
+  const fileSearchQuery = `${
+    import.meta.env.VITE_BaseURL
+  }db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
+    imageData?.cdf
+  }`;
 
-    // useEffect(() => {
-    //   axiosInstance.get(`db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`) // Replace with your API endpoint
-    //     .then(response => {
-    //       setData(response.data);
-    //     })
-    //     .catch(error => {
-    //       console.error('Error fetching data:', error);
-    //     });
-    // }, []);
+  const searchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
 
-  const { data } = useSWR(
-    (imageData && fileSearchQuery) || (!imageData && searchQuery),
-    fetcher,
-    {
-      revalidateIfStale: true,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  const fileSearchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf}`;
+
+  const urlPath = imageData ? fileSearchUrlPath : searchUrlPath;
+
+  //  imageData && fileSearchQuery) || (!imageData && searchQuery
+  const { data, loading } = useFetch(urlPath);
 
   return (
     <div className="main">
@@ -186,10 +150,13 @@ axiosInstance.interceptors.request.use(
           //     </div>
           //   }
           // >
-          <Chart imageSelected={imageSelected} setDomain={setDomain}
-            isNexusFile={isNexusFile} />
-          // </ErrorBoundary>
+          <Chart
+            imageSelected={imageSelected}
+            setDomain={setDomain}
+            isNexusFile={isNexusFile}
+          />
         ) : (
+          // </ErrorBoundary>
           <div className="errorMessage">
             <p>No image selected</p>
           </div>

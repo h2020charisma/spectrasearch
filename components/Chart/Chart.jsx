@@ -1,22 +1,19 @@
 /* eslint-disable react/prop-types */
 import * as Plot from "@observablehq/plot";
 import { useEffect, useRef, useState } from "react";
-import useSWR from "swr";
 
-import fetcher from "../../utils/fetcher";
+import useFetch from "../../utils/useFetch";
 
 export default function Chart({ imageSelected, setDomain, isNexusFile }) {
-
   const containerRef = useRef();
- 
-  const datasetQuery = !isNexusFile ? `${import.meta.env.VITE_BaseURL
-    }db/dataset?domain=${encodeURIComponent(imageSelected)}&values=True` : '';
 
-  const { data } = useSWR(imageSelected && datasetQuery, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
+  const datasetQuery = !isNexusFile
+    ? `${import.meta.env.VITE_BaseURL}db/dataset?domain=${encodeURIComponent(
+        imageSelected
+      )}&values=True`
+    : "";
+
+  const { data, loading } = useFetch(imageSelected && datasetQuery);
 
   const [copied, setCopied] = useState(false);
 
@@ -45,7 +42,8 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
   useEffect(() => {
     if (isNexusFile) return;
 
-    data && !isNexusFile &&
+    data &&
+      !isNexusFile &&
       data?.datasets.map((k) => {
         if (dataset === k.key) {
           setValuesX([...k.value[0]]);
@@ -65,7 +63,7 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
       stroke: "#454545",
       marks: [
         Plot.axisY({
-          label: "Raw Counts",
+          label: "Intensity",
           labelAnchor: "center",
           marginLeft: 60,
         }),
@@ -105,10 +103,11 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
 
           <button
             className="shareBtn"
-            target="_blank" rel="noopener noreferrer"
+            target="_blank"
+            rel="noopener noreferrer"
             style={{ marginLeft: "16px" }}
             onClick={() => {
-              window.open(`?h5web=${imageSelected}`, "_blank")
+              window.open(`?h5web=${imageSelected}`, "_blank");
               if (!isNexusFile) {
                 setDomain(data.domain);
               }
@@ -119,7 +118,8 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
         </div>
       </div>
       {/* this section not displayed */}
-      {data && !isNexusFile &&
+      {data &&
+        !isNexusFile &&
         data.annotation.map((ann, k) => (
           <div key={k} className="metadataSection">
             {/* <h3 className="metadataTitle">Metadata</h3> */}
@@ -182,7 +182,8 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
         ))}
       <div className="datasetsTabs">
         {/* {imageSelected && <span className="fileName">Datasets</span>} */}
-        {data && !isNexusFile &&
+        {data &&
+          !isNexusFile &&
           data?.datasets.map((k, i) => (
             <p
               className={`${dataset == k.key ? "datasetActive" : "dataset"}`}
