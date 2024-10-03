@@ -13,15 +13,6 @@ function useFetch(url) {
   const stored_token = localStorage.getItem("token");
   const kc_token = keycloak.token ? keycloak.token : stored_token;
 
-  // async function refreshToken() {
-  //   try {
-  //     await keycloak.updateToken(30);
-  //     console.log("Refreshed!");
-  //   } catch (error) {
-  //     console.log("Falied to refresh token..", error);
-  //   }
-  // }
-
   const axiosInstance = axios.create({
     baseURL: `${import.meta.env.VITE_BaseURL}`,
     timeout: 1000,
@@ -31,7 +22,7 @@ function useFetch(url) {
   axiosInstance.interceptors.request.use(
     function (config) {
       if (kc_token) {
-        config.headers.Authorization = `Bearer ${keycloak.token}`;
+        config.headers.Authorization = `Bearer ${kc_token}`;
       }
       return config;
     },
@@ -41,8 +32,6 @@ function useFetch(url) {
   );
 
   useEffect(() => {
-    // refreshToken();
-
     if (keycloak.authenticated) {
       setAccessToken(keycloak.token);
       setAuth(true);

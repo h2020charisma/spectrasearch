@@ -18,7 +18,10 @@ export default function Header() {
     ? keycloak.tokenParsed?.preferred_username
     : localStorage.getItem("username");
 
+  const stored_token = localStorage.getItem("token");
+
   const logoutHandle = () => {
+    navigate("/");
     localStorage.removeItem("username");
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
@@ -36,19 +39,27 @@ export default function Header() {
     <div className="logo">
       <h1 onClick={() => navigate("/")}>Raman spectra search</h1>
       <div className="usersInfo">
-        <div className="username">{keycloak.authenticated && username}</div>
-        {keycloak.authenticated ? (
+        <div className="username">
+          {keycloak.authenticated || username ? username : ""}
+        </div>
+        {keycloak.authenticated || stored_token ? (
           <button
             className="shareBtn"
             onClick={() => {
-              navigate("/");
               keycloak.logout();
+              logoutHandle();
             }}
           >
             Log out
           </button>
         ) : (
-          <button className="shareBtn" onClick={() => keycloak.login()}>
+          <button
+            className="shareBtn"
+            onClick={() => {
+              navigate("/");
+              keycloak.login();
+            }}
+          >
             Log in
           </button>
         )}
