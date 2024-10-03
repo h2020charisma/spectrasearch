@@ -11,7 +11,6 @@ import SelectNumber from "../UI/SelectNumber";
 
 import "../../src/App.css";
 
-import fetcher from "../../utils/fetcher";
 import Sidebar from "../Sidebar/Sidebar";
 
 import useFetch from "../../utils/useFetch";
@@ -40,15 +39,15 @@ export default function SearchComp({ setDomain }) {
 
   const [file, setFile] = useState(null);
 
-  const searchQuery = `${
-    import.meta.env.VITE_BaseURL
-  }db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
+  // const searchQuery = `${
+  //   import.meta.env.VITE_BaseURL
+  // }db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
 
-  const fileSearchQuery = `${
-    import.meta.env.VITE_BaseURL
-  }db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
-    imageData?.cdf
-  }`;
+  // const fileSearchQuery = `${
+  //   import.meta.env.VITE_BaseURL
+  // }db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
+  //   imageData?.cdf
+  // }`;
 
   const searchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
 
@@ -56,7 +55,6 @@ export default function SearchComp({ setDomain }) {
 
   const urlPath = imageData ? fileSearchUrlPath : searchUrlPath;
 
-  //  imageData && fileSearchQuery) || (!imageData && searchQuery
   const { data, loading } = useFetch(urlPath);
 
   return (
