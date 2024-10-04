@@ -2,7 +2,7 @@ let accessToken = null;
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(clients.claim());
-  console.log("ENM service worker activated");
+  console.log("Service worker activated");
 });
 
 self.addEventListener("message", (event) => {
@@ -28,7 +28,9 @@ self.addEventListener("fetch", (event) => {
       mode: "cors",
     });
     event.respondWith(fetch(authRequest));
+    console.log("with token");
   } else {
     event.respondWith(fetch(request));
+    console.log("without token");
   }
 });
