@@ -29,6 +29,7 @@ export default function Header() {
   setInterval(async () => {
     try {
       await keycloak.updateToken(30);
+      localStorage.setItem("token", keycloak.token);
       console.log("Refreshed!");
     } catch (error) {
       console.log("Falied to refresh token..", error);
