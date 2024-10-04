@@ -12,13 +12,24 @@ self.addEventListener("message", (event) => {
   }
 });
 
+function isGeneratedImage(url) {
+  return url.pathname == "/db/download";
+}
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
+  const url = new URL(event.request.url);
 
   if (
-    request.method === "GET" &&
     accessToken &&
-    request.destination === "image"
+    url.origin.startsWith("https://") &&
+    url.origin.endsWith(".ideaconsult.net") &&
+    request.method === "GET" &&
+    isGeneratedImage(url) &&
+    url.origin !== "https://iam.ideaconsult.net" &&
+    url.origin !== "https://idp.ideaconsult.net" &&
+    request.destination === "image" &&
+    event.request.headers["Authorization"] == undefined
   ) {
     const authRequest = new Request(request, {
       headers: new Headers({
