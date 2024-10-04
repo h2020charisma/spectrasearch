@@ -22,7 +22,7 @@ function useFetch(url) {
   axiosInstance.interceptors.request.use(
     function (config) {
       if (kc_token) {
-        config.headers.Authorization = `Bearer ${keycloak.token}`;
+        config.headers.Authorization = `Bearer ${kc_token}`;
       }
       return config;
     },
