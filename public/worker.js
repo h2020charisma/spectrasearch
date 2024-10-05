@@ -1,13 +1,13 @@
 let accessToken = null;
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open("static-v1").then((cache) => {
-      return cache.addAll(["/", "/index.html"]);
-    })
-  );
-  self.skipWaiting();
-});
+// self.addEventListener("install", (event) => {
+//   event.waitUntil(
+//     caches.open("static-v1").then((cache) => {
+//       return cache.addAll(["/search"]);
+//     })
+//   );
+//   self.skipWaiting();
+// });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(clients.claim());
@@ -17,27 +17,37 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SET_TOKEN") {
     accessToken = event.data.token;
-    console.log(
-      "Access token received by Service Worker, public:",
-      accessToken
-    );
+    console.log("Access token received by Service Worker, public:");
   }
 });
 
 function isGeneratedImage(url) {
-  return url.pathname == "/db/download";
+  return url.pathname == "/download";
 }
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(event.request.url);
+  console.log("fetch", url);
+  console.log("fetch. Token:", accessToken);
+  console.log(
+    "conditions:",
+    url.origin.startsWith("https://"),
+    url.origin.endsWith(".ideaconsult.net"),
+    request.method === "GET",
+    isGeneratedImage(url),
+    url.origin !== "https://iam.ideaconsult.net",
+    url.origin !== "https://idp.ideaconsult.net",
+    request.destination === "image",
+    event.request.headers["Authorization"] == undefined
+  );
 
   if (
     accessToken &&
     url.origin.startsWith("https://") &&
     url.origin.endsWith(".ideaconsult.net") &&
     request.method === "GET" &&
-    isGeneratedImage(url) &&
+    // isGeneratedImage(url) &&
     url.origin !== "https://iam.ideaconsult.net" &&
     url.origin !== "https://idp.ideaconsult.net" &&
     request.destination === "image" &&
