@@ -1,13 +1,8 @@
 let accessToken = null;
 
-// self.addEventListener("install", (event) => {
-//   event.waitUntil(
-//     caches.open("static-v1").then((cache) => {
-//       return cache.addAll(["/search"]);
-//     })
-//   );
-//   self.skipWaiting();
-// });
+self.addEventListener("install", (event) => {
+  self.skipWaiting();
+});
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(clients.claim());
@@ -17,7 +12,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SET_TOKEN") {
     accessToken = event.data.token;
-    console.log("Access token received by Service Worker, public:");
+    console.log("Access token received by Service Worker:");
   }
 });
 
@@ -50,7 +45,7 @@ self.addEventListener("fetch", (event) => {
     // isGeneratedImage(url) &&
     url.origin !== "https://iam.ideaconsult.net" &&
     url.origin !== "https://idp.ideaconsult.net" &&
-    request.destination === "image" &&
+    // request.destination === "image" &&
     event.request.headers["Authorization"] == undefined
   ) {
     const authRequest = new Request(request, {

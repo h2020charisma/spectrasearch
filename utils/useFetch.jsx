@@ -19,17 +19,17 @@ function useFetch(url) {
     headers: { "Content-Type": "application/json" },
   });
 
-  axiosInstance.interceptors.request.use(
-    function (config) {
-      if (kc_token) {
-        config.headers.Authorization = `Bearer ${kc_token}`;
-      }
-      return config;
-    },
-    function (error) {
-      return Promise.reject(error);
-    }
-  );
+  // axiosInstance.interceptors.request.use(
+  //   function (config) {
+  //     if (kc_token) {
+  //       config.headers.Authorization = `Bearer ${kc_token}`;
+  //     }
+  //     return config;
+  //   },
+  //   function (error) {
+  //     return Promise.reject(error);
+  //   }
+  // );
 
   useEffect(() => {
     if (keycloak.authenticated) {
