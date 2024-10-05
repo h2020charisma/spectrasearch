@@ -1,5 +1,14 @@
 let accessToken = null;
 
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open("static-v1").then((cache) => {
+      return cache.addAll(["/", "/index.html"]);
+    })
+  );
+  self.skipWaiting();
+});
+
 self.addEventListener("activate", (event) => {
   event.waitUntil(clients.claim());
   console.log("Service worker activated");
