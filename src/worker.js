@@ -17,10 +17,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SET_TOKEN") {
     accessToken = event.data.token;
-    console.log(
-      "Access token received by Service Worker, public:",
-      accessToken
-    );
+    console.log("Access token received by Service Worker, root:", accessToken);
   }
 });
 
