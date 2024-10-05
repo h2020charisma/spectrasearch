@@ -27,7 +27,7 @@ console.log("base url", base_url);
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register(base_url, { scope: "/search" })
+      .register(base_url, { scope: "/" })
       .then((registration) => {
         console.log(
           "Service Worker registered with scope: ",
