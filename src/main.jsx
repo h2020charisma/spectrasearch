@@ -21,13 +21,14 @@ const stored_token = localStorage.getItem("token");
 const token = keycloak.token ? keycloak.token : stored_token;
 
 const base_url = import.meta.env.PROD ? "/search/worker.js" : "/worker.js";
+const reg_scope = import.meta.env.PROD ? "{ scope: '/search/' }" : null;
 
 console.log("base url", base_url);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register(base_url)
+      .register(base_url, reg_scope)
       .then((registration) => {
         console.log(
           "Service Worker registered with scope: ",
