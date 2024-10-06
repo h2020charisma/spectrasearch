@@ -12,7 +12,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SET_TOKEN") {
     accessToken = event.data.token;
-    console.log("Access token received by Service Worker:");
+    console.log("Access token received by Service Worker:", accessToken);
   }
 });
 
@@ -23,19 +23,19 @@ function isGeneratedImage(url) {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(event.request.url);
-  console.log("fetch", url);
-  console.log("fetch. Token:", accessToken);
-  console.log(
-    "conditions:",
-    url.origin.startsWith("https://"),
-    url.origin.endsWith(".ideaconsult.net"),
-    request.method === "GET",
-    isGeneratedImage(url),
-    url.origin !== "https://iam.ideaconsult.net",
-    url.origin !== "https://idp.ideaconsult.net",
-    request.destination === "image",
-    event.request.headers["Authorization"] == undefined
-  );
+  // console.log("fetch", url);
+  // console.log("fetch. Token:", accessToken);
+  // console.log(
+  //   "conditions:",
+  //   url.origin.startsWith("https://"),
+  //   url.origin.endsWith(".ideaconsult.net"),
+  //   request.method === "GET",
+  //   isGeneratedImage(url),
+  //   url.origin !== "https://iam.ideaconsult.net",
+  //   url.origin !== "https://idp.ideaconsult.net",
+  //   request.destination === "image",
+  //   event.request.headers["Authorization"] == undefined
+  // );
 
   if (
     accessToken &&
