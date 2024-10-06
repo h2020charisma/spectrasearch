@@ -18,11 +18,14 @@ const router = createBrowserRouter(
 );
 
 const base_url = import.meta.env.PROD ? "/search/worker.js" : "/worker.js";
+const scope_url = import.meta.env.PROD
+  ? "https://spectra-dev.adma.ai/search/"
+  : "http://localhost:5173/search/";
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register(base_url)
+      .register(base_url, { scope: scope_url })
       .then((registration) => {
         console.log(
           "Service Worker registered with scope: ",
