@@ -1,6 +1,8 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+
+import { useKeycloak } from "@react-keycloak/web";
 
 import { lazy } from "react";
 
@@ -12,14 +14,31 @@ import UnderDevelopent from "../components/UnderDevelopent/UnderDevelopent";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 
-
 function App() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const h5webParams = queryParams.get("h5web");
 
-
   let [domain, setDomain] = useState(null);
+
+  const { keycloak } = useKeycloak();
+  const stored_token = localStorage.getItem("token");
+  const token = keycloak.token ? keycloak.token : stored_token;
+
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: "SET_TOKEN",
+      token: token,
+    });
+  }
+
+  useEffect(() => {
+    if (keycloak.authenticated) {
+      localStorage.setItem("refreshToken", keycloak.refreshToken);
+      localStorage.setItem("token", keycloak.token);
+      localStorage.setItem("username", keycloak.tokenParsed.preferred_username);
+    }
+  }, [keycloak.authenticated]);
 
   return (
     <>

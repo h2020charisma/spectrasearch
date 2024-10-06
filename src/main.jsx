@@ -17,9 +17,6 @@ const router = createBrowserRouter(
   { basename: "/search" }
 );
 
-const stored_token = localStorage.getItem("token");
-const token = keycloak.token ? keycloak.token : stored_token;
-
 const base_url = import.meta.env.PROD ? "/search/worker.js" : "/worker.js";
 
 if ("serviceWorker" in navigator) {
@@ -31,15 +28,9 @@ if ("serviceWorker" in navigator) {
           "Service Worker registered with scope: ",
           registration.scope
         );
-        if (token && registration.active) {
-          registration.active.postMessage({
-            type: "SET_TOKEN",
-            token: token,
-          });
-        }
       })
       .catch((error) => {
-        console.log("ServiceWorker registration failed: ", error);
+        console.log("Service Worker registration failed: ", error);
       });
   });
 }

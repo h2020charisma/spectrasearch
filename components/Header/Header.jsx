@@ -6,13 +6,7 @@ export default function Header() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
 
-  if (keycloak.authenticated) {
-    localStorage.setItem("refreshToken", keycloak.refreshToken);
-    localStorage.setItem("token", keycloak.token);
-    localStorage.setItem("username", keycloak.tokenParsed.preferred_username);
-  }
-
-  // console.log("HEADER", keycloak.authenticated);
+  console.log("header", keycloak.token);
 
   const username = keycloak.tokenParsed?.preferred_username
     ? keycloak.tokenParsed?.preferred_username
@@ -21,14 +15,13 @@ export default function Header() {
   const stored_token = localStorage.getItem("token");
 
   const logoutHandle = () => {
-    navigate("/");
     localStorage.removeItem("username");
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
   };
   setInterval(async () => {
     try {
-      await keycloak.updateToken(30);
+      await keycloak.updateToken(5);
       localStorage.setItem("token", keycloak.token);
       console.log("Refreshed!");
     } catch (error) {
@@ -47,6 +40,7 @@ export default function Header() {
           <button
             className="shareBtn"
             onClick={() => {
+              navigate("/");
               keycloak.logout();
               logoutHandle();
             }}
