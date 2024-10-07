@@ -23,19 +23,19 @@ function isGeneratedImage(url) {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(event.request.url);
-  // console.log("fetch", url);
-  // console.log("fetch. Token:", accessToken);
-  // console.log(
-  //   "conditions:",
-  //   url.origin.startsWith("https://"),
-  //   url.origin.endsWith(".ideaconsult.net"),
-  //   request.method === "GET",
-  //   isGeneratedImage(url),
-  //   url.origin !== "https://iam.ideaconsult.net",
-  //   url.origin !== "https://idp.ideaconsult.net",
-  //   request.destination === "image",
-  //   event.request.headers["Authorization"] == undefined
-  // );
+  console.log("fetch", url);
+  console.log("fetch. Token:", accessToken);
+  console.log(
+    "conditions:",
+    url.origin.startsWith("https://"),
+    url.origin.endsWith(".ideaconsult.net"),
+    request.method === "GET",
+    isGeneratedImage(url),
+    url.origin !== "https://iam.ideaconsult.net",
+    url.origin !== "https://idp.ideaconsult.net",
+    request.destination === "image",
+    event.request.headers["Authorization"] == undefined
+  );
 
   if (
     accessToken &&
@@ -45,7 +45,7 @@ self.addEventListener("fetch", (event) => {
     // isGeneratedImage(url) &&
     url.origin !== "https://iam.ideaconsult.net" &&
     url.origin !== "https://idp.ideaconsult.net" &&
-    // request.destination === "image" &&
+    request.destination === "image" &&
     event.request.headers["Authorization"] == undefined
   ) {
     const authRequest = new Request(request, {
