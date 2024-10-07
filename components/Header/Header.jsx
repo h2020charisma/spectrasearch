@@ -6,7 +6,9 @@ export default function Header() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
 
-  console.log("header", keycloak.token);
+  keycloak.onTokenExpired = () => {
+    console.log("Token expired, attempting to refresh...");
+  };
 
   const username = keycloak.tokenParsed?.preferred_username
     ? keycloak.tokenParsed?.preferred_username

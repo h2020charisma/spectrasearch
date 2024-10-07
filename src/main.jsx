@@ -5,7 +5,8 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 
-import keycloak from "../utils/keycloak.jsx";
+import _kc from "../utils/keycloak.jsx";
+import { useKeycloak } from "@react-keycloak/web";
 
 const router = createBrowserRouter(
   [
@@ -17,32 +18,48 @@ const router = createBrowserRouter(
   { basename: "/search" }
 );
 
-console.log(import.meta.env.BASE_URL);
+const Main = () => {
+  const { keycloak } = useKeycloak();
 
-const base_url = import.meta.env.PROD ? "/search/worker.js" : "/worker.js";
-const scope_url = import.meta.env.PROD
-  ? "https://spectra-dev.adma.ai/search/"
-  : "http://localhost:5173/search/";
+  const stored_token = localStorage.getItem("token");
+  const token = keycloak.token ? keycloak.token : stored_token;
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register(base_url, { scope: scope_url })
-      .then((registration) => {
-        console.log(
-          "Service Worker registered with scope: ",
-          registration.scope
-        );
-      })
-      .catch((error) => {
-        console.log("Service Worker registration failed: ", error);
-      });
-  });
-}
+  const base_url = import.meta.env.PROD ? "/search/worker.js" : "/worker.js";
+  const scope_url = import.meta.env.PROD
+    ? "https://spectra-dev.adma.ai/search/"
+    : "http://localhost:5173/search/";
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register(base_url, { scope: scope_url })
+        .then((registration) => {
+          console.log(
+            "Service Worker registered with scope: ",
+            registration.scope
+          );
+        })
+        .catch((error) => {
+          console.log("Service Worker registration failed: ", error);
+        });
+    });
+  }
+
+  if (navigator.serviceWorker.controller) {
+    console.log("post message", navigator.serviceWorker);
+
+    navigator.serviceWorker.controller.postMessage({
+      type: "SET_TOKEN",
+      token: token,
+    });
+  }
+
+  return <></>;
+};
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <ReactKeycloakProvider
-    authClient={keycloak}
+    authClient={_kc}
     initOptions={{
       onLoad: "check-sso",
       checkLoginIframe: false,
@@ -51,6 +68,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     }}
   >
     <React.StrictMode>
+      <Main />
       <RouterProvider router={router} />
     </React.StrictMode>
   </ReactKeycloakProvider>

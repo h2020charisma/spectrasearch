@@ -54,7 +54,7 @@ h1 {
 
 .content {
   width: 100%;
-  background-color: light-dark(#fff, #202020);
+  /* background-color: light-dark(#fff, #202020); */
 }
 
 .expander {
