@@ -29,6 +29,8 @@ const Main = () => {
     ? "https://spectra-dev.adma.ai/search/"
     : "http://localhost:5173/search/";
 
+  console.log("ENV", import.meta.env.PROD);
+
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
