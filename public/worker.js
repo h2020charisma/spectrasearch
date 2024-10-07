@@ -1,7 +1,7 @@
 let accessToken = null;
 
 self.addEventListener("install", (event) => {
-  self.skipWaiting();
+  event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", (event) => {
@@ -33,7 +33,7 @@ self.addEventListener("fetch", (event) => {
     isGeneratedImage(url),
     url.origin !== "https://iam.ideaconsult.net",
     url.origin !== "https://idp.ideaconsult.net",
-    request.destination === "image",
+    // request.destination === "image",
     event.request.headers["Authorization"] == undefined
   );
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
 import ReactDOM from "react-dom/client";
@@ -46,7 +46,7 @@ const Main = () => {
   }
 
   if (navigator.serviceWorker.controller) {
-    console.log("post message", navigator.serviceWorker);
+    console.log("post message", navigator);
 
     navigator.serviceWorker.controller.postMessage({
       type: "SET_TOKEN",
