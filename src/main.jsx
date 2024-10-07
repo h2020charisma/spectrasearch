@@ -24,7 +24,9 @@ const Main = () => {
   const stored_token = localStorage.getItem("token");
   const token = keycloak.token ? keycloak.token : stored_token;
 
-  const base_url = import.meta.env.PROD ? "/search/worker.js" : "/worker.js";
+  const base_url = import.meta.env.PROD
+    ? "/search/serviceWorker.js"
+    : "/serviceWorker.js";
   const scope_url = import.meta.env.PROD
     ? "https://spectra-dev.adma.ai/search/"
     : "http://localhost:5173/search/";
@@ -32,10 +34,9 @@ const Main = () => {
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register(
-          "/serviceWorker.js",
-          { scope: scope_url }
-        );
+        const registration = await navigator.serviceWorker.register(base_url, {
+          scope: scope_url,
+        });
         console.log("scope", registration.scope);
 
         await registration.active.postMessage({
