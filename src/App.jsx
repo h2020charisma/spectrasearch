@@ -23,16 +23,16 @@ function App() {
 
   const { keycloak } = useKeycloak();
   const stored_token = localStorage.getItem("token");
-  const token = keycloak.token ? keycloak.token : stored_token;
+  // const token = keycloak.token ? keycloak.token : stored_token;
 
-  if (navigator.serviceWorker.controller) {
-    console.log("post message", navigator.serviceWorker);
+  // if (navigator.serviceWorker.controller) {
+  //   console.log("post message", navigator.serviceWorker);
 
-    navigator.serviceWorker.controller.postMessage({
-      type: "SET_TOKEN",
-      token: token,
-    });
-  }
+  //   navigator.serviceWorker.controller.postMessage({
+  //     type: "SET_TOKEN",
+  //     token: token,
+  //   });
+  // }
   useEffect(() => {
     if (keycloak.authenticated) {
       localStorage.setItem("refreshToken", keycloak.refreshToken);
