@@ -1,50 +1,25 @@
-let accessToken = null;
-
-self.addEventListener("install", (event) => {
-  console.log("Installed worked");
-
-  // self.skipWaiting();
-});
-
 self.addEventListener("activate", (event) => {
   event.waitUntil(self.clients.claim());
-  console.log("Service worker activated");
+  console.log("ServiceWorker.js activated");
 });
 
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SET_TOKEN") {
+  if (event.data && event.data.type === "TOKEN") {
     accessToken = event.data.token;
-    console.log("Access token received by Service Worker:", accessToken);
+    console.log("token received by Service Worker:", accessToken);
   }
 });
-
-function isGeneratedImage(url) {
-  return url.pathname == "/download";
-}
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(event.request.url);
   console.log("fetch", url);
-  // console.log("fetch. Token:", accessToken);
-  // console.log(
-  //   "conditions:",
-  //   url.origin.startsWith("https://"),
-  //   url.origin.endsWith(".ideaconsult.net"),
-  //   request.method === "GET",
-  //   isGeneratedImage(url),
-  //   url.origin !== "https://iam.ideaconsult.net",
-  //   url.origin !== "https://idp.ideaconsult.net",
-  //   // request.destination === "image",
-  //   event.request.headers["Authorization"] == undefined
-  // );
 
   if (
     accessToken &&
     url.origin.startsWith("https://") &&
     url.origin.endsWith(".ideaconsult.net") &&
     request.method === "GET" &&
-    // isGeneratedImage(url) &&
     url.origin !== "https://iam.ideaconsult.net" &&
     url.origin !== "https://idp.ideaconsult.net" &&
     request.destination === "image" &&

@@ -29,32 +29,63 @@ const Main = () => {
     ? "https://spectra-dev.adma.ai/search/"
     : "http://localhost:5173/search/";
 
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register(base_url, { scope: scope_url })
-        .then((registration) => {
-          console.log(
-            "Service Worker registered with scope: ",
-            registration.scope
-          );
-        })
-        .catch((error) => {
-          console.log("Service Worker registration failed: ", error);
+  const registerServiceWorker = async () => {
+    if ("serviceWorker" in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register(
+          "/serviceWorker.js",
+          { scope: scope_url }
+        );
+        console.log("scope", registration.scope);
+
+        await registration.active.postMessage({
+          type: "TOKEN",
+          token: token,
         });
-    });
-  }
+      } catch (error) {
+        console.log(`Registration failed with ${error}`);
+      }
+    }
+  };
 
-  if (navigator.serviceWorker.controller) {
-    console.log("post message", navigator);
+  useEffect(() => {
+    registerServiceWorker();
+  }, [token]);
 
-    navigator.serviceWorker.controller.postMessage({
-      type: "SET_TOKEN",
-      token: token,
-    });
-  } else {
-    console.log("no message", navigator.serviceWorker);
-  }
+  // if ("serviceWorker" in navigator) {
+  //   window.addEventListener("load", () => {
+  //     navigator.serviceWorker
+  //       .register(base_url)
+  //       .then((registration) => {
+  //         console.log(
+  //           "Service Worker registered with scope: ",
+  //           registration.scope
+  //         );
+  //         if (token && registration.active) {
+  //           console.log("registration.active");
+
+  //           registration.active.postMessage({
+  //             type: "SET_TOKEN",
+  //             token: token,
+  //           });
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.log("ServiceWorker registration failed: ", error);
+  //       });
+  //   });
+  // }
+
+  // if (navigator.serviceWorker.controller) {
+  //   console.log("post message", navigator);
+
+  //   navigator.serviceWorker.controller.postMessage({
+  //     type: "SET_TOKEN",
+  //     token: token,
+  //   });
+  // } else {
+  //   console.log("no message", navigator.serviceWorker);
+  // }
 
   return <></>;
 };
