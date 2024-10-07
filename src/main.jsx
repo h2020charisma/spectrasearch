@@ -52,6 +52,8 @@ const Main = () => {
       type: "SET_TOKEN",
       token: token,
     });
+  } else {
+    console.log("no message", navigator.serviceWorker);
   }
 
   return <></>;
