@@ -35,7 +35,7 @@ const Main = () => {
     if ("serviceWorker" in navigator) {
       try {
         const registration = await navigator.serviceWorker.register(base_url, {
-          scope: "./",
+          scope: "/search/",
         });
         console.log("scope", registration.scope);
 
