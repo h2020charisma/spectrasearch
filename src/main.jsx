@@ -34,8 +34,11 @@ const Main = () => {
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register(base_url);
+        const registration = await navigator.serviceWorker.register(base_url, {
+          scope: "./search",
+        });
         console.log("scope", registration.scope);
+        console.log("controlled", navigator.serviceWorker.controller);
 
         await registration.active.postMessage({
           type: "TOKEN",

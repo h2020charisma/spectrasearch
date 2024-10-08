@@ -45,7 +45,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(fetch(authRequest));
     console.log("with token");
   } else {
-    event.respondWith(fetch(request));
+    // event.respondWith(fetch(request));
     console.log("without token");
   }
 });
