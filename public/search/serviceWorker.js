@@ -1,3 +1,4 @@
+// search dir Service worker
 let accessToken = "";
 
 self.addEventListener("install", (event) => {
