@@ -1,5 +1,6 @@
 self.addEventListener("install", (event) => {
   self.skipWaiting();
+  console.log("Service Worker is installed");
 });
 
 self.addEventListener("activate", (event) => {
@@ -14,32 +15,42 @@ self.addEventListener("message", (event) => {
   }
 });
 
-self.addEventListener("fetch", (event) => {
-  const { request } = event;
-  const url = new URL(event.request.url);
-  console.log("fetch", url);
+// self.addEventListener('fetch', event => {
+//   console.log('Handling fetch event for', event.request.url);
+//   event.respondWith(fetch(event.request));
+// });
 
-  if (
-    accessToken &&
-    url.origin.startsWith("https://") &&
-    url.origin.endsWith(".ideaconsult.net") &&
-    request.method === "GET" &&
-    url.origin !== "https://iam.ideaconsult.net" &&
-    url.origin !== "https://idp.ideaconsult.net" &&
-    request.destination === "image" &&
-    event.request.headers["Authorization"] == undefined
-  ) {
-    const authRequest = new Request(request, {
-      headers: new Headers({
-        ...request.headers,
-        Authorization: `Bearer ${accessToken}`,
-      }),
-      mode: "cors",
-    });
-    event.respondWith(fetch(authRequest));
-    console.log("with token");
-  } else {
-    event.respondWith(fetch(request));
-    console.log("without token");
-  }
+self.addEventListener("fetch", (event) => {
+  console.log("Fetch event for", event.request.url);
+  event.respondWith(fetch(event.request));
 });
+
+// self.addEventListener("fetch", (event) => {
+//   const { request } = event;
+//   const url = new URL(event.request.url);
+//   console.log("fetch", url);
+
+//   if (
+//     accessToken &&
+//     url.origin.startsWith("https://") &&
+//     url.origin.endsWith(".ideaconsult.net") &&
+//     request.method === "GET" &&
+//     url.origin !== "https://iam.ideaconsult.net" &&
+//     url.origin !== "https://idp.ideaconsult.net" &&
+//     request.destination === "image" &&
+//     event.request.headers["Authorization"] == undefined
+//   ) {
+//     const authRequest = new Request(request, {
+//       headers: new Headers({
+//         ...request.headers,
+//         Authorization: `Bearer ${accessToken}`,
+//       }),
+//       mode: "cors",
+//     });
+//     event.respondWith(fetch(authRequest));
+//     console.log("with token");
+//   } else {
+//     event.respondWith(fetch(request));
+//     console.log("without token");
+//   }
+// });
