@@ -34,9 +34,7 @@ const Main = () => {
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register(base_url, {
-          scope: "/search/",
-        });
+        const registration = await navigator.serviceWorker.register(base_url);
         console.log("scope", registration.scope);
 
         await registration.active.postMessage({
@@ -49,9 +47,7 @@ const Main = () => {
     }
   };
 
-  useEffect(() => {
-    registerServiceWorker();
-  }, [token]);
+  registerServiceWorker();
 
   // if ("serviceWorker" in navigator) {
   //   window.addEventListener("load", () => {
