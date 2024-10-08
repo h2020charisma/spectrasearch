@@ -27,13 +27,13 @@ const Main = () => {
   const base_url = import.meta.env.PROD
     ? "/search/serviceWorker.js"
     : "/serviceWorker.js";
-  const scope_url = import.meta.env.PROD ? "/search/" : "./search";
+  const scope_url = import.meta.env.PROD ? "/search/" : "/search";
 
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
       try {
         const registration = await navigator.serviceWorker.register(base_url, {
-          scope: scope_url,
+          scope: "/search",
         });
         console.log("scope", registration.scope);
         console.log("controlled", navigator.serviceWorker.controller);
