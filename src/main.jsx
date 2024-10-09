@@ -33,7 +33,7 @@ const Main = () => {
     if ("serviceWorker" in navigator) {
       try {
         const registration = await navigator.serviceWorker.register(base_url, {
-          scope: "/search",
+          scope: scope_url,
         });
         console.log("scope", registration.scope);
         console.log("controlled", navigator.serviceWorker.controller);
