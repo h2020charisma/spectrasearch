@@ -23,7 +23,6 @@ self.addEventListener("message", (event) => {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(event.request.url);
-  console.log("fetch", url);
 
   if (
     accessToken &&

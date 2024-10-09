@@ -27,7 +27,7 @@ const Main = () => {
   const base_url = import.meta.env.PROD
     ? "/search/serviceWorker.js"
     : "/serviceWorker.js";
-  const scope_url = import.meta.env.PROD ? "/search/" : "/search";
+  const scope_url = import.meta.env.PROD ? "/search/" : "/search/";
 
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
