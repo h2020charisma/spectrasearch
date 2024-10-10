@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
 import ReactDOM from "react-dom/client";
@@ -27,16 +27,13 @@ const Main = () => {
   const base_url = import.meta.env.PROD
     ? "/search/serviceWorker.js"
     : "/serviceWorker.js";
-  const scope_url = import.meta.env.PROD ? "/search/" : "/search/";
 
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
       try {
         const registration = await navigator.serviceWorker.register(base_url, {
-          scope: scope_url,
+          scope: "/search/",
         });
-        console.log("scope", registration.scope);
-        console.log("controlled", navigator.serviceWorker.controller);
 
         await registration.active.postMessage({
           type: "TOKEN",
@@ -49,42 +46,6 @@ const Main = () => {
   };
 
   registerServiceWorker();
-
-  // if ("serviceWorker" in navigator) {
-  //   window.addEventListener("load", () => {
-  //     navigator.serviceWorker
-  //       .register(base_url)
-  //       .then((registration) => {
-  //         console.log(
-  //           "Service Worker registered with scope: ",
-  //           registration.scope
-  //         );
-  //         if (token && registration.active) {
-  //           console.log("registration.active");
-
-  //           registration.active.postMessage({
-  //             type: "SET_TOKEN",
-  //             token: token,
-  //           });
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.log("ServiceWorker registration failed: ", error);
-  //       });
-  //   });
-  // }
-
-  // if (navigator.serviceWorker.controller) {
-  //   console.log("post message", navigator);
-
-  //   navigator.serviceWorker.controller.postMessage({
-  //     type: "SET_TOKEN",
-  //     token: token,
-  //   });
-  // } else {
-  //   console.log("no message", navigator.serviceWorker);
-  // }
-
   return <></>;
 };
 

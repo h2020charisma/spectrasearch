@@ -1,15 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
 import { useKeycloak } from "@react-keycloak/web";
-import { useEffect } from "react";
 
 export default function Header() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
-
-  keycloak.onTokenExpired = () => {
-    console.log("Token expired, attempting to refresh...");
-  };
 
   const username = keycloak.tokenParsed?.preferred_username
     ? keycloak.tokenParsed?.preferred_username
@@ -22,15 +17,6 @@ export default function Header() {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
   };
-  setInterval(async () => {
-    try {
-      await keycloak.updateToken(5);
-      localStorage.setItem("token", keycloak.token);
-      console.log("Refreshed!");
-    } catch (error) {
-      console.log("Falied to refresh token..", error);
-    }
-  }, [30000]);
 
   return (
     <div className="logo">
