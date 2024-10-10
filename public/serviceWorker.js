@@ -2,21 +2,15 @@ let accessToken = "";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
-  console.log("Service Worker is installed");
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(self.clients.claim());
-  console.log("ServiceWorker.js activated");
 });
 
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "TOKEN") {
     accessToken = event.data.token;
-    console.log(
-      "Message Event: token received by Service Worker:",
-      accessToken
-    );
   }
 });
 
@@ -44,7 +38,6 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(fetch(authRequest));
     console.log("with token");
   } else {
-    // event.respondWith(fetch(request));
     console.log("without token");
   }
 });

@@ -22,17 +22,7 @@ function App() {
   let [domain, setDomain] = useState(null);
 
   const { keycloak } = useKeycloak();
-  const stored_token = localStorage.getItem("token");
-  // const token = keycloak.token ? keycloak.token : stored_token;
 
-  // if (navigator.serviceWorker.controller) {
-  //   console.log("post message", navigator.serviceWorker);
-
-  //   navigator.serviceWorker.controller.postMessage({
-  //     type: "SET_TOKEN",
-  //     token: token,
-  //   });
-  // }
   useEffect(() => {
     if (keycloak.authenticated) {
       localStorage.setItem("refreshToken", keycloak.refreshToken);
@@ -40,6 +30,29 @@ function App() {
       localStorage.setItem("username", keycloak.tokenParsed.preferred_username);
     }
   }, [keycloak.authenticated]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      keycloak
+        .updateToken(30)
+        .then((refreshed) => {
+          if (refreshed) {
+            console.log("app: Token refreshed and updated in localStorage.");
+            localStorage.setItem("token", keycloak.token);
+          } else {
+            console.log("app: Token is still valid.");
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+
+          console.error("app: Failed to refresh token.");
+        });
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
