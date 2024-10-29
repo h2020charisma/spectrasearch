@@ -44,9 +44,6 @@ function App() {
           }
         })
         .catch(() => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("username");
-
           console.error("app: Failed to refresh token.");
         });
     }, 10000);
