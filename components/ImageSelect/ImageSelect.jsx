@@ -1,9 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Navigate } from "react-router-dom";
 export default function ImageSelect({ data, imageSelected, setImageSelected }) {
-
-
-
   const renderImageSelect =
     data &&
     data.map((img, i) => (
@@ -12,8 +9,9 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
         onClick={() => {
           setImageSelected(img.value);
         }}
-        className={`${imageSelected == img.value ? "imageSelected" : "imageNonSelected"
-          }`}
+        className={`${
+          imageSelected == img.value ? "imageSelected" : "imageNonSelected"
+        }`}
       >
         {imageSelected && (
           <Navigate to={`?domain=${imageSelected}`} replace={true} />
@@ -21,10 +19,13 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
 
         <img src={img.imageLink} width={200} height={"auto"} />
         <p className="imgCaption">
-          {img.score &&
-            <span style={{ color: "#D20003", fontSize: "12px" }}>{parseFloat(img.score).toFixed(3)}&nbsp;&nbsp;<span style={{ color: "#000" }}>|</span>&nbsp;&nbsp;</span>}
+          {img.score && (
+            <span style={{ color: "#D20003", fontSize: "12px" }}>
+              {parseFloat(img.score).toFixed(3)}&nbsp;&nbsp;
+              <span style={{ color: "#000" }}>|</span>&nbsp;&nbsp;
+            </span>
+          )}
           <span>{img.text}</span>
-
         </p>
       </div>
     ));
@@ -36,7 +37,7 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
       {data && data.length > 0 ? (
         renderImageSelect
       ) : (
-        <p style={{ color: "darkred" }}>Sorry, no data avaible</p>
+        <p style={{ color: "darkred" }}>Sorry, no data available</p>
       )}
     </div>
   );

@@ -10,7 +10,7 @@ import Sample from "../Sample/Sample";
 import UploadFile from "../UploadFile/UploadFile";
 import Wavelengths from "../Wavelengths/Wavelengths";
 
-const errorMsg = "Sorry, no data avaible";
+const errorMsg = "Sorry, no data available";
 
 export default function Sidebar({
   reference,
