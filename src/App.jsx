@@ -31,25 +31,25 @@ function App() {
     }
   }, [keycloak.authenticated]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      keycloak
-        .updateToken(30)
-        .then((refreshed) => {
-          if (refreshed) {
-            console.log("app: Token refreshed and updated in localStorage.");
-            localStorage.setItem("token", keycloak.token);
-          } else {
-            console.log("app: Token is still valid.");
-          }
-        })
-        .catch(() => {
-          console.error("app: Failed to refresh token.");
-        });
-    }, 10000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  // keycloak
+  //   .updateToken(30)
+  //   .then((refreshed) => {
+  //     if (refreshed) {
+  //       console.log("app: Token refreshed and updated in localStorage.");
+  //       localStorage.setItem("token", keycloak.token);
+  //     } else {
+  //       console.log("app: Token is still valid.");
+  //     }
+  //   })
+  //   .catch(() => {
+  //     console.error("app: Failed to refresh token.");
+  //   });
+  //   }, 10000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <>

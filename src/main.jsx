@@ -44,8 +44,9 @@ const Main = () => {
       }
     }
   };
-
-  registerServiceWorker();
+  useEffect(() => {
+    registerServiceWorker();
+  }, [token]);
   return <></>;
 };
 

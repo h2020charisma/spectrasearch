@@ -11,6 +11,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "TOKEN") {
     accessToken = event.data.token;
+    console.log(accessToken);
   }
 });
 

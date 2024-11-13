@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useKeycloak } from "@react-keycloak/web";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function useFetch(url) {
   const [data, setData] = useState(null);
@@ -9,6 +10,7 @@ function useFetch(url) {
   const [auth, setAuth] = useState(false);
 
   const { keycloak } = useKeycloak();
+  const navigate = useNavigate();
 
   const stored_token = localStorage.getItem("token");
   const kc_token = keycloak.token ? keycloak.token : stored_token;
@@ -23,6 +25,7 @@ function useFetch(url) {
     function (config) {
       if (kc_token) {
         config.headers.Authorization = `Bearer ${kc_token}`;
+        console.log("axios interseption");
       }
       return config;
     },
@@ -38,12 +41,29 @@ function useFetch(url) {
     }
 
     if (kc_token) {
+      keycloak
+        .updateToken(30)
+        .then((refreshed) => {
+          if (refreshed) {
+            console.log(
+              "useFetch: Token refreshed and updated in localStorage."
+            );
+            localStorage.setItem("token", keycloak.token);
+          } else {
+            console.log("useFetch: Token is still valid.");
+          }
+        })
+        .catch(() => {
+          console.error("useFetch: Failed to refresh token.");
+        });
       axiosInstance
         .get(url)
         .then((response) => {
           setData(response.data);
         })
         .catch((error) => {
+          // navigate("/");
+          // keycloak.login();
           console.error("Error fetching data:", error);
         })
         .finally(() => {
