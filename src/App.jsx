@@ -31,25 +31,40 @@ function App() {
     }
   }, [keycloak.authenticated]);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  // keycloak
-  //   .updateToken(30)
-  //   .then((refreshed) => {
-  //     if (refreshed) {
-  //       console.log("app: Token refreshed and updated in localStorage.");
-  //       localStorage.setItem("token", keycloak.token);
-  //     } else {
-  //       console.log("app: Token is still valid.");
-  //     }
-  //   })
-  //   .catch(() => {
-  //     console.error("app: Failed to refresh token.");
-  //   });
-  //   }, 10000);
+  useEffect(() => {
+    const handleFocus = () => {
+      console.log("on focus");
+      keycloak
+        .updateToken(30)
+        .then((refreshed) => {
+          if (refreshed) {
+            console.log(
+              "App on focus: Token refreshed and updated in localStorage.",
+              keycloak.token
+            );
+            localStorage.setItem("token", keycloak.token);
+          } else {
+            console.log("app: Token is still valid.");
+          }
+        })
+        .catch(() => {
+          console.error("App on focus: Failed to refresh token.");
+          // keycloak.logout();
+        });
+    };
 
-  //   return () => clearInterval(interval);
-  // }, []);
+    const handleBlur = () => {
+      console.log("blur");
+    };
+
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("blur", handleBlur);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("blur", handleBlur);
+    };
+  });
 
   return (
     <>
