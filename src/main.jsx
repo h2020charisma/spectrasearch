@@ -44,8 +44,16 @@ const Main = () => {
       }
     }
   };
+
+  registerServiceWorker();
+
   useEffect(() => {
-    registerServiceWorker();
+    if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type: "TOKEN",
+        token: token,
+      });
+    }
   }, [token]);
   return <></>;
 };
