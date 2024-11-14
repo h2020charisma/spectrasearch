@@ -7,7 +7,7 @@ export default function Header() {
     <div className="logo">
       <h1 onClick={() => navigate("/")}>Raman spectra search</h1>
       <Link
-        to="https://docs.google.com/presentation/d/13oULefmyNbXaNhhmvrEQIrZaQ9DSCqBHNc-Wm2jRDP0/edit#slide=id.p"
+        to="https://zenodo.org/records/14163315"
         target="_blank"
         rel="noopener noreferrer"
       >
