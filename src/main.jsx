@@ -64,7 +64,7 @@ const Main = () => {
   return <></>;
 };
 function onSigninCallback() {
-  window.location.href = "/";
+  window.location.href = "/search/";
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
