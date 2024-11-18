@@ -6,6 +6,8 @@ import { useKeycloak } from "@react-keycloak/web";
 
 import { lazy } from "react";
 
+import { useAuth } from "react-oidc-context";
+
 const H5web = lazy(() => import("../components/h5web/h5web"));
 
 import SearchComp from "../components/SearchComp/SearchComp";
@@ -22,6 +24,9 @@ function App() {
   let [domain, setDomain] = useState(null);
 
   const { keycloak } = useKeycloak();
+  const auth = useAuth();
+
+  console.log(auth);
 
   useEffect(() => {
     if (keycloak.authenticated) {

@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { AuthProvider } from "react-oidc-context";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
+
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 
 import _kc from "../utils/keycloak.jsx";
 import { useKeycloak } from "@react-keycloak/web";
+
+const oidcConfig = {
+  authority: "https://iam.ideaconsult.net/auth",
+  client_id: "idea-ui",
+  client_secret: "idea-ui",
+  redirect_uri: window.location.origin,
+  response_type: "code", // or 'token' for implicit flow
+  scope: "openid profile email", // Adjust according to your needs
+  post_logout_redirect_uri: window.location.origin,
+};
 
 const router = createBrowserRouter(
   [
@@ -68,9 +80,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         window.location.origin + "/silent-check-sso.html",
     }}
   >
-    <React.StrictMode>
-      <Main />
-      <RouterProvider router={router} />
-    </React.StrictMode>
+    <AuthProvider {...oidcConfig}>
+      <React.StrictMode>
+        <Main />
+        <RouterProvider router={router} />
+      </React.StrictMode>
+    </AuthProvider>
   </ReactKeycloakProvider>
 );
