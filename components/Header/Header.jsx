@@ -1,48 +1,37 @@
+import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
 
-import { useKeycloak } from "@react-keycloak/web";
-
 export default function Header() {
-  const { keycloak } = useKeycloak();
+  const auth = useAuth();
   const navigate = useNavigate();
-
-  const username = keycloak.tokenParsed?.preferred_username
-    ? keycloak.tokenParsed?.preferred_username
-    : localStorage.getItem("username");
-
-  const stored_token = localStorage.getItem("token");
-
-  const logoutHandle = () => {
-    localStorage.removeItem("username");
-    localStorage.removeItem("token");
-    localStorage.removeItem("refreshToken");
-  };
 
   return (
     <div className="logo">
       <h1 onClick={() => navigate("/")}>Raman spectra search</h1>
-      <div className="usersInfo">
-        <div className="username">
-          {keycloak.authenticated || username ? username : ""}
-        </div>
-        {keycloak.authenticated || stored_token ? (
-          <button
-            className="shareBtn"
-            onClick={() => {
-              navigate("/");
-              keycloak.logout();
-              logoutHandle();
-            }}
-          >
-            Log out
-          </button>
+      <div className="helpUserMenu">
+        {/* <Link
+          to="https://zenodo.org/records/14163315"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <button className="shareBtn">Help</button>
+        </Link> */}
+        {auth.isAuthenticated ? (
+          <div className="userInfo">
+            <p className="userName">{auth.user?.profile.name}</p>
+            <button
+              className="shareBtn"
+              style={{ marginLeft: "18px" }}
+              onClick={() => void auth.removeUser()}
+            >
+              Log out
+            </button>
+          </div>
         ) : (
           <button
             className="shareBtn"
-            onClick={() => {
-              navigate("/");
-              keycloak.login();
-            }}
+            style={{ marginLeft: "18px" }}
+            onClick={() => void auth.signinRedirect()}
           >
             Log in
           </button>

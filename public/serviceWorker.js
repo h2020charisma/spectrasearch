@@ -11,7 +11,6 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "TOKEN") {
     accessToken = event.data.token;
-    console.log(accessToken);
   }
 });
 
@@ -37,8 +36,6 @@ self.addEventListener("fetch", (event) => {
       mode: "cors",
     });
     event.respondWith(fetch(authRequest));
-    console.log("with token");
   } else {
-    console.log("without token");
   }
 });

@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import Close from "../Icons/Close";
 import Spinner from "../Icons/Spinner";
 
-import { useKeycloak } from "@react-keycloak/web";
-
 // eslint-disable-next-line react/prop-types
 export default function UploadFile({ setImageData, setType, file, setFile }) {
   const fileQuery = `${import.meta.env.VITE_BaseURL}db/download?what=knnquery`;
@@ -12,18 +10,8 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
   const [isNotRightFile, setIsNotRightFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { keycloak } = useKeycloak();
-
   useEffect(() => {
     async function fetchDate() {
-      try {
-        await keycloak.updateToken(30);
-        console.log("Upload file Comp: UPDATED");
-        localStorage.setItem("token", keycloak.token);
-      } catch (error) {
-        console.error("Upload file Comp: Failed to refresh token:", error);
-      }
-
       const formData = new FormData();
       formData.append("files", file);
 
