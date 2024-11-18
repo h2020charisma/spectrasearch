@@ -37,7 +37,10 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
       {data && data.length > 0 ? (
         renderImageSelect
       ) : (
-        <p style={{ color: "darkred" }}>Sorry, no data available</p>
+        <div style={{ textAlign: "center" }}>
+          <p style={{ color: "darkred" }}>Sorry, no data available.</p>
+          <p style={{ color: "darkred" }}>Please, log in.</p>
+        </div>
       )}
     </div>
   );

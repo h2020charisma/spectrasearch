@@ -10,7 +10,7 @@ import "./index.css";
 const oidcConfig = {
   authority: "https://iam.ideaconsult.net/auth/realms/nano",
   client_id: "idea-ui",
-  redirect_uri: "http://localhost:5173/search/",
+  redirect_uri: window.location.origin + "/search/",
   response_type: "code",
   scope: "openid profile email",
 };
