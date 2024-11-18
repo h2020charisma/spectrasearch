@@ -39,16 +39,6 @@ export default function SearchComp({ setDomain }) {
 
   const [file, setFile] = useState(null);
 
-  // const searchQuery = `${
-  //   import.meta.env.VITE_BaseURL
-  // }db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
-
-  // const fileSearchQuery = `${
-  //   import.meta.env.VITE_BaseURL
-  // }db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${
-  //   imageData?.cdf
-  // }`;
-
   const searchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
 
   const fileSearchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf}`;
@@ -62,7 +52,6 @@ export default function SearchComp({ setDomain }) {
       <div>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
           <SideBarToggle />
-          {/* <h1>Raman Spectra Search</h1> */}
         </div>
         <AnimatePresence>
           {open && (

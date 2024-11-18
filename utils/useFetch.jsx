@@ -1,19 +1,14 @@
 import { useState, useEffect } from "react";
-import { useKeycloak } from "@react-keycloak/web";
+import { useAuth } from "react-oidc-context";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 function useFetch(url) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [accessToken, setAccessToken] = useState(null);
-  const [auth, setAuth] = useState(false);
 
-  const { keycloak } = useKeycloak();
-  const navigate = useNavigate();
+  const auth = useAuth();
 
-  const stored_token = localStorage.getItem("token");
-  const kc_token = keycloak.token ? keycloak.token : stored_token;
+  const kc_token = auth?.user?.access_token;
 
   const axiosInstance = axios.create({
     baseURL: `${import.meta.env.VITE_BaseURL}`,
@@ -25,7 +20,6 @@ function useFetch(url) {
     function (config) {
       if (kc_token) {
         config.headers.Authorization = `Bearer ${kc_token}`;
-        console.log("axios interseption");
       }
       return config;
     },
@@ -35,44 +29,22 @@ function useFetch(url) {
   );
 
   useEffect(() => {
-    if (keycloak.authenticated) {
-      setAccessToken(keycloak.token);
-      setAuth(true);
-    }
-
     if (kc_token) {
-      keycloak
-        .updateToken(30)
-        .then((refreshed) => {
-          if (refreshed) {
-            console.log(
-              "useFetch: Token refreshed and updated in localStorage."
-            );
-            localStorage.setItem("token", keycloak.token);
-          } else {
-            console.log("useFetch: Token is still valid.");
-          }
-        })
-        .catch(() => {
-          console.error("useFetch: Failed to refresh token.");
-        });
       axiosInstance
         .get(url)
         .then((response) => {
           setData(response.data);
         })
         .catch((error) => {
-          // navigate("/");
-          // keycloak.login();
           console.error("Error fetching data:", error);
         })
         .finally(() => {
           setLoading(false);
         });
     }
-  }, [kc_token, url, keycloak]);
+  }, [kc_token, url]);
 
-  return { data, loading, auth };
+  return { data, loading };
 }
 
 export default useFetch;
