@@ -2,6 +2,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { useAuth } from "react-oidc-context";
+
 import { useLocation } from "react-router-dom";
 import Chart from "../Chart/Chart";
 import SideBarToggle from "../Icons/SideBarToggle";
@@ -25,6 +27,8 @@ export default function SearchComp({ setDomain }) {
   );
 
   let isNexusFile = false;
+
+  const auth = useAuth();
 
   let [reference, setReference] = useState("*");
   let [provider, setProvider] = useState("*");
@@ -126,7 +130,7 @@ export default function SearchComp({ setDomain }) {
             />
           </ErrorBoundary>
         </Expander>
-        {imageSelected ? (
+        {imageSelected && auth.isAuthenticated ? (
           // <ErrorBoundary
           //   fallback={
           //     <div className="errorMessage">
@@ -145,7 +149,7 @@ export default function SearchComp({ setDomain }) {
         ) : (
           // </ErrorBoundary>
           <div className="errorMessage">
-            <p>No image selected</p>
+            {auth.isAuthenticated && <p>No image selected</p>}
           </div>
         )}
       </div>

@@ -11,6 +11,7 @@ const oidcConfig = {
   authority: "https://iam.ideaconsult.net/auth/realms/nano",
   client_id: "idea-ui",
   redirect_uri: window.location.origin + "/search/",
+  post_logout_redirect_uri: "https://iam.ideaconsult.net/",
   response_type: "code",
   scope: "openid profile email",
 };
