@@ -1,6 +1,18 @@
 /* eslint-disable react/prop-types */
 import { Navigate } from "react-router-dom";
+import { useAuth } from "react-oidc-context";
+import { useEffect, useState } from "react";
+
 export default function ImageSelect({ data, imageSelected, setImageSelected }) {
+  const auth = useAuth();
+
+  const [isAuth, setIsAuth] = useState(false);
+  // useEffect(() => {
+  //   if (auth.isAuthenticated) setIsAuth(true);
+  // }, [auth]);
+
+  console.log(auth.isAuthenticated);
+
   const renderImageSelect =
     data &&
     data.map((img, i) => (
@@ -34,7 +46,7 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
       {data && Object.prototype.hasOwnProperty.call(data, "error") && (
         <p>Sorry</p>
       )}
-      {data && data.length > 0 ? (
+      {data && data.length > 0 && auth.isAuthenticated ? (
         renderImageSelect
       ) : (
         <div style={{ textAlign: "center" }}>
