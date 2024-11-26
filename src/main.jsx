@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { AuthProvider, useAuth } from "react-oidc-context";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { AuthProvider } from "react-oidc-context";
-import { useAuth } from "react-oidc-context";
 
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
@@ -11,7 +10,7 @@ const oidcConfig = {
   authority: "https://iam.ideaconsult.net/auth/realms/nano",
   client_id: "idea-ui",
   redirect_uri: window.location.origin + "/search/",
-  post_logout_redirect_uri: "https://iam.ideaconsult.net/",
+  post_logout_redirect_uri: window.location.origin + "/search/",
   response_type: "code",
   scope: "openid profile email",
 };
@@ -38,9 +37,12 @@ const Main = () => {
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register(base_url, {
-          scope: "/search/",
-        });
+        const registration = await navigator.serviceWorker.register(
+          "/search/serviceWorker.js",
+          {
+            scope: "/search/",
+          }
+        );
 
         await registration.active.postMessage({
           type: "TOKEN",
