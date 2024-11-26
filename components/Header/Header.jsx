@@ -5,6 +5,8 @@ export default function Header() {
   const auth = useAuth();
   const navigate = useNavigate();
 
+  console.log(auth);
+
   return (
     <div className="logo">
       <h1 onClick={() => navigate("/")}>Raman spectra search</h1>
@@ -22,7 +24,11 @@ export default function Header() {
             <button
               className="shareBtn"
               style={{ marginLeft: "18px" }}
-              onClick={() => void auth.removeUser()}
+              onClick={() => {
+                // auth.removeUser();
+                // localStorage.clear();
+                auth.signoutRedirect();
+              }}
             >
               Log out
             </button>
@@ -31,7 +37,9 @@ export default function Header() {
           <button
             className="shareBtn"
             style={{ marginLeft: "18px" }}
-            onClick={() => void auth.signinRedirect()}
+            onClick={() => {
+              auth.signinRedirect();
+            }}
           >
             Log in
           </button>
