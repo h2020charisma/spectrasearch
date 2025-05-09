@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "rimraf dist && vite build",
     "build-docker": "rimraf dist && vite build --base=/search",
+    "build-serve": "rimraf dist && vite build --base /search --outDir dist/search && http-server -a 127.0.0.1 -p 50722 dist",
     "clean": "rimraf dist",
+    "dev": "vite",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "rimraf dist && vite build --base /search --outDir dist/search && http-server -a localhost -p 0 -o /search dist"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@h5web/app": "^12.0.1",
@@ -34,12 +35,13 @@
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
+    "cypress": "^14.3.3",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "http-server": "^14.1.1",
-    "rimraf": "^5.0.8",
+    "rimraf": "^6.0.0",
     "vite": "^5.2.0"
   }
 }
