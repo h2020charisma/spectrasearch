@@ -124,7 +124,7 @@ export default function SearchComp({ setDomain }) {
             />
           </div>
         </Expander>
-        <Expander title="Select Spectrum" status={true}>
+        <Expander title="Search Results" status={true}>
           <ErrorBoundary
             fallback={
               <div className="errorMessage">
