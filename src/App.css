@@ -16,25 +16,13 @@ h1 {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  /* margin-bottom: 4rem; */
   height: 60px;
   padding: 0 20px;
   border-bottom: 1px solid #dadada;
   cursor: pointer;
   color: light-dark(#202020, #fff);
   background-color: light-dark(#fff, #202020);
-}
-
-.usersInfo {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
-}
-
-.username {
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: capitalize;
 }
 
 /* Main Layout */
@@ -54,7 +42,11 @@ h1 {
 
 .content {
   width: 100%;
-  /* background-color: light-dark(#fff, #202020); */
+  background-color: light-dark(#fff, #202020);
+}
+.expanderContent {
+  height: 500px;
+  overflow: scroll;
 }
 
 .expander {
@@ -347,7 +339,7 @@ h1 {
 .metadataInfoValue {
   font-size: 14px;
   font-weight: 500;
-  margin-left: 0.2rem;
+  padding-right: 0.2rem;
   color: light-dark(#3d3d3d, #fff);
 }
 
@@ -378,6 +370,39 @@ h1 {
   margin: 0.3rem 0;
   display: inline-block;
   color: #454545;
+}
+.foundLabel {
+  font-size: 11px;
+  font-weight: 600 !important;
+  letter-spacing: 0.4px;
+  background-color: #d9ffb3;
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+
+  margin: 0.3rem 0;
+  display: inline-block;
+  color: #454545;
+}
+.describLabel {
+  font-size: 12px;
+  font-weight: 600 !important;
+  background-color: #effcff;
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin: 0.3rem 0;
+  display: inline-block;
+  color: #454545;
+}
+
+.infoSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: 36px;
 }
 
 .footer {
@@ -450,4 +475,39 @@ h1 {
 
 .read-the-docs {
   color: #888;
+}
+
+.search-filters-wrap {
+  height: 62px;
+  /* margin-bottom: 6px; */
+}
+
+.search-filters {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.search-filters-item p {
+  margin: 0;
+}
+
+.search-filters-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: #c2f2ff 1px solid;
+  background-color: #f8fdff;
+
+  width: fit-content;
+  border-radius: 4px;
+  padding-right: 10px;
+  /* cursor: pointer; */
+}
+.search-filters-item:hover {
+  border: #63ddff 1px solid;
+  background-color: #effcff;
+  transition-duration: 300ms;
 }
