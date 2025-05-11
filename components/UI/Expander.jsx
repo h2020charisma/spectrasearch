@@ -1,35 +1,26 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+/* eslint-disable react/prop-types */
 import { useMeasure } from "@uidotdev/usehooks";
-import ArrowOpen from "../Icons/Arrow";
+import { motion } from "framer-motion";
+import { useState } from "react";
 import { IconContext } from "react-icons";
+import ArrowOpen from "../Icons/Arrow";
 
+import { AiFillDatabase, AiFillTool } from "react-icons/ai";
+import { FaChartBar } from "react-icons/fa";
 import { MdFileUpload } from "react-icons/md";
 import { PiEyedropperFill, PiWaveSineBold } from "react-icons/pi";
-import { AiFillDatabase, AiFillTool } from "react-icons/ai";
-import { TbZoomCodeFilled } from "react-icons/tb";
 import { SiPowerpages } from "react-icons/si";
-import { FaChartBar } from "react-icons/fa";
+import { TbZoomCodeFilled } from "react-icons/tb";
+
 import Notification from "./Notification";
 
 // eslint-disable-next-line react/prop-types
-export default function Expander({ children, title, status }) {
+export default function Expander({ children, title, status, data }) {
   const [open, setOpen] = useState(status);
   const [ref, { height }] = useMeasure();
 
   return (
-    <div
-      // style={{
-      //   border: "1px solid #ccc",
-      //   padding: "0.8rem",
-      //   borderRadius: "6px",
-      //   margin: "0 0 0.5rem 0",
-      //   overflow: "hidden",
-      //   backgroundColor: "#f8fcff",
-      //   color: "#454545",
-      // }}
-      className="expander"
-    >
+    <div className="expander">
       <div
         onClick={() => setOpen(!open)}
         style={{
@@ -58,6 +49,9 @@ export default function Expander({ children, title, status }) {
               {title == "Pages" && <SiPowerpages />}
               {title == "Search Results" && <FaChartBar />}
               {title}
+              {title == "Search Results" && (
+                <p className="foundLabel">{data?.length} hits found</p>
+              )}
             </div>
           </IconContext.Provider>
         </div>
@@ -66,21 +60,22 @@ export default function Expander({ children, title, status }) {
             <Notification>Description goes here</Notification>
           )}
 
-          {/* <ArrowOpen open={open} /> */}
+          <ArrowOpen open={open} />
         </div>
-
-        <ArrowOpen open={open} />
       </div>
       <motion.div animate={{ height }}>
-        <div ref={ref}>
+        <div
+          ref={ref}
+          className={title == "Search Results" && open && "expanderContent"}
+        >
           {open && (
-            <div>
-              <hr
+            <div style={{ marginTop: "1rem" }}>
+              {/* <hr
                 style={{
                   border: "1px solid #e7e7e7",
                   marginTop: "1rem",
                 }}
-              />
+              /> */}
               {children}
             </div>
           )}
