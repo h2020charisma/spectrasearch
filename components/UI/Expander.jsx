@@ -56,7 +56,7 @@ export default function Expander({ children, title, status }) {
               {title == "Search by Instrument" && <AiFillTool />}
               {title == "Search by Wavelenth" && <PiWaveSineBold />}
               {title == "Pages" && <SiPowerpages />}
-              {title == "Select Spectrum" && <FaChartBar />}
+              {title == "Search Results" && <FaChartBar />}
               {title}
             </div>
           </IconContext.Provider>
@@ -66,7 +66,7 @@ export default function Expander({ children, title, status }) {
             <Notification>Description goes here</Notification>
           )}
 
-          <ArrowOpen open={open} />
+          {/* <ArrowOpen open={open} /> */}
         </div>
 
         <ArrowOpen open={open} />
