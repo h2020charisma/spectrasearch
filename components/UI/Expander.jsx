@@ -10,6 +10,7 @@ import { AiFillDatabase, AiFillTool } from "react-icons/ai";
 import { TbZoomCodeFilled } from "react-icons/tb";
 import { SiPowerpages } from "react-icons/si";
 import { FaChartBar } from "react-icons/fa";
+import Notification from "./Notification";
 
 // eslint-disable-next-line react/prop-types
 export default function Expander({ children, title, status }) {
@@ -59,6 +60,13 @@ export default function Expander({ children, title, status }) {
               {title}
             </div>
           </IconContext.Provider>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+          {title == "Search Results" && (
+            <Notification>Description goes here</Notification>
+          )}
+
+          <ArrowOpen open={open} />
         </div>
 
         <ArrowOpen open={open} />
