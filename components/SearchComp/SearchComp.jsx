@@ -10,7 +10,7 @@ import SideBarToggle from "../Icons/SideBarToggle";
 import ImageSelect from "../ImageSelect/ImageSelect";
 import Expander from "../UI/Expander";
 import SelectNumber from "../UI/SelectNumber";
-
+import DisplaySearchFilters from "../DisplaySearchFilters/DisplaySearchFilters";
 import "../../src/App.css";
 
 import Sidebar from "../Sidebar/Sidebar";
@@ -97,6 +97,18 @@ export default function SearchComp({ setDomain }) {
       </div>
 
       <div className="content">
+        <DisplaySearchFilters
+          qQuery={qQuery}
+          setqQuery={setqQuery}
+          provider={provider}
+          setProvider={setProvider}
+          instrument={instrument}
+          setInstrument={setInstrument}
+          wavelengths={wavelengths}
+          setWavelengths={setWavelengths}
+          reference={reference}
+          setReference={setReference}
+        />
         {file && imageData && (
           <div className="imageUploded">
             <img src={imageData && imageData.imageLink} />
