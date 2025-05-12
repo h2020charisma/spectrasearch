@@ -110,7 +110,7 @@ export default function Sidebar({
           />
         </ErrorBoundary>
       </Expander>
-      {/* <Expander title="Pages">
+      <Expander title="Pages">
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <SelectNumber value={pages} setValue={setPages} label="Pages" />
           <SelectNumber
@@ -119,7 +119,7 @@ export default function Sidebar({
             label="Numbers of Hits"
           />
         </div>
-      </Expander> */}
+      </Expander>
     </div>
   );
 }

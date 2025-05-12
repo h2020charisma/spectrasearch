@@ -114,7 +114,7 @@ export default function SearchComp({ setDomain }) {
             <img src={imageData && imageData.imageLink} />
           </div>
         )}
-        <Expander title="Pages">
+        {/* <Expander title="Pages">
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <SelectNumber value={pages} setValue={setPages} label="Pages" />
             <SelectNumber
@@ -123,8 +123,8 @@ export default function SearchComp({ setDomain }) {
               label="Numbers of Hits"
             />
           </div>
-        </Expander>
-        <Expander title="Search Results" status={true}>
+        </Expander> */}
+        <Expander title="Search Results" status={true} data={data}>
           <ErrorBoundary
             fallback={
               <div className="errorMessage">

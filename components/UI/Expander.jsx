@@ -19,6 +19,8 @@ export default function Expander({ children, title, status, data }) {
   const [open, setOpen] = useState(status);
   const [ref, { height }] = useMeasure();
 
+  console.log("Data", data);
+
   return (
     <div className="expander">
       <div
