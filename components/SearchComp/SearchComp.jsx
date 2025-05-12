@@ -9,8 +9,9 @@ import Chart from "../Chart/Chart";
 import SideBarToggle from "../Icons/SideBarToggle";
 import ImageSelect from "../ImageSelect/ImageSelect";
 import Expander from "../UI/Expander";
-import SelectNumber from "../UI/SelectNumber";
+
 import DisplaySearchFilters from "../DisplaySearchFilters/DisplaySearchFilters";
+
 import "../../src/App.css";
 
 import Sidebar from "../Sidebar/Sidebar";
