@@ -3,7 +3,8 @@ import { AuthProvider, useAuth } from "react-oidc-context";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
+import HitPage from "../pages/HitPage.jsx";
+import HomePage from "../pages/HomePage.jsx";
 import "./index.css";
 
 const oidcConfig = {
@@ -19,13 +20,17 @@ const router = createBrowserRouter(
   [
     {
       path: "/",
-      Component: App,
+      Component: HomePage,
+    },
+    {
+      path: "/:hitId/*",
+      Component: HitPage,
     },
   ],
   { basename: "/search/" }
 );
 
-const Main = () => {
+export const Main = () => {
   const auth = useAuth();
 
   const token = auth.user?.access_token;
@@ -37,12 +42,9 @@ const Main = () => {
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register(
-          "/search/serviceWorker.js",
-          {
-            scope: "/search/",
-          }
-        );
+        const registration = await navigator.serviceWorker.register(base_url, {
+          scope: "/search/",
+        });
 
         await registration.active.postMessage({
           type: "TOKEN",

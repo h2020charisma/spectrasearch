@@ -86,9 +86,9 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
   return (
     <div className="chartWrap">
       <div className="domainInfo">
-        <div>
-          {!isNexusFile && <span className="fileName">Domain</span>}
-          <span className="metadataInfoValue">{data && data.domain}</span>
+        <div className="domainInfoTitle">
+          {!isNexusFile && <div className="fileName">Domain</div>}
+          <div className="metadataInfoValue">{data && data.domain}</div>
         </div>
         <div>
           <button
