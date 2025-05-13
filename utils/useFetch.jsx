@@ -42,7 +42,7 @@ function useFetch(url) {
           setLoading(false);
         });
     }
-  }, [kc_token, url]);
+  }, [axiosInstance, kc_token, url]);
 
   return { data, loading };
 }
