@@ -34,6 +34,7 @@ function useFetch(url) {
         .get(url)
         .then((response) => {
           setData(response.data);
+          console.log("Data fetched successfully:", response.data);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -42,7 +43,8 @@ function useFetch(url) {
           setLoading(false);
         });
     }
-  }, [axiosInstance, kc_token, url]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kc_token, url]);
 
   return { data, loading };
 }
