@@ -8,7 +8,6 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
   const setImageSelectedStore = useImageStore(
     (state) => state.setImageSelected
   );
-  console.log(imgSelected);
 
   const renderImageSelect =
     data &&

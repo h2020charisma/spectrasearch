@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useAuth } from "react-oidc-context";
 
@@ -51,6 +51,10 @@ export default function SearchComp({ setDomain }) {
   const urlPath = imageData ? fileSearchUrlPath : searchUrlPath;
 
   const { data, loading } = useFetch(urlPath);
+
+  // // const data = [];
+
+  console.log("🚀 ~ file: SearchComp.jsx:56 ~ SearchComp ~ data:", data);
 
   return (
     <div className="main">
