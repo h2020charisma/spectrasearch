@@ -1,9 +1,11 @@
 /* eslint-disable react/prop-types */
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate, Link } from "react-router-dom";
 import { useImageStore } from "../../store/store";
+import OpenNew from "../Icons/OpenNew";
 
 export default function ImageSelect({ data, imageSelected, setImageSelected }) {
   const imgSelected = useImageStore((state) => state.imageSelected);
+  const navigate = useNavigate();
 
   const setImageSelectedStore = useImageStore(
     (state) => state.setImageSelected
@@ -12,19 +14,29 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
   const renderImageSelect =
     data &&
     data.map((img, i) => (
-      <div
-        key={i}
-        onClick={() => {
-          setImageSelected(img.value);
-          setImageSelectedStore(img.value);
-        }}
-        className={`${
-          imageSelected == img.value ? "imageSelected" : "imageNonSelected"
-        }`}
-      >
-        {imageSelected && <Navigate to={`/${imageSelected}`} replace={true} />}
-
-        <img src={img.imageLink} width={200} height={"auto"} />
+      <div key={i}>
+        {/* {imageSelected && (
+          // <Navigate to={`/hits/${imageSelected}`} replace={true} />
+          // <Navigate to={`/h5web/${img.value}`} replace={true} />
+        )} */}
+        <div
+          onClick={() => {
+            setImageSelected(img.value);
+            setImageSelectedStore(img.value);
+            if (imageSelected) navigate(`/h5web/${img.value}`);
+          }}
+          className={`${
+            // imageSelected == img.value ? "imageSelected" : "imageNonSelected"
+            "imageNonSelected"
+          }`}
+        >
+          <img
+            className="imgSelected"
+            src={img.imageLink}
+            width={200}
+            height={"auto"}
+          />
+        </div>
         <p className="imgCaption">
           {img.score && (
             <span style={{ color: "#D20003", fontSize: "12px" }}>
@@ -32,8 +44,21 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
               <span style={{ color: "#000" }}>|</span>&nbsp;&nbsp;
             </span>
           )}
-          <span>{img.text}</span>
         </p>
+        <div className="imgDiscription">
+          <span>{img.text}</span>
+          <button
+            className="exploreH5web"
+            onClick={() => {
+              // setImageSelected(img.value);
+              // setImageSelectedStore(img.value);
+              navigate(`/hits/${img.value}`);
+            }}
+          >
+            <span>Preview</span>
+            {/* <OpenNew /> */}
+          </button>
+        </div>
       </div>
     ));
   return (
@@ -44,7 +69,7 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
       {data && data.length > 0 ? (
         renderImageSelect
       ) : (
-        <p style={{ color: "darkred" }}>Sorry, no data avaible</p>
+        <p style={{ color: "darkred" }}>Please log in to see search results</p>
       )}
     </div>
   );

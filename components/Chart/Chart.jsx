@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 import * as Plot from "@observablehq/plot";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import useFetch from "../../utils/useFetch";
 
 export default function Chart({ imageSelected, setDomain, isNexusFile }) {
   const containerRef = useRef();
+  const navigate = useNavigate();
 
   const datasetQuery = !isNexusFile
     ? `${import.meta.env.VITE_BaseURL}db/dataset?domain=${encodeURIComponent(
@@ -107,7 +109,8 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
             rel="noopener noreferrer"
             style={{ marginLeft: "16px" }}
             onClick={() => {
-              window.open(`?h5web=${imageSelected}`, "_blank");
+              navigate(`/h5web/${imageSelected}`);
+              // window.open(`?h5web=${imageSelected}`, "_blank");
               if (!isNexusFile) {
                 setDomain(data.domain);
               }
