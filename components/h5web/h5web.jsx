@@ -2,12 +2,14 @@ import "@h5web/app/dist/styles.css";
 
 import { App, HsdsProvider } from "@h5web/app";
 import { useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
+import BackArrow from "../Icons/BackArrow";
 
 // eslint-disable-next-line react/prop-types
 export default function H5web({ domain }) {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const queryParams = new URLSearchParams(location.search);
   const h5webParams = queryParams.get("h5web");
@@ -43,6 +45,10 @@ export default function H5web({ domain }) {
   return (
     <div>
       <div className="downloadBtn">
+        <div className="backArrow" onClick={() => navigate("/")}>
+          <BackArrow />
+          <p>Back to Home page</p>
+        </div>
         <button className="shareBtn" onClick={() => downloadFile()}>
           Download the file
         </button>

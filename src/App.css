@@ -115,10 +115,33 @@ h1 {
 }
 
 .imageNonSelected {
-  border: 4px solid light-dark(#fff, #3d3d3d);
+  border: 2px solid light-dark(#fff, #3d3d3d);
   padding: 0.8rem;
   cursor: pointer;
   background-color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.imageNonSelected:hover {
+  border: 2px solid #74deff;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: all 0.5s;
+}
+
+.imgDiscription {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+}
+.imgDiscription > span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0b5990;
 }
 
 .selectItem {
@@ -145,11 +168,11 @@ h1 {
 
 .imgCaption {
   text-align: center;
-  background-color: #f0f8ff;
-  color: #12194b;
-  padding: 0.4rem 0.2rem;
-  margin-bottom: 0;
-  font-size: 14px;
+  /* background-color: #f0f8ff; */
+  color: #0b5990;
+  /* padding: 0.4rem 0.2rem; */
+  margin: 5px 0 0 0;
+  font-size: 16px;
   font-weight: 500;
 }
 
@@ -221,9 +244,9 @@ h1 {
 
 .downloadBtn {
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem 1rem 0rem 1rem;
 }
 
 .imageUploded {
@@ -540,4 +563,25 @@ h1 {
   justify-content: flex-start;
   align-items: baseline;
   gap: 6px;
+}
+
+.exploreH5web {
+  background-color: #ecffd5;
+  color: #454545;
+  height: 30px;
+  font-size: smaller;
+  margin: 10px 0 0 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.exploreH5web:hover {
+  border-color: #6eca44;
+  transition: all 0.2s;
+}
+.exploreH5web:focus {
+  outline: none;
 }

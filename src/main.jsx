@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import HitPage from "../pages/HitPage.jsx";
 import HomePage from "../pages/HomePage.jsx";
+import H5webPage from "../pages/H5webPage.jsx";
 import "./index.css";
 
 const oidcConfig = {
@@ -23,7 +24,11 @@ const router = createBrowserRouter(
       Component: HomePage,
     },
     {
-      path: "/:hitId/*",
+      path: "/h5web/:domain/*",
+      Component: H5webPage,
+    },
+    {
+      path: "/hits/:hitId/*",
       Component: HitPage,
     },
   ],
@@ -42,9 +47,12 @@ export const Main = () => {
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
       try {
-        const registration = await navigator.serviceWorker.register(base_url, {
-          scope: "/search/",
-        });
+        const registration = await navigator.serviceWorker.register(
+          "/search/serviceWorker.js",
+          {
+            scope: "/search/",
+          }
+        );
 
         await registration.active.postMessage({
           type: "TOKEN",
