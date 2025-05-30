@@ -1,12 +1,9 @@
 /* eslint-disable react/prop-types */
-import { Navigate, useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useImageStore } from "../../store/store";
-import OpenNew from "../Icons/OpenNew";
+import PreviewDialog from "../PreviewDialog/PreviewDialog";
 
-export default function ImageSelect({ data, imageSelected, setImageSelected }) {
-  const imgSelected = useImageStore((state) => state.imageSelected);
-  const navigate = useNavigate();
-
+export default function ImageSelect({ data }) {
   const setImageSelectedStore = useImageStore(
     (state) => state.setImageSelected
   );
@@ -15,27 +12,23 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
     data &&
     data.map((img, i) => (
       <div key={i}>
-        {/* {imageSelected && (
-          // <Navigate to={`/hits/${imageSelected}`} replace={true} />
-          // <Navigate to={`/h5web/${img.value}`} replace={true} />
-        )} */}
         <div
           onClick={() => {
-            setImageSelected(img.value);
             setImageSelectedStore(img.value);
-            if (imageSelected) navigate(`/h5web/${img.value}`);
           }}
           className={`${
             // imageSelected == img.value ? "imageSelected" : "imageNonSelected"
             "imageNonSelected"
           }`}
         >
-          <img
-            className="imgSelected"
-            src={img.imageLink}
-            width={200}
-            height={"auto"}
-          />
+          <Link to={`/h5web/${img.value}`} target="_blank">
+            <img
+              className="imgSelected"
+              src={img.imageLink}
+              width={200}
+              height={"auto"}
+            />
+          </Link>
         </div>
         <p className="imgCaption">
           {img.score && (
@@ -47,17 +40,13 @@ export default function ImageSelect({ data, imageSelected, setImageSelected }) {
         </p>
         <div className="imgDiscription">
           <span>{img.text}</span>
-          <button
-            className="exploreH5web"
+          <div
             onClick={() => {
-              // setImageSelected(img.value);
-              // setImageSelectedStore(img.value);
-              navigate(`/hits/${img.value}`);
+              setImageSelectedStore(img.value);
             }}
           >
-            <span>Preview</span>
-            {/* <OpenNew /> */}
-          </button>
+            <PreviewDialog />
+          </div>
         </div>
       </div>
     ));
