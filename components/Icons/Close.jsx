@@ -9,12 +9,12 @@ export default function Close() {
     >
       <path
         d="M0.928955 0.928955L15.0711 15.0711"
-        stroke="darkred"
+        stroke="#292929"
         strokeWidth="2"
       />
       <path
         d="M15.071 0.928955L0.928908 15.0711"
-        stroke="darkred"
+        stroke="#292929"
         strokeWidth="2"
       />
     </svg>

@@ -166,7 +166,7 @@ export default function SearchComp({ setDomain }) {
         ) : (
           // </ErrorBoundary>
           <div className="errorMessage">
-            {auth.isAuthenticated && <p>No image selected</p>}
+            {/* {auth.isAuthenticated && <p>No image selected</p>} */}
           </div>
         )}
       </div>
