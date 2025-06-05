@@ -1,8 +1,9 @@
 import { create } from "zustand";
 
-export const useImageStore = create((set) => ({
+export const useStore = create((set) => ({
   imageSelected: null,
+  tableView: false,
+  setTableView: (tableView) => set(() => ({ tableView: tableView })),
   setImageSelected: (imageSelected) =>
     set(() => ({ imageSelected: imageSelected })),
-  //   updateFirstName: (firstName) => set(() => ({ firstName: firstName })),
 }));

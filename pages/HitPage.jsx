@@ -5,7 +5,7 @@ import Chart from "../components/Chart/Chart";
 import BackArrow from "../components/Icons/BackArrow";
 import { useNavigate } from "react-router-dom";
 
-import { useImageStore } from "../store/store";
+import { useStore } from "../store/store";
 
 export default function HitPage() {
   const location = useLocation();
@@ -13,7 +13,7 @@ export default function HitPage() {
 
   let imageSelected = location.pathname + location.hash;
 
-  const imgSelected = useImageStore((state) => state.imageSelected);
+  const imgSelected = useStore((state) => state.imageSelected);
 
   let isNexusFile = false;
 

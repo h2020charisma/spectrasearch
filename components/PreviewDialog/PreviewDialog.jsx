@@ -1,26 +1,39 @@
+/* eslint-disable react/prop-types */
 import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useImageStore } from "../../store/store";
+import { useStore } from "../../store/store";
 import Chart from "../Chart/Chart";
+import PreviewIcon from "../Icons/PreviewIcon";
 
 import Close from "../Icons/Close";
 import "./PreviewDialog.css";
 
-export default function PreviewDialog() {
+export default function PreviewDialog({ img }) {
   const [open, setOpen] = useState(false);
-  const imageSelectedStore = useImageStore((state) => state.imageSelected);
+  const imageSelectedStore = useStore((state) => state.imageSelected);
+  const tableView = useStore((state) => state.tableView);
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button
-          data-cy="preferences-btn"
-          id="preferences"
-          className="exploreH5web"
-        >
-          Preview
-        </button>
+        {tableView ? (
+          <button
+            data-cy="preferences-btn"
+            id="preferences"
+            className="exploreH5web"
+          >
+            <PreviewIcon />
+          </button>
+        ) : (
+          <button
+            data-cy="preferences-btn"
+            id="preferences"
+            className="exploreH5web"
+          >
+            Preview
+          </button>
+        )}
       </Dialog.Trigger>
       <AnimatePresence>
         {open && (
@@ -48,7 +61,7 @@ export default function PreviewDialog() {
                 </div>
                 <Dialog.Description className="DialogDescription">
                   <Chart
-                    imageSelected={imageSelectedStore}
+                    imageSelected={img || imageSelectedStore}
                     setDomain=""
                     isNexusFile={false}
                   />
