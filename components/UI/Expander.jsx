@@ -11,18 +11,24 @@ import { MdFileUpload } from "react-icons/md";
 import { PiEyedropperFill, PiWaveSineBold } from "react-icons/pi";
 import { SiPowerpages } from "react-icons/si";
 import { TbZoomCodeFilled } from "react-icons/tb";
+import GridViewIcon from "../Icons/GridViewIcon";
+import TableViewIcon from "../Icons/TableViewIcon";
 
 import Notification from "./Notification";
+import { useStore } from "../../store/store";
 
 // eslint-disable-next-line react/prop-types
 export default function Expander({ children, title, status, data }) {
   const [open, setOpen] = useState(status);
   const [ref, { height }] = useMeasure();
 
+  const tableView = useStore((state) => state.tableView);
+  const setTableView = useStore((state) => state.setTableView);
+
   return (
     <div className="expander">
       <div
-        onClick={() => setOpen(!open)}
+        onClick={() => title !== "Search Results" && setOpen(!open)}
         style={{
           display: "flex",
           alignItems: "center",
@@ -50,17 +56,35 @@ export default function Expander({ children, title, status, data }) {
               {title == "Search Results" && <FaChartBar />}
               {title}
               {title == "Search Results" && (
-                <p className="foundLabel">{data?.length} hits found</p>
+                <p className="foundLabel">
+                  {data?.length > 0 ? data?.length : "no"} hits found
+                </p>
               )}
             </div>
           </IconContext.Provider>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "26px" }}>
           {title == "Search Results" && (
-            <Notification>Description goes here</Notification>
+            <>
+              <Notification>Description goes here</Notification>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  marginRight: "1rem",
+                }}
+              >
+                <div className="viewMode" onClick={() => setTableView(false)}>
+                  <GridViewIcon active={!tableView} />
+                </div>
+                <div className="viewMode" onClick={() => setTableView(true)}>
+                  <TableViewIcon active={tableView} />
+                </div>
+              </div>
+            </>
           )}
-
-          <ArrowOpen open={open} />
+          {title !== "Search Results" && <ArrowOpen open={open} />}
         </div>
       </div>
       <motion.div animate={{ height }}>

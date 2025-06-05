@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
-import { useImageStore } from "../../store/store";
+import { useStore } from "../../store/store";
 import PreviewDialog from "../PreviewDialog/PreviewDialog";
+import TableView from "./TableView";
 
 export default function ImageSelect({ data }) {
-  const setImageSelectedStore = useImageStore(
-    (state) => state.setImageSelected
-  );
+  const tableView = useStore((state) => state.tableView);
+  const setImageSelectedStore = useStore((state) => state.setImageSelected);
 
   const renderImageSelect =
     data &&
@@ -45,7 +45,7 @@ export default function ImageSelect({ data }) {
               setImageSelectedStore(img.value);
             }}
           >
-            <PreviewDialog />
+            <PreviewDialog img={img.value} />
           </div>
         </div>
       </div>
@@ -56,7 +56,11 @@ export default function ImageSelect({ data }) {
         <p>Sorry</p>
       )}
       {data && data.length > 0 ? (
-        renderImageSelect
+        tableView ? (
+          <TableView data={data} />
+        ) : (
+          renderImageSelect
+        )
       ) : (
         <p style={{ color: "darkred" }}>Please log in to see search results</p>
       )}

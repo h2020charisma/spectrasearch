@@ -101,7 +101,7 @@ h1 {
 .imageSelectWrap {
   padding: 1rem 0;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 20px;
@@ -428,7 +428,41 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  height: 36px;
+  height: 40px;
+}
+
+.tableBody {
+  width: 100%;
+  padding: 0 0.6rem;
+}
+
+.tableView {
+  width: 100%;
+}
+.tableHeader {
+  text-align: left;
+}
+
+.tableRow {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  gap: 40px;
+}
+
+.tableImage {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.tableRowWrap {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
 }
 
 .footer {
@@ -586,4 +620,18 @@ h1 {
 }
 .exploreH5web:focus {
   outline: none;
+}
+
+.viewMode {
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.viewMode:hover {
+  background-color: aliceblue;
+  border-radius: 4px;
+  transition: all 0.2s;
 }
