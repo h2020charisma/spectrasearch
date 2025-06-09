@@ -2,7 +2,8 @@
 import { Link } from "react-router-dom";
 import { useStore } from "../../store/store";
 import PreviewDialog from "../PreviewDialog/PreviewDialog";
-import TableView from "./TableView";
+// import TableView from "./TableView";
+import DataTable from "../DataTable/DataTable";
 
 export default function ImageSelect({ data }) {
   const tableView = useStore((state) => state.tableView);
@@ -57,7 +58,7 @@ export default function ImageSelect({ data }) {
       )}
       {data && data.length > 0 ? (
         tableView ? (
-          <TableView data={data} />
+          <DataTable data={data} />
         ) : (
           renderImageSelect
         )
