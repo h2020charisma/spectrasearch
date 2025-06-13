@@ -21,6 +21,7 @@ const columns = [
     header: "Text",
     accessorKey: "text",
     cell: (props) => props.getValue().trim(),
+    size: 100,
   },
   {
     header: "Score",
@@ -83,25 +84,28 @@ export default function DataTable({ data }) {
           All
         </label> */}
         {table.getAllLeafColumns().map((column) => {
-          return (
-            <div key={column.id} className="columnVisibilityCheckbox">
-              <label
-                className={`${
-                  column.getIsVisible() ? "col-visible" : "col-hidden"
-                }`}
-              >
-                <input
-                  {...{
-                    type: "checkbox",
-                    checked: column.getIsVisible(),
-                    onChange: column.getToggleVisibilityHandler(),
-                    disabled: !column.getCanHide(),
-                  }}
-                />{" "}
-                {column.columnDef.header}
-              </label>
-            </div>
-          );
+          console.log(column);
+          if (column.columnDef.header !== "Preview") {
+            return (
+              <div key={column.id} className="columnVisibilityCheckbox">
+                <label
+                  className={`${
+                    column.getIsVisible() ? "col-visible" : "col-hidden"
+                  }`}
+                >
+                  <input
+                    {...{
+                      type: "checkbox",
+                      checked: column.getIsVisible(),
+                      onChange: column.getToggleVisibilityHandler(),
+                      disabled: !column.getCanHide(),
+                    }}
+                  />{" "}
+                  {column.columnDef.header}
+                </label>
+              </div>
+            );
+          }
         })}
       </div>
       <table className="table">
