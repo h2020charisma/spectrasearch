@@ -13,6 +13,11 @@ import ChartIcon from "../Icons/ChartIcon";
 
 const columns = [
   {
+    header: "#",
+    accessorKey: "",
+    cell: (props) => <span>{props.row.index + 1}</span>,
+  },
+  {
     header: "Text",
     accessorKey: "text",
     cell: (props) => props.getValue().trim(),
@@ -26,7 +31,7 @@ const columns = [
           {props.getValue().toFixed(3).trim()}
         </span>
       ) : (
-        "no score"
+        ""
       ),
   },
   {
@@ -43,64 +48,108 @@ const columns = [
     ),
   },
   {
-    accessorKey: "value",
+    header: "Preview",
+    accessorKey: "preview",
     cell: (props) => <PreviewDialog img={props.getValue()} />,
   },
 ];
 
 export default function DataTable({ data }) {
+  const [columnVisibility, setColumnVisibility] = useState({});
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     columnResizeMode: "onChange",
+    state: {
+      columnVisibility,
+    },
+    onColumnVisibilityChange: setColumnVisibility,
   });
   //   console.log(table.getRowModel().rows[0].original.value);
 
   return (
-    <Box className="table" w={table.getTotalSize()}>
-      {table.getHeaderGroups().map((headerGroup) => (
-        <Box key={headerGroup.id} className="tr">
-          {headerGroup.headers.map((header) => (
-            <Box
-              key={header.id}
-              className="th"
-              w={header.getSize()}
-              //   style={{ width: `${header.getSize()}px` }}
-            >
-              {header.isPlaceholder ? null : (
-                <Box>
-                  {header.column.columnDef.header}
-                  <Box
-                    onMouseDown={header.getResizeHandler()}
-                    onTouchStart={header.getResizeHandler()}
-                    className={`resizer ${
-                      header.column.getIsResizing() ? "isResizing" : ""
-                    }`}
-                  ></Box>
-                </Box>
-              )}
-            </Box>
+    <div className="tableContainer">
+      <div className="columnVisibilityCheckboxes">
+        {/* <label>
+          <input
+            {...{
+              type: "checkbox",
+              checked: table.getIsAllColumnsVisible(),
+              onChange: table.getToggleAllColumnsVisibilityHandler(),
+            }}
+          />{" "}
+          All
+        </label> */}
+        {table.getAllLeafColumns().map((column) => {
+          return (
+            <div key={column.id} className="columnVisibilityCheckbox">
+              <label
+                className={`${
+                  column.getIsVisible() ? "col-visible" : "col-hidden"
+                }`}
+              >
+                <input
+                  {...{
+                    type: "checkbox",
+                    checked: column.getIsVisible(),
+                    onChange: column.getToggleVisibilityHandler(),
+                    disabled: !column.getCanHide(),
+                  }}
+                />{" "}
+                {column.columnDef.header}
+              </label>
+            </div>
+          );
+        })}
+      </div>
+      <table className="table">
+        <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id} className="tr">
+              {headerGroup.headers.map((header) => (
+                <th key={header.id} colSpan={header.colSpan} className="th">
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </th>
+              ))}
+            </tr>
           ))}
-        </Box>
-      ))}
-      {table.getRowModel().rows.map((row, idx) => {
-        return (
-          <Box className="tr" key={row.id}>
-            {idx + 1}
-
-            <TableRowHover img={row.original} />
-            {row.getVisibleCells().map((cell) => {
-              return (
-                <Box className="td" w={cell.column.getSize()} key={cell.id}>
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id} className="tr">
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id} className="td">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </Box>
-              );
-            })}
-          </Box>
-        );
-      })}
-    </Box>
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          {table.getFooterGroups().map((footerGroup) => (
+            <tr key={footerGroup.id}>
+              {footerGroup.headers.map((header) => (
+                <th key={header.id} colSpan={header.colSpan}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.footer,
+                        header.getContext()
+                      )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </tfoot>
+      </table>
+    </div>
   );
 }
 

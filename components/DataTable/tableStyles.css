@@ -1,7 +1,13 @@
 .box {
   padding: 6px 20px;
 }
-
+.tableContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 .table {
   border-collapse: collapse;
   width: 100%;
@@ -9,15 +15,10 @@
 }
 .tr {
   position: relative;
-
-  display: flex;
   width: 100%;
   height: 46px;
   padding: 0 0.6rem;
   font-size: 0.875rem;
-  gap: 32px;
-  align-items: center;
-  justify-content: flex-start;
   border-bottom: 1px solid #dddddd;
 }
 
@@ -26,12 +27,23 @@
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
-
-.td:first-child {
-  font-size: 14px;
-  font-weight: 500;
-  color: #0b5990;
+.th {
+  text-align: left;
 }
+
+.td,
+.th {
+  padding: 0 0.4rem;
+  width: fit-content;
+}
+
+.td:last-child,
+.th:last-child {
+  position: absolute;
+  top: 10px;
+  right: 0;
+}
+
 .tr:first-child {
   z-index: 1;
   background: white;
@@ -39,25 +51,13 @@
   top: 0;
   padding-left: 6.3rem;
 }
-.tr:first-child:hover {
-  background-color: transparent;
+.td:nth-child(2) {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0b5990;
 }
-
-.td:last-child {
-  position: absolute;
-  right: 7px;
-  top: 7px;
-}
-
-.th {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.875rem;
-  text-align: center;
-  color: #333;
+.table > .tr:first-child:hover {
+  background-color: #ffffff;
 }
 
 /* ".resizer": {
@@ -93,4 +93,47 @@
 .resizer.isResizing {
   background-color: #0b5990;
   opacity: 1;
+}
+
+.columnVisibilityCheckboxes {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 0 8px;
+  margin: 0 0 20px 0;
+}
+
+.columnVisibilityCheckbox > label > input[type="checkbox"] {
+  display: none;
+}
+
+.col-visible {
+  font-size: 10px;
+  font-weight: 600 !important;
+  letter-spacing: 0.4px;
+  padding: 0.2rem 0.5rem;
+  background-color: #696969;
+  border: 1px solid #696969;
+  border-radius: 4px;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+.col-hidden {
+  font-size: 10px;
+  font-weight: 600 !important;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #a4a4a4;
+  border-radius: 4px;
+  color: #a4a4a4;
+
+  user-select: none;
 }
