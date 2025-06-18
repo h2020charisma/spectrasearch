@@ -100,7 +100,7 @@
   align-items: center;
   justify-content: flex-start;
   gap: 12px;
-  padding: 0 8px;
+  padding: 0 4px;
   margin: 0 0 20px 0;
 }
 
@@ -136,4 +136,24 @@
   color: #a4a4a4;
 
   user-select: none;
+}
+
+.header-No {
+  width: 20px;
+}
+
+.header-Text {
+  width: 30px;
+}
+
+.global-filter-input {
+  width: 99%;
+  padding: 1rem 0 0.6rem 0.6rem;
+  border: none;
+  border-bottom: 1px solid #ccc;
+}
+
+.global-filter-input:focus {
+  outline: none;
+  border-bottom: 1px solid #0b5990;
 }
