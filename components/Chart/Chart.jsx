@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import useFetch from "../../utils/useFetch";
 
-export default function Chart({ imageSelected, setDomain, isNexusFile }) {
+export default function Chart({ imageSelected, isNexusFile }) {
   const containerRef = useRef();
 
   const datasetQuery = !isNexusFile
@@ -15,19 +15,19 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
 
   const { data, loading } = useFetch(imageSelected && datasetQuery);
 
-  const [copied, setCopied] = useState(false);
+  // const [copied, setCopied] = useState(false);
 
-  setTimeout(() => {
-    setCopied(false);
-  }, 3000);
+  // setTimeout(() => {
+  //   setCopied(false);
+  // }, 3000);
 
-  const urlToCopy = import.meta.env.PROD
-    ? `${window.location.href}`
-    : `http://localhost:5173/search?domain=${imageSelected}`;
+  // const urlToCopy = import.meta.env.PROD
+  //   ? `${window.location.href}`
+  //   : `http://localhost:5173/search?domain=${imageSelected}`;
 
-  const copyLink = () => {
-    imageSelected && navigator.clipboard.writeText(urlToCopy);
-  };
+  // const copyLink = () => {
+  //   imageSelected && navigator.clipboard.writeText(urlToCopy);
+  // };
 
   const [dataset, setDataset] = useState(null);
   const [valuesX, setValuesX] = useState([]);
@@ -37,7 +37,7 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
     if (isNexusFile) return;
 
     data && imageSelected && setDataset(data?.datasets[0]?.key);
-  }, [data, imageSelected]);
+  }, [data, imageSelected, isNexusFile]);
 
   useEffect(() => {
     if (isNexusFile) return;
@@ -50,7 +50,7 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
           setValuesY([...k.value[1]]);
         }
       });
-  }, [data, dataset]);
+  }, [data, dataset, isNexusFile]);
 
   useEffect(() => {
     if (data === undefined) return;
@@ -63,7 +63,7 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
       stroke: "#454545",
       marks: [
         Plot.axisY({
-          label: "Intensity",
+          label: "Relative intensity",
           labelAnchor: "center",
           marginLeft: 60,
         }),
@@ -81,16 +81,16 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
     return () => {
       plot.remove();
     };
-  }, [data, valuesX, valuesY, imageSelected, dataset]);
+  }, [data, valuesX, valuesY, imageSelected, dataset, isNexusFile]);
 
   return (
     <div className="chartWrap">
       <div className="domainInfo">
-        <div>
-          {!isNexusFile && <span className="fileName">Domain</span>}
-          <span className="metadataInfoValue">{data && data.domain}</span>
-        </div>
-        <div>
+        {/* <div className="domainInfoTitle">
+          {!isNexusFile && <div className="fileName">Domain</div>}
+          <div className="metadataInfoValue">{data && data.domain}</div>
+        </div> */}
+        {/* <div>
           <button
             className="shareBtn"
             onClick={() => {
@@ -107,7 +107,8 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
             rel="noopener noreferrer"
             style={{ marginLeft: "16px" }}
             onClick={() => {
-              window.open(`?h5web=${imageSelected}`, "_blank");
+              navigate(`/h5web/${imageSelected}`);
+              // window.open(`?h5web=${imageSelected}`, "_blank");
               if (!isNexusFile) {
                 setDomain(data.domain);
               }
@@ -115,7 +116,7 @@ export default function Chart({ imageSelected, setDomain, isNexusFile }) {
           >
             Explore in h5web
           </button>
-        </div>
+        </div> */}
       </div>
       {/* this section not displayed */}
       {data &&

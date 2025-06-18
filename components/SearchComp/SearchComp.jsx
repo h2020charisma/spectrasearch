@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useAuth } from "react-oidc-context";
 
@@ -9,7 +9,8 @@ import Chart from "../Chart/Chart";
 import SideBarToggle from "../Icons/SideBarToggle";
 import ImageSelect from "../ImageSelect/ImageSelect";
 import Expander from "../UI/Expander";
-import SelectNumber from "../UI/SelectNumber";
+
+import DisplaySearchFilters from "../DisplaySearchFilters/DisplaySearchFilters";
 
 import "../../src/App.css";
 
@@ -33,7 +34,7 @@ export default function SearchComp({ setDomain }) {
   let [reference, setReference] = useState("*");
   let [provider, setProvider] = useState("*");
   let [pages, setPages] = useState("0");
-  let [pagesize, setPagesize] = useState("10");
+  let [pagesize, setPagesize] = useState("30");
   let [qQuery, setqQuery] = useState("*");
   let [instrument, setInstrument] = useState("*");
   let [wavelengths, setWavelengths] = useState("*");
@@ -50,6 +51,10 @@ export default function SearchComp({ setDomain }) {
   const urlPath = imageData ? fileSearchUrlPath : searchUrlPath;
 
   const { data, loading } = useFetch(urlPath);
+
+  // // const data = [];
+
+  console.log("🚀 ~ file: SearchComp.jsx:56 ~ SearchComp ~ data:", data);
 
   return (
     <div className="main">
@@ -97,12 +102,24 @@ export default function SearchComp({ setDomain }) {
       </div>
 
       <div className="content">
+        <DisplaySearchFilters
+          qQuery={qQuery}
+          setqQuery={setqQuery}
+          provider={provider}
+          setProvider={setProvider}
+          instrument={instrument}
+          setInstrument={setInstrument}
+          wavelengths={wavelengths}
+          setWavelengths={setWavelengths}
+          reference={reference}
+          setReference={setReference}
+        />
         {file && imageData && (
           <div className="imageUploded">
             <img src={imageData && imageData.imageLink} />
           </div>
         )}
-        <Expander title="Pages">
+        {/* <Expander title="Pages">
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <SelectNumber value={pages} setValue={setPages} label="Pages" />
             <SelectNumber
@@ -111,8 +128,8 @@ export default function SearchComp({ setDomain }) {
               label="Numbers of Hits"
             />
           </div>
-        </Expander>
-        <Expander title="Select Spectrum" status={true}>
+        </Expander> */}
+        <Expander title="Search Results" status={true} data={data}>
           <ErrorBoundary
             fallback={
               <div className="errorMessage">
@@ -149,7 +166,7 @@ export default function SearchComp({ setDomain }) {
         ) : (
           // </ErrorBoundary>
           <div className="errorMessage">
-            {auth.isAuthenticated && <p>No image selected</p>}
+            {/* {auth.isAuthenticated && <p>No image selected</p>} */}
           </div>
         )}
       </div>

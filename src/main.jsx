@@ -3,7 +3,9 @@ import { AuthProvider, useAuth } from "react-oidc-context";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
+import HitPage from "../pages/HitPage.jsx";
+import HomePage from "../pages/HomePage.jsx";
+import H5webPage from "../pages/H5webPage.jsx";
 import "./index.css";
 
 const oidcConfig = {
@@ -19,13 +21,21 @@ const router = createBrowserRouter(
   [
     {
       path: "/",
-      Component: App,
+      Component: HomePage,
+    },
+    {
+      path: "/h5web/:domain/*",
+      Component: H5webPage,
+    },
+    {
+      path: "/hits/:hitId/*",
+      Component: HitPage,
     },
   ],
   { basename: "/search/" }
 );
 
-const Main = () => {
+export const Main = () => {
   const auth = useAuth();
 
   const token = auth.user?.access_token;
