@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
   flexRender,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import Box from "./Box";
 import PreviewDialog from "../PreviewDialog/PreviewDialog";
@@ -13,7 +14,7 @@ import ChartIcon from "../Icons/ChartIcon";
 
 const columns = [
   {
-    header: "#",
+    header: "No",
     accessorKey: "",
     cell: (props) => <span>{props.row.index + 1}</span>,
   },
@@ -32,7 +33,7 @@ const columns = [
           {props.getValue().toFixed(3).trim()}
         </span>
       ) : (
-        ""
+        <span>&mdash;</span>
       ),
   },
   {
@@ -57,34 +58,26 @@ const columns = [
 
 export default function DataTable({ data }) {
   const [columnVisibility, setColumnVisibility] = useState({});
+  const [globalFilter, setGlobalFilter] = useState([]);
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     columnResizeMode: "onChange",
     state: {
       columnVisibility,
+      globalFilter,
     },
     onColumnVisibilityChange: setColumnVisibility,
+    onGlobalFilterChange: setGlobalFilter,
   });
-  //   console.log(table.getRowModel().rows[0].original.value);
 
   return (
     <div className="tableContainer">
       <div className="columnVisibilityCheckboxes">
-        {/* <label>
-          <input
-            {...{
-              type: "checkbox",
-              checked: table.getIsAllColumnsVisible(),
-              onChange: table.getToggleAllColumnsVisibilityHandler(),
-            }}
-          />{" "}
-          All
-        </label> */}
         {table.getAllLeafColumns().map((column) => {
-          console.log(column);
           if (column.columnDef.header !== "Preview") {
             return (
               <div key={column.id} className="columnVisibilityCheckbox">
@@ -108,12 +101,24 @@ export default function DataTable({ data }) {
           }
         })}
       </div>
+      <div className="global-filters">
+        <input
+          className="global-filter-input"
+          value={globalFilter}
+          onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+          placeholder="Search..."
+        />
+      </div>
       <table className="table">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="tr">
               {headerGroup.headers.map((header) => (
-                <th key={header.id} colSpan={header.colSpan} className="th">
+                <th
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  className={`th header-${header.column.columnDef.header}`}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
