@@ -6,7 +6,7 @@ describe("General site functionality", () => {
   });
 
   it("displays the under development notice", () => {
-    cy.get("#root > p")
+    cy.get("#root > div > p")
       .should("have.class", "underDev")
       .and("be.visible");
   });
