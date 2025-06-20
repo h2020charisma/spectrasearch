@@ -1,13 +1,16 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import Select from "../Select/Select";
+import { useStore } from "../../store/store";
 import "./SourcesDialog.css";
 
 export default function SourcesDialog() {
+  const source = useStore((state) => state.source);
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button data-cy="preferences-btn" id="preferences" className="shareBtn">
-          Choose sources
+          {source ? source : "Choose source"}
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>

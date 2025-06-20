@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import "./Select.css";
 import SearchIcon from "../Icons/SearchIcon";
 import CloseIcon from "../Icons/Close";
+import { useStore } from "../../store/store";
 import useSWR from "swr";
 
 export default function Select() {
   const [open, setOpen] = useState(false);
   const [source, setSource] = useState(); // localStorage?
   const [sourceName, setSourceName] = useState(); // localStorage?
+
+  const setSourceInStore = useStore((state) => state.setSource);
+  const sourceInStore = useStore((state) => state.source);
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
@@ -34,6 +38,7 @@ export default function Select() {
   );
 
   const resetSource = () => {
+    setSourceInStore(null);
     setSourceName("");
     localStorage.setItem("source", "");
     localStorage.clear();
@@ -42,10 +47,10 @@ export default function Select() {
   return (
     <section>
       <div className="projectName">
-        {sourceName ? (
+        {sourceInStore ? (
           <>
             <span className="projectLabel">Source:</span>
-            <span className="sourceName">{sourceName}</span>
+            <span className="sourceName">{sourceInStore}</span>
 
             <div
               data-cy="clean-btn"
@@ -82,6 +87,7 @@ export default function Select() {
                 localStorage.setItem("source", item.name);
                 setSource(item.name);
                 setSourceName(item.name);
+                setSourceInStore(item.name);
                 setOpen(false);
               }}
             >
