@@ -32,15 +32,20 @@ export default function Header() {
             </button>
           </div>
         ) : (
-          <button
-            className="shareBtn"
-            style={{ marginLeft: "18px" }}
-            onClick={() => {
-              auth.signinRedirect();
-            }}
-          >
-            Log in
-          </button>
+          <div className="userInfo">
+            <p className="loginWelcom">
+              To access non-public sources, please log in.
+            </p>
+            <button
+              className="shareBtn"
+              style={{ marginLeft: "18px" }}
+              onClick={() => {
+                auth.signinRedirect();
+              }}
+            >
+              Log in
+            </button>
+          </div>
         )}
       </div>
     </div>

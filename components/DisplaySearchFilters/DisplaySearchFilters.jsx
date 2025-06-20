@@ -2,6 +2,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import "../../src/App.css";
 import Close from "../Icons/Close";
+import SourcesDialog from "../SourcesDialog/SourcesDialog";
 
 export default function DisplaySearchFilters({
   qQuery,
@@ -47,6 +48,7 @@ export default function DisplaySearchFilters({
             ))}
         </AnimatePresence>
       </div>
+      <SourcesDialog />
     </div>
   );
 }

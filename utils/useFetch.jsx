@@ -29,20 +29,20 @@ function useFetch(url) {
   );
 
   useEffect(() => {
-    if (kc_token) {
-      axiosInstance
-        .get(url)
-        .then((response) => {
-          setData(response.data);
-          console.log("Data fetched successfully:", response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
+    // if (kc_token) {
+    axiosInstance
+      .get(url)
+      .then((response) => {
+        setData(response.data);
+        console.log("Data fetched successfully:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kc_token, url]);
 

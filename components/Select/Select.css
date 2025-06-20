@@ -1,0 +1,69 @@
+.sourcesSelectBtn {
+  width: 96%;
+  padding: 0.6rem;
+  background-color: #def4ff;
+  border-radius: 6px;
+  color: #282828;
+  font-size: 0.8rem;
+  font-weight: 600;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.selectOptions {
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  user-select: none;
+  height: 260px;
+  overflow-y: auto;
+}
+
+.projectLabel {
+  font-size: 0.6rem 9.6px;
+  display: block;
+  padding: 0.2rem 0.6rem;
+  margin: 0.6rem 0;
+  width: fit-content;
+  background-color: #d9ffd1;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.projectName {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+}
+
+.sourceName {
+  font-size: 0.8rem;
+  color: #282828;
+  font-weight: 600;
+}
+
+.closeSourceBtn {
+  cursor: pointer;
+  /* margin-left: 1rem; */
+}
+.selectItem {
+  color: #7a7a7a;
+}
+
+.selectItem:hover {
+  color: #282828;
+}
+
+#projectSearch {
+  outline: none;
+  border: none;
+  height: 30px;
+  padding: 0 0.6rem;
+  border-radius: 6px;
+  width: -webkit-fill-available;
+}
