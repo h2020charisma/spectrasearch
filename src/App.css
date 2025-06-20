@@ -541,7 +541,9 @@ h1 {
 
 .search-filters-wrap {
   height: 62px;
-  /* margin-bottom: 6px; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .search-filters {
@@ -633,4 +635,14 @@ h1 {
   background-color: aliceblue;
   border-radius: 4px;
   transition: all 0.2s;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.loginWelcom {
+  font-size: 0.9rem;
+  font-weight: 400;
 }
