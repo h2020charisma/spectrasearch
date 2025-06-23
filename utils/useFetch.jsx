@@ -5,6 +5,7 @@ import axios from "axios";
 function useFetch(url) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const auth = useAuth();
 
@@ -37,6 +38,7 @@ function useFetch(url) {
         console.log("Data fetched successfully:", response.data);
       })
       .catch((error) => {
+        setError(error);
         console.error("Error fetching data:", error);
       })
       .finally(() => {
@@ -46,7 +48,7 @@ function useFetch(url) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kc_token, url]);
 
-  return { data, loading };
+  return { data, loading, error };
 }
 
 export default useFetch;
