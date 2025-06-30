@@ -5,22 +5,55 @@ import CloseIcon from "../Icons/Close";
 import { useStore } from "../../store/store";
 import useSWR from "swr";
 
-export default function Select() {
-  const [open, setOpen] = useState(false);
-  const [source, setSource] = useState(); // localStorage?
-  const [sourceName, setSourceName] = useState(); // localStorage?
+const mockData = [
+  {
+    id: 1,
+    name: "Charisma",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum mi id ex dapibus, ac viverra libero facilisis. Maecenas feugiat libero viverra placerat sodales. Suspendisse potenti.",
+    licence: "MIT",
+  },
+  {
+    id: 2,
+    name: "Polygonum",
+    description:
+      "Nullam tincidunt, enim sit amet malesuada euismod, velit augue convallis eros, quis consectetur felis massa non ligula. Proin ac urna mattis, accumsan justo at, eleifend libero. Maecenas vestibulum enim sed risus convallis pulvinar.",
+    licence: "MIT",
+  },
+  {
+    id: 3,
+    name: "Nulla sodales",
+    description:
+      "Nulla sodales, lacus ac placerat auctor, velit augue iaculis eros, at pretium enim turpis et leo. Nulla bibendum nibh id est scelerisque, at venenatis ante convallis.",
+    licence: "MIT",
+  },
+  {
+    id: 4,
+    name: "Pretium",
+    description:
+      "velit augue iaculis eros, at pretium enim turpis et leo. Nulla bibendum nibh id est scelerisque, at venenatis ante convallis.",
+    licence: "MIT",
+  },
+  {
+    id: 5,
+    name: "Velit",
+    description:
+      "Nullam tincidunt, enim sit amet malesuada euismod, velit augue convallis eros, quis consectetur felis massa non ligula. Proin ac urna mattis, accumsan justo at, eleifend libero. Maecenas vestibulum enim sed risus convallis pulvinar.",
+    licence: "MIT",
+  },
+];
 
-  const setSourceInStore = useStore((state) => state.setSource);
-  const sourceInStore = useStore((state) => state.source);
+export default function Select() {
+  const mockSourcesJSON = localStorage.getItem("mockSources");
+  const [sourcesArray, setSourcesArray] = useState(JSON.parse(mockSourcesJSON));
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
 
-  //   const setSourceID = useSetProjectID();
-
   const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
   const fetcher = (url) => fetch(url).then((res) => res.json());
 
+  // real data from Ramanchada API
   const { data } = useSWR(url, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -30,44 +63,48 @@ export default function Select() {
   useEffect(
     () =>
       setFiltered(
-        data?.data_sources.filter((item) =>
+        mockData?.filter((item) =>
           item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
         )
       ),
-    [search, data]
+    [search]
   );
+  const sourcesJSON = JSON.stringify(sourcesArray);
+
+  localStorage.setItem("mockSources", sourcesJSON);
 
   const resetSource = () => {
-    setSourceInStore(null);
-    setSourceName("");
     localStorage.setItem("source", "");
     localStorage.clear();
+  };
+
+  const removeSorce = (name) => {
+    const updatedSources = sourcesArray.filter((item) => item.name !== name);
+    setSourcesArray(updatedSources);
   };
 
   return (
     <section>
       <div className="projectName">
-        {sourceInStore ? (
-          <>
-            <span className="projectLabel">Source:</span>
-            <span className="sourceName">{sourceInStore}</span>
-
+        {/* <span className="projectLabel">Source:</span> */}
+        {sourcesArray.map((item) => (
+          <div key={item.name} className="sourceItemLabel">
+            <span className="sourceNameLabel">{item.name}</span>
             <div
               data-cy="clean-btn"
               id="cleanProject"
               className="closeSourceBtn"
-              onClick={() => resetSource()}
+              onClick={() => {
+                resetSource();
+                removeSorce(item.name);
+              }}
             >
               <CloseIcon />
             </div>
-          </>
-        ) : null}
+          </div>
+        ))}
       </div>
-      <div
-        data-cy="select-btn"
-        onClick={() => setOpen(!open)}
-        className="sourcesSelectBtn"
-      >
+      <div data-cy="select-btn" className="sourcesSelectBtn">
         <SearchIcon />
         <input
           id="projectSearch"
@@ -77,23 +114,37 @@ export default function Select() {
         />
       </div>
       {open && (
-        <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
-          {filtered.map((item) => (
-            <p
-              data-source={item.name}
-              className="selectItem"
-              key={item.name}
-              onClick={() => {
-                localStorage.setItem("source", item.name);
-                setSource(item.name);
-                setSourceName(item.name);
-                setSourceInStore(item.name);
-                setOpen(false);
-              }}
-            >
-              {item.name}
-            </p>
-          ))}
+        <div
+          className="selectOptionsSourses"
+          style={{ scrollbarWidth: "thin" }}
+        >
+          {filtered.map((item) => {
+            let isSelected = !sourcesArray.some(
+              (source) => source.name === item.name
+            );
+            return (
+              <div
+                data-source={item.name}
+                className={`${
+                  isSelected ? "sourceItem" : "sourceItem sourceItemActive"
+                }`}
+                key={item.name}
+                onClick={() => {
+                  if (isSelected) {
+                    setSourcesArray((prev) => [...prev, item]);
+                  } else {
+                    setSourcesArray(() =>
+                      sourcesArray.filter((source) => source.name !== item.name)
+                    );
+                  }
+                }}
+              >
+                <p className="sourceName">{item.name}</p>
+                <p className="sourceDesc">{item.description}</p>
+                <p className="sourceLicence">{item.licence}</p>
+              </div>
+            );
+          })}
         </div>
       )}
     </section>

@@ -646,3 +646,21 @@ h1 {
   font-size: 0.9rem;
   font-weight: 400;
 }
+
+.closeBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+.closeBtn:hover {
+  background-color: rgb(238, 238, 238);
+  outline: none;
+}
+
+.closeBtn:focus {
+  outline: none;
+}

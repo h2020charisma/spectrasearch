@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useAuth } from "react-oidc-context";
+import { useStore } from "../../store/store";
 
 import { useLocation } from "react-router-dom";
 import Chart from "../Chart/Chart";
@@ -44,17 +45,26 @@ export default function SearchComp({ setDomain }) {
 
   const [file, setFile] = useState(null);
 
-  const searchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}`;
+  // const source = useStore((state) => state.source);
+  const sourcesJSON = localStorage.getItem("mockSources");
+
+  const sources = JSON.parse(sourcesJSON);
+
+  const querySorcesString = sources
+    .map((source) => source.name.toLowerCase())
+    .join("&sources=");
+
+  console.log(querySorcesString, "from localStorage");
+
+  // ?colors=red&colors=green&colors=blue
+
+  const searchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&sources=${querySorcesString}`;
 
   const fileSearchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf}`;
 
   const urlPath = imageData ? fileSearchUrlPath : searchUrlPath;
 
   const { data, loading } = useFetch(urlPath);
-
-  // // const data = [];
-
-  console.log("🚀 ~ file: SearchComp.jsx:56 ~ SearchComp ~ data:", data);
 
   return (
     <div className="main">

@@ -50,13 +50,9 @@ export default function PreviewDialog({ img }) {
                   <Dialog.Title className="DialogTitle">Preview</Dialog.Title>
 
                   <Dialog.Close asChild>
-                    <button
-                      data-cy="ok-btn"
-                      id="okBtn"
-                      className="close-button"
-                    >
+                    <div data-cy="ok-btn" id="okBtn" className="closeBtn">
                       <Close />
-                    </button>
+                    </div>
                   </Dialog.Close>
                 </div>
                 <Dialog.Description className="DialogDescription">

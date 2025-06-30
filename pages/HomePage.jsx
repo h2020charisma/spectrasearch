@@ -14,8 +14,6 @@ export default function HomePage() {
   const h5webParams = queryParams.get("h5web");
   let [domain, setDomain] = useState(null);
 
-  console.log(domain);
-
   return (
     <div>
       <Header />
