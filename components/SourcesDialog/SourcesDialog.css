@@ -1,3 +1,19 @@
+.sourcesBtn {
+  background-color: light-dark(#fff, #202020);
+  color: light-dark(#454545, #8f8f8f);
+  padding: 6px 12px 8px 12px;
+  font-size: 14px;
+  background-color: #ecffd5;
+  border-radius: 5px;
+}
+.sourcesBtn:hover {
+  border-color: #6eca44;
+}
+.sourcesBtn:focus {
+  outline: none;
+  border-color: #9aff6c;
+}
+
 .DialogOverlay {
   background-color: #192530d1;
   position: fixed;
@@ -16,7 +32,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90vw;
-  max-width: 450px;
+  max-width: 1000px;
   max-height: 85vh;
   padding: 25px;
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -38,4 +54,39 @@
   color: var(--mauve-11);
   font-size: 15px;
   line-height: 1.5;
+}
+
+.DialogHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.DialogOverlay[data-state="open"],
+.DialogContent[data-state="open"] {
+  animation: fadeIn 300ms ease-out;
+}
+
+.DialogOverlay[data-state="closed"],
+.DialogContent[data-state="closed"] {
+  animation: fadeOut 300ms ease-in;
 }

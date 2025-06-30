@@ -1,6 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import Select from "../Select/Select";
 import { useStore } from "../../store/store";
+import Close from "../Icons/Close";
 import "./SourcesDialog.css";
 
 export default function SourcesDialog() {
@@ -9,16 +10,27 @@ export default function SourcesDialog() {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button data-cy="preferences-btn" id="preferences" className="shareBtn">
-          {source ? source : "Choose source"}
+        <button
+          data-cy="preferences-btn"
+          id="preferences"
+          className="sourcesBtn"
+        >
+          Choose source
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="DialogOverlay" />
         <Dialog.Content className="SourcesDialogContent">
-          <Dialog.Title className="DialogTitle">Choose sources</Dialog.Title>
+          <div className="DialogHeader">
+            <Dialog.Title className="DialogTitle">Choose sources</Dialog.Title>
+            <Dialog.Close asChild>
+              <div data-cy="ok-btn" id="okBtn" className="closeBtn">
+                <Close />
+              </div>
+            </Dialog.Close>
+          </div>
           <Dialog.Description className="DialogDescription">
-            You can choose sources.
+            Selected sources:
             <br />
           </Dialog.Description>
 
@@ -34,13 +46,7 @@ export default function SourcesDialog() {
               marginTop: 25,
               justifyContent: "flex-end",
             }}
-          >
-            <Dialog.Close asChild>
-              <button data-cy="ok-btn" id="okBtn" className="shareBtn">
-                Ok
-              </button>
-            </Dialog.Close>
-          </div>
+          ></div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
