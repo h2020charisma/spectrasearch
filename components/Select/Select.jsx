@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import "./Select.css";
 import SearchIcon from "../Icons/SearchIcon";
 import CloseIcon from "../Icons/Close";
-import { useStore } from "../../store/store";
+import { AnimatePresence, motion } from "framer-motion";
+
 import useSWR from "swr";
 
 const mockData = [
@@ -86,23 +87,32 @@ export default function Select() {
   return (
     <section>
       <div className="projectName">
-        {/* <span className="projectLabel">Source:</span> */}
-        {sourcesArray.map((item) => (
-          <div key={item.name} className="sourceItemLabel">
-            <span className="sourceNameLabel">{item.name}</span>
-            <div
-              data-cy="clean-btn"
-              id="cleanProject"
-              className="closeSourceBtn"
-              onClick={() => {
-                resetSource();
-                removeSorce(item.name);
-              }}
+        <AnimatePresence>
+          {sourcesArray.map((item) => (
+            <motion.div
+              key={item.name}
+              className="sourceItemLabel"
+              layout
+              initial={{ opacity: 0, scale: 0.8, x: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8, x: 0 }}
+              transition={{ duration: 0.2 }}
             >
-              <CloseIcon />
-            </div>
-          </div>
-        ))}
+              <span className="sourceNameLabel">{item.name}</span>
+              <div
+                data-cy="clean-btn"
+                id="cleanProject"
+                className="closeSourceBtn"
+                onClick={() => {
+                  resetSource();
+                  removeSorce(item.name);
+                }}
+              >
+                <CloseIcon />
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
       <div data-cy="select-btn" className="sourcesSelectBtn">
         <SearchIcon />
