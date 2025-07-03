@@ -1,12 +1,9 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import Select from "../Select/Select";
-import { useStore } from "../../store/store";
 import Close from "../Icons/Close";
+import Select from "../Select/Select";
 import "./SourcesDialog.css";
 
 export default function SourcesDialog() {
-  const source = useStore((state) => state.source);
-
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>

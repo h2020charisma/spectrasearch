@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
-import "./Select.css";
-import SearchIcon from "../Icons/SearchIcon";
-import CloseIcon from "../Icons/Close";
 import { AnimatePresence, motion } from "framer-motion";
-
-import useSWR from "swr";
+import { useEffect, useState } from "react";
+import CloseIcon from "../Icons/Close";
+import SearchIcon from "../Icons/SearchIcon";
+import "./Select.css";
 
 // const mockData = [
 //   {
@@ -52,16 +50,32 @@ export default function Select() {
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
+  const [data, setData] = useState([]);
 
   const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
-  const fetcher = (url) => fetch(url).then((res) => res.json());
 
-  // real data from Ramanchada API
-  const { data } = useSWR(url, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchdata = async () => {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setData(data);
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      }
+    };
+
+    fetchdata();
+    return () => {
+      controller.abort();
+      console.log("Cleanup: Aborted fetch request.");
+    };
+  }, [url]);
 
   useEffect(
     () =>
