@@ -6,51 +6,52 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import useSWR from "swr";
 
-const mockData = [
-  {
-    id: 1,
-    name: "Charisma",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum mi id ex dapibus, ac viverra libero facilisis. Maecenas feugiat libero viverra placerat sodales. Suspendisse potenti.",
-    licence: "MIT",
-  },
-  {
-    id: 2,
-    name: "Polygonum",
-    description:
-      "Nullam tincidunt, enim sit amet malesuada euismod, velit augue convallis eros, quis consectetur felis massa non ligula. Proin ac urna mattis, accumsan justo at, eleifend libero. Maecenas vestibulum enim sed risus convallis pulvinar.",
-    licence: "MIT",
-  },
-  {
-    id: 3,
-    name: "Nulla sodales",
-    description:
-      "Nulla sodales, lacus ac placerat auctor, velit augue iaculis eros, at pretium enim turpis et leo. Nulla bibendum nibh id est scelerisque, at venenatis ante convallis.",
-    licence: "MIT",
-  },
-  {
-    id: 4,
-    name: "Pretium",
-    description:
-      "velit augue iaculis eros, at pretium enim turpis et leo. Nulla bibendum nibh id est scelerisque, at venenatis ante convallis.",
-    licence: "MIT",
-  },
-  {
-    id: 5,
-    name: "Velit",
-    description:
-      "Nullam tincidunt, enim sit amet malesuada euismod, velit augue convallis eros, quis consectetur felis massa non ligula. Proin ac urna mattis, accumsan justo at, eleifend libero. Maecenas vestibulum enim sed risus convallis pulvinar.",
-    licence: "MIT",
-  },
-];
+// const mockData = [
+//   {
+//     id: 1,
+//     name: "Charisma",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum mi id ex dapibus, ac viverra libero facilisis. Maecenas feugiat libero viverra placerat sodales. Suspendisse potenti.",
+//     licence: "MIT",
+//   },
+//   {
+//     id: 2,
+//     name: "Polygonum",
+//     description:
+//       "Nullam tincidunt, enim sit amet malesuada euismod, velit augue convallis eros, quis consectetur felis massa non ligula. Proin ac urna mattis, accumsan justo at, eleifend libero. Maecenas vestibulum enim sed risus convallis pulvinar.",
+//     licence: "MIT",
+//   },
+//   {
+//     id: 3,
+//     name: "Nulla sodales",
+//     description:
+//       "Nulla sodales, lacus ac placerat auctor, velit augue iaculis eros, at pretium enim turpis et leo. Nulla bibendum nibh id est scelerisque, at venenatis ante convallis.",
+//     licence: "MIT",
+//   },
+//   {
+//     id: 4,
+//     name: "Pretium",
+//     description:
+//       "velit augue iaculis eros, at pretium enim turpis et leo. Nulla bibendum nibh id est scelerisque, at venenatis ante convallis.",
+//     licence: "MIT",
+//   },
+//   {
+//     id: 5,
+//     name: "Velit",
+//     description:
+//       "Nullam tincidunt, enim sit amet malesuada euismod, velit augue convallis eros, quis consectetur felis massa non ligula. Proin ac urna mattis, accumsan justo at, eleifend libero. Maecenas vestibulum enim sed risus convallis pulvinar.",
+//     licence: "MIT",
+//   },
+// ];
 
 export default function Select() {
   const mockSourcesJSON = localStorage.getItem("mockSources");
-  const [sourcesArray, setSourcesArray] = useState(JSON.parse(mockSourcesJSON));
+  const [sourcesArray, setSourcesArray] = useState(
+    JSON.parse(mockSourcesJSON) || []
+  );
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
-  // http://127.0.0.1:8000/db/query/sources
 
   const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -89,7 +90,7 @@ export default function Select() {
     <section>
       <div className="projectName">
         <AnimatePresence>
-          {sourcesArray.map((item) => (
+          {sourcesArray?.map((item) => (
             <motion.div
               key={item.name}
               className="sourceItemLabel"
@@ -130,7 +131,7 @@ export default function Select() {
           style={{ scrollbarWidth: "thin" }}
         >
           {filtered?.map((item) => {
-            let isSelected = !sourcesArray.some(
+            let isSelected = !sourcesArray?.some(
               (source) => source.name === item.name
             );
             return (

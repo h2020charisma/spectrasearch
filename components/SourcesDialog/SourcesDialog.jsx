@@ -15,14 +15,16 @@ export default function SourcesDialog() {
           id="preferences"
           className="sourcesBtn"
         >
-          Choose source
+          Choose data source
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="DialogOverlay" />
         <Dialog.Content className="SourcesDialogContent">
           <div className="DialogHeader">
-            <Dialog.Title className="DialogTitle">Choose sources</Dialog.Title>
+            <Dialog.Title className="DialogTitle">
+              Choose data sources
+            </Dialog.Title>
             <Dialog.Close asChild>
               <div data-cy="ok-btn" id="okBtn" className="closeBtn">
                 <Close />
@@ -30,7 +32,7 @@ export default function SourcesDialog() {
             </Dialog.Close>
           </div>
           <Dialog.Description className="DialogDescription">
-            Selected sources:
+            Selected data sources:
             <br />
           </Dialog.Description>
 
