@@ -54,13 +54,13 @@ export default function SearchComp({ setDomain }) {
     if (sourcesLocalStore) {
       setSourses(sourcesLocalStore);
     }
-  }, [sourcesLocalStore]);
+  }, []);
 
   const querySorcesString = sources
     .map((source) => source?.name.toLowerCase())
-    .join("&sources=");
+    .join("&data_source=");
 
-  const searchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&sources=${querySorcesString}`;
+  const searchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&data_source=${querySorcesString}`;
 
   const fileSearchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf}`;
 
@@ -131,16 +131,7 @@ export default function SearchComp({ setDomain }) {
             <img src={imageData && imageData.imageLink} />
           </div>
         )}
-        {/* <Expander title="Pages">
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <SelectNumber value={pages} setValue={setPages} label="Pages" />
-            <SelectNumber
-              value={pagesize}
-              setValue={setPagesize}
-              label="Numbers of Hits"
-            />
-          </div>
-        </Expander> */}
+
         <Expander title="Search Results" status={true} data={data}>
           <ErrorBoundary
             fallback={
