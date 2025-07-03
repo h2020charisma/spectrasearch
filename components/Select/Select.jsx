@@ -50,6 +50,7 @@ export default function Select() {
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
+  // http://127.0.0.1:8000/db/query/sources
 
   const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -64,11 +65,11 @@ export default function Select() {
   useEffect(
     () =>
       setFiltered(
-        mockData?.filter((item) =>
+        data?.data_sources?.filter((item) =>
           item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
         )
       ),
-    [search]
+    [search, data]
   );
   const sourcesJSON = JSON.stringify(sourcesArray);
 
@@ -128,7 +129,7 @@ export default function Select() {
           className="selectOptionsSourses"
           style={{ scrollbarWidth: "thin" }}
         >
-          {filtered.map((item) => {
+          {filtered?.map((item) => {
             let isSelected = !sourcesArray.some(
               (source) => source.name === item.name
             );
