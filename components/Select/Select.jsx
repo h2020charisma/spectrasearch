@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import CloseIcon from "../Icons/Close";
@@ -42,12 +43,7 @@ import "./Select.css";
 //   },
 // ];
 
-export default function Select() {
-  const mockSourcesJSON = localStorage.getItem("mockSources");
-  const [sourcesArray, setSourcesArray] = useState(
-    JSON.parse(mockSourcesJSON) || []
-  );
-
+export default function Select({ sources, setSources }) {
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
@@ -86,9 +82,9 @@ export default function Select() {
       ),
     [search, data]
   );
-  const sourcesJSON = JSON.stringify(sourcesArray);
+  const sourcesJSON = JSON.stringify(sources);
 
-  localStorage.setItem("mockSources", sourcesJSON);
+  localStorage.setItem("dataSources", sourcesJSON);
 
   const resetSource = () => {
     localStorage.setItem("source", "");
@@ -96,15 +92,15 @@ export default function Select() {
   };
 
   const removeSorce = (name) => {
-    const updatedSources = sourcesArray.filter((item) => item.name !== name);
-    setSourcesArray(updatedSources);
+    const updatedSources = sources.filter((item) => item.name !== name);
+    setSources(updatedSources);
   };
 
   return (
     <section>
       <div className="projectName">
         <AnimatePresence>
-          {sourcesArray?.map((item) => (
+          {sources?.map((item) => (
             <motion.div
               key={item.name}
               className="sourceItemLabel"
@@ -145,7 +141,7 @@ export default function Select() {
           style={{ scrollbarWidth: "thin" }}
         >
           {filtered?.map((item) => {
-            let isSelected = !sourcesArray?.some(
+            let isSelected = !sources?.some(
               (source) => source.name === item.name
             );
             return (
@@ -157,10 +153,10 @@ export default function Select() {
                 key={item.name}
                 onClick={() => {
                   if (isSelected) {
-                    setSourcesArray((prev) => [...prev, item]);
+                    setSources((prev) => [...prev, item]);
                   } else {
-                    setSourcesArray(() =>
-                      sourcesArray.filter((source) => source.name !== item.name)
+                    setSources(() =>
+                      sources.filter((source) => source.name !== item.name)
                     );
                   }
                 }}

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useAuth } from "react-oidc-context";
 
@@ -39,32 +39,47 @@ export default function SearchComp({ setDomain }) {
   let [instrument, setInstrument] = useState("*");
   let [wavelengths, setWavelengths] = useState("*");
 
-  let [imageData, setImageData] = useState(null);
-  let [type, setType] = useState("knnquery");
+  const dataSourcesJSON = localStorage.getItem("dataSources");
 
-  let [sources, setSourses] = useState([]);
-
-  const [file, setFile] = useState(null);
-
-  const sourcesJSON = localStorage.getItem("mockSources");
-
-  const sourcesLocalStore = JSON.parse(sourcesJSON);
-
-  useEffect(() => {
-    if (sourcesLocalStore) {
-      setSourses(sourcesLocalStore);
-    }
-  }, []);
+  const [sources, setSources] = useState(JSON.parse(dataSourcesJSON) || []);
 
   const querySorcesString = sources
     .map((source) => source?.name.toLowerCase())
     .join("&data_source=");
 
-  const searchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&data_source=${querySorcesString}`;
+  const params = new URLSearchParams();
+  params.append("reference", reference);
+  params.append("provider", provider);
+  params.append("pages", pages);
+  params.append("pagesize", pagesize);
+  params.append("q", qQuery);
+  params.append("instrument", instrument);
+  params.append("wavelength", wavelengths);
+
+  if (sources.length > 0) {
+    params.append("data_source", querySorcesString);
+  }
+
+  const queryString = params.toString();
+
+  const url = `db/query?q=${queryString}`;
+
+  let [imageData, setImageData] = useState(null);
+  let [type, setType] = useState("knnquery");
+
+  const [file, setFile] = useState(null);
+
+  // useEffect(() => {
+  //   if (sourcesLocalStore) {
+  //     setSourses(sourcesLocalStore);
+  //   }
+  // }, [sourcesLocalStore]);
+
+  // const searchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&data_source=${querySorcesString}`;
 
   const fileSearchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf}`;
 
-  const urlPath = imageData ? fileSearchUrlPath : searchUrlPath;
+  const urlPath = imageData ? fileSearchUrlPath : url;
 
   const { data, loading } = useFetch(urlPath);
 
@@ -125,6 +140,8 @@ export default function SearchComp({ setDomain }) {
           setWavelengths={setWavelengths}
           reference={reference}
           setReference={setReference}
+          sources={sources}
+          setSources={setSources}
         />
         {file && imageData && (
           <div className="imageUploded">
