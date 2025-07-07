@@ -15,6 +15,8 @@ export default function DisplaySearchFilters({
   setWavelengths,
   reference,
   setReference,
+  sources,
+  setSources,
 }) {
   const filters = [
     { label: "Sample", value: qQuery, onClick: () => setqQuery("*") },
@@ -48,7 +50,7 @@ export default function DisplaySearchFilters({
             ))}
         </AnimatePresence>
       </div>
-      <SourcesDialog />
+      <SourcesDialog sources={sources} setSources={setSources} />
     </div>
   );
 }

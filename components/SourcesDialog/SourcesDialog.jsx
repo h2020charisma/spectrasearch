@@ -3,7 +3,7 @@ import Close from "../Icons/Close";
 import Select from "../Select/Select";
 import "./SourcesDialog.css";
 
-export default function SourcesDialog() {
+export default function SourcesDialog({ sources, setSources }) {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -33,11 +33,7 @@ export default function SourcesDialog() {
             <br />
           </Dialog.Description>
 
-          <Select
-          // url={selectUrl}
-          // setProjectName={setProjectName}
-          // projectName={projectName}
-          />
+          <Select sources={sources} setSources={setSources} />
 
           <div
             style={{
