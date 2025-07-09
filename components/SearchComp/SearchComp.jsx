@@ -69,15 +69,7 @@ export default function SearchComp({ setDomain }) {
 
   const [file, setFile] = useState(null);
 
-  // useEffect(() => {
-  //   if (sourcesLocalStore) {
-  //     setSourses(sourcesLocalStore);
-  //   }
-  // }, [sourcesLocalStore]);
-
-  // const searchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=text&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&data_source=${querySorcesString}`;
-
-  const fileSearchUrlPath = `db/query?q=${qQuery}&img=thumbnail&query_type=${type}&q_reference=${reference}&q_provider=${provider}&q_instrument=${instrument}&q_wavelength=${wavelengths}&page=${pages}&pagesize=${pagesize}&ann=${imageData?.cdf}`;
+  const fileSearchUrlPath = `${url}&ann=${imageData?.cdf}`;
 
   const urlPath = imageData ? fileSearchUrlPath : url;
 

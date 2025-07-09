@@ -30,7 +30,6 @@ function useFetch(url) {
   );
 
   useEffect(() => {
-    // if (kc_token) {
     axiosInstance
       .get(url)
       .then((response) => {
@@ -44,7 +43,6 @@ function useFetch(url) {
       .finally(() => {
         setLoading(false);
       });
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kc_token, url]);
 
