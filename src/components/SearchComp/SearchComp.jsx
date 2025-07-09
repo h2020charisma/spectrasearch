@@ -12,7 +12,7 @@ import Expander from "../UI/Expander";
 
 import DisplaySearchFilters from "../DisplaySearchFilters/DisplaySearchFilters";
 
-import "../../src/App.css";
+import "../../App.css";
 
 import Sidebar from "../Sidebar/Sidebar";
 

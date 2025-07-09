@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import "../../src/App.css";
+import "../../App.css";
 import Close from "../Icons/Close";
 import SourcesDialog from "../SourcesDialog/SourcesDialog";
 

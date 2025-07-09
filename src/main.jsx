@@ -3,9 +3,9 @@ import { AuthProvider, useAuth } from "react-oidc-context";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import ReactDOM from "react-dom/client";
-import HitPage from "../pages/HitPage.jsx";
-import HomePage from "../pages/HomePage.jsx";
-import H5webPage from "../pages/H5webPage.jsx";
+import HitPage from "./pages/HitPage.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import H5webPage from "./pages/H5webPage.jsx";
 import "./index.css";
 
 const oidcConfig = {
