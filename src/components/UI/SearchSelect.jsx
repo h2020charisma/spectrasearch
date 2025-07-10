@@ -5,6 +5,7 @@ import "./Select.css";
 
 export default function SearchSelect({
   data,
+  qQuery,
   setqQuery,
   setImageSelected,
   label,
@@ -13,6 +14,12 @@ export default function SearchSelect({
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (qQuery === "*") {
+      setSearch("");
+    }
+  }, [qQuery]);
 
   useEffect(
     () =>
