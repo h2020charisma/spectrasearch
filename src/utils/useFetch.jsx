@@ -34,7 +34,16 @@ function useFetch(url) {
       .get(url)
       .then((response) => {
         setData(response.data);
-        console.log("Data fetched successfully:", response.data);
+        if (!response.data) {
+          throw new Error("No data found");
+        }
+        if (response.status !== 200) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        if (response.data.error) {
+          throw new Error(`API error: ${response.data.error}`);
+        }
+        console.log("Data fetched successfully.");
       })
       .catch((error) => {
         setError(error);
