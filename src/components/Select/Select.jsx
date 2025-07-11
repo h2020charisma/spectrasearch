@@ -5,6 +5,8 @@ import CloseIcon from "../Icons/Close";
 import SearchIcon from "../Icons/SearchIcon";
 import "./Select.css";
 
+import useFetch from "../../utils/useFetch";
+
 // const mockData = [
 //   {
 //     id: 1,
@@ -46,32 +48,13 @@ import "./Select.css";
 export default function Select({ sources, setSources }) {
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
 
   const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
 
-  useEffect(() => {
-    const controller = new AbortController();
+  const { data, loading } = useFetch(url);
 
-    const fetchdata = async () => {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setData(data);
-      } catch (error) {
-        console.log("Error fetching data:", error);
-      }
-    };
-
-    fetchdata();
-    return () => {
-      controller.abort();
-      console.log("Cleanup: Aborted fetch request.");
-    };
-  }, [url]);
+  console.log("Data sources fetched:", data);
 
   useEffect(
     () =>

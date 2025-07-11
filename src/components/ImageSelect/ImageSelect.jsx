@@ -63,7 +63,7 @@ export default function ImageSelect({ data }) {
           renderImageSelect
         )
       ) : (
-        <p style={{ color: "darkred" }}>Loding...</p>
+        <p style={{ color: "darkred" }}>Loading...</p>
       )}
     </div>
   );

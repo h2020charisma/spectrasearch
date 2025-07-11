@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import * as Dialog from "@radix-ui/react-dialog";
 import Close from "../Icons/Close";
 import Select from "../Select/Select";
