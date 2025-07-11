@@ -13,7 +13,7 @@ function useFetch(url) {
 
   const axiosInstance = axios.create({
     baseURL: `${import.meta.env.VITE_BaseURL}`,
-    timeout: 1000,
+    timeout: 10000,
     headers: { "Content-Type": "application/json" },
   });
 
@@ -29,35 +29,48 @@ function useFetch(url) {
     }
   );
 
-  useEffect(() => {
-    axiosInstance
-      .get(url)
-      .then((response) => {
-        setData(response.data);
-        if (!response.data) {
-          throw new Error("No data found");
-        }
-        if (response.status !== 200) {
-          setError(`HTTP error! status: ${response.status}`);
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        if (response.data.error) {
-          setError(response.data.error);
-          throw new Error(`API error: ${response.data.error}`);
-        }
-        console.log("Data fetched successfully.");
-      })
-      .catch((error) => {
-        setError(error);
-        console.error("Error fetching data:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kc_token, url]);
+useEffect(() => {
+  const controller = new AbortController();
+  setLoading(true);
+  setError(null);
 
-  return { data, loading, error };
+  axiosInstance
+    .get(url, { signal: controller.signal })
+    .then((response) => {
+      if (!response.data) {
+        throw new Error("No data found");
+      }
+      if (response.status !== 200) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      if (response.data.error) {
+        throw new Error(`API error: ${response.data.error}`);
+      }
+
+      setData(response.data);
+      console.log("Data fetched successfully.");
+    })
+    .catch((error) => {
+      if (axios.isCancel(error) || error.name === "CanceledError") {
+        console.log("Request was cancelled");
+        return;
+      }
+      setError(error.message || "Error fetching data");
+      console.error("Error fetching data:", error);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+
+  return () => {
+    controller.abort(); // Cancel request if component unmounts or deps change
+  };
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [kc_token, url]);
+
+return { data, loading, error };
+
 }
 
 export default useFetch;
