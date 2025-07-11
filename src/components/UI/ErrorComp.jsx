@@ -11,7 +11,7 @@ export default function ErrorComp({ loading, error }) {
         ? "Loading..."
         : error
         ? `Sorry, something went wrong while fetching the data: ${error.message}.`
-        : "No images found."}
+        : null}
     </div>
   );
 }
