@@ -50,7 +50,7 @@ export default function SearchComp({ setDomain }) {
   const params = new URLSearchParams();
   params.append("reference", reference);
   params.append("provider", provider);
-  params.append("pages", pages);
+  params.append("page", pages);
   params.append("pagesize", pagesize);
   params.append("q", qQuery);
   params.append("instrument", instrument);
