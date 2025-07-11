@@ -34,9 +34,14 @@ export default function ImageSelect({ data, error, loading }) {
         </div>
         <p className="imgCaption">
           {img.score && (
-            <span style={{ color: "#D20003", fontSize: "12px" }}>
+            <span
+              style={{
+                color: "#D20003",
+                fontSize: "12px",
+                marginBottom: "5px",
+              }}
+            >
               {parseFloat(img.score).toFixed(3)}&nbsp;&nbsp;
-              <span style={{ color: "#000" }}>|</span>&nbsp;&nbsp;
             </span>
           )}
         </p>

@@ -69,7 +69,7 @@ export default function SearchComp({ setDomain }) {
 
   const [file, setFile] = useState(null);
 
-  const fileSearchUrlPath = `${url}&ann=${imageData?.cdf}`;
+  const fileSearchUrlPath = `${url}&query_type=${type}&ann=${imageData?.cdf}`;
 
   const urlPath = imageData ? fileSearchUrlPath : url;
 
