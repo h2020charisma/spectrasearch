@@ -38,9 +38,11 @@ function useFetch(url) {
           throw new Error("No data found");
         }
         if (response.status !== 200) {
+          setError(`HTTP error! status: ${response.status}`);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         if (response.data.error) {
+          setError(response.data.error);
           throw new Error(`API error: ${response.data.error}`);
         }
         console.log("Data fetched successfully.");

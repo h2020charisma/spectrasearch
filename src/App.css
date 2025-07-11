@@ -101,7 +101,7 @@ h1 {
 .imageSelectWrap {
   padding: 1rem 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 20px;

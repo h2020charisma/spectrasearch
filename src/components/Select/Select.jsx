@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import CloseIcon from "../Icons/Close";
 import SearchIcon from "../Icons/SearchIcon";
+import ErrorComp from "../UI/ErrorComp";
 import "./Select.css";
 
 import useFetch from "../../utils/useFetch";
@@ -52,7 +53,7 @@ export default function Select({ sources, setSources }) {
 
   const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
 
-  const { data, loading } = useFetch(url);
+  const { data, loading, error } = useFetch(url);
 
   console.log("Data sources fetched:", data);
 
@@ -81,6 +82,7 @@ export default function Select({ sources, setSources }) {
 
   return (
     <section>
+      <ErrorComp loading={loading} error={error} />
       <div className="projectName">
         <AnimatePresence>
           {sources?.map((item) => (
@@ -109,15 +111,18 @@ export default function Select({ sources, setSources }) {
           ))}
         </AnimatePresence>
       </div>
-      <div data-cy="select-btn" className="sourcesSelectBtn">
-        <SearchIcon />
-        <input
-          id="projectSearch"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={`Search for the source...`}
-        />
-      </div>
+      {!error && (
+        <div data-cy="select-btn" className="sourcesSelectBtn">
+          <SearchIcon />
+          <input
+            id="projectSearch"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={`Search for the source...`}
+          />
+        </div>
+      )}
+
       {open && (
         <div
           className="selectOptionsSourses"

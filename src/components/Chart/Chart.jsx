@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 
 import useFetch from "../../utils/useFetch";
 
+import ErrorComp from "../UI/ErrorComp";
+
 export default function Chart({ imageSelected, isNexusFile }) {
   const containerRef = useRef();
 
@@ -13,7 +15,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
       )}&values=True`
     : "";
 
-  const { data, loading } = useFetch(imageSelected && datasetQuery);
+  const { data, loading, error } = useFetch(imageSelected && datasetQuery);
 
   // const [copied, setCopied] = useState(false);
 
@@ -205,6 +207,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
           </div>
         </>
       )}
+      <ErrorComp loading={loading} error={error} />
     </div>
   );
 }

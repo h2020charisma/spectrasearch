@@ -73,7 +73,7 @@ export default function SearchComp({ setDomain }) {
 
   const urlPath = imageData ? fileSearchUrlPath : url;
 
-  const { data, loading } = useFetch(urlPath);
+  const { data, loading, error } = useFetch(urlPath);
 
   return (
     <div className="main">
@@ -154,6 +154,8 @@ export default function SearchComp({ setDomain }) {
           >
             <ImageSelect
               data={data}
+              error={error}
+              loading={loading}
               imageSelected={imageSelected}
               setImageSelected={setImageSelected}
             />

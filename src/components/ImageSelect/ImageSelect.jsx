@@ -4,8 +4,9 @@ import { useStore } from "../../store/store";
 import PreviewDialog from "../PreviewDialog/PreviewDialog";
 // import TableView from "./TableView";
 import DataTable from "../DataTable/DataTable";
+import ErrorComp from "../UI/ErrorComp";
 
-export default function ImageSelect({ data }) {
+export default function ImageSelect({ data, error, loading }) {
   const tableView = useStore((state) => state.tableView);
   const setImageSelectedStore = useStore((state) => state.setImageSelected);
 
@@ -63,7 +64,7 @@ export default function ImageSelect({ data }) {
           renderImageSelect
         )
       ) : (
-        <p style={{ color: "darkred" }}>Loading...</p>
+        <ErrorComp loading={loading} error={error} />
       )}
     </div>
   );
