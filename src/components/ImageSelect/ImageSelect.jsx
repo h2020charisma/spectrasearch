@@ -36,9 +36,10 @@ export default function ImageSelect({ data, error, loading }) {
           {img.score && (
             <span
               style={{
+                display: "inline-block",
                 color: "#D20003",
                 fontSize: "12px",
-                marginBottom: "5px",
+                paddingBottom: "12px",
               }}
             >
               {parseFloat(img.score).toFixed(3)}&nbsp;&nbsp;
