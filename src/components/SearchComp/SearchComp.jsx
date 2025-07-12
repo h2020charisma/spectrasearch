@@ -43,9 +43,9 @@ export default function SearchComp({ setDomain }) {
 
   const [sources, setSources] = useState(JSON.parse(dataSourcesJSON) || []);
 
-  const querySorcesString = sources
-    .map((source) => source?.name.toLowerCase())
-    .join("&data_source=");
+  // const querySorcesString = sources
+  //   .map((source) => source?.name.toLowerCase())
+  //   .join("&data_source=");
 
   const params = new URLSearchParams();
   params.append("reference", reference);
@@ -57,7 +57,11 @@ export default function SearchComp({ setDomain }) {
   params.append("wavelength", wavelengths);
 
   if (sources.length > 0) {
-    params.append("data_source", querySorcesString);
+    sources.forEach((source) => {
+      if (source?.name) {
+        params.append("data_source", source.name.toLowerCase());
+      }
+    });
   }
 
   const queryString = params.toString();
