@@ -75,7 +75,7 @@ export default function SearchComp({ setDomain }) {
 
   const fileSearchUrlPath = `${url}&query_type=${type}&ann=${imageData?.cdf}`;
 
-  const urlPath = imageData ? fileSearchUrlPath : url;
+  const urlPath = imageData && file ? fileSearchUrlPath : url;
 
   const { data, loading, error } = useFetch(urlPath);
 
