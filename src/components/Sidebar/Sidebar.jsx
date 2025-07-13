@@ -34,6 +34,7 @@ export default function Sidebar({
   setType,
   file,
   setFile,
+  queryStringSourcesParams,
 }) {
   return (
     <div
@@ -53,6 +54,7 @@ export default function Sidebar({
           setType={setType}
           file={file}
           setFile={setFile}
+          queryStringSourcesParams={queryStringSourcesParams}
         />
       </Expander>
       <Expander title="Search by Sample" status={false}>
@@ -63,6 +65,7 @@ export default function Sidebar({
             setqQuery={setqQuery}
             qQuery={qQuery}
             setImageSelected={setImageSelected}
+            queryStringSourcesParams={queryStringSourcesParams}
           />
         </ErrorBoundary>
       </Expander>
@@ -74,6 +77,7 @@ export default function Sidebar({
             provider={provider}
             setProvider={setProvider}
             setImageSelected={setImageSelected}
+            queryStringSourcesParams={queryStringSourcesParams}
           />
         </ErrorBoundary>
       </Expander>
@@ -85,6 +89,7 @@ export default function Sidebar({
             reference={reference}
             setReference={setReference}
             setImageSelected={setImageSelected}
+            queryStringSourcesParams={queryStringSourcesParams}
           />
         </ErrorBoundary>
       </Expander>
@@ -96,6 +101,7 @@ export default function Sidebar({
             instrument={instrument}
             setInstrument={setInstrument}
             setImageSelected={setImageSelected}
+            queryStringSourcesParams={queryStringSourcesParams}
           />
         </ErrorBoundary>
       </Expander>
@@ -107,6 +113,7 @@ export default function Sidebar({
             wavelengths={wavelengths}
             setWavelengths={setWavelengths}
             setImageSelected={setImageSelected}
+            queryStringSourcesParams={queryStringSourcesParams}
           />
         </ErrorBoundary>
       </Expander>

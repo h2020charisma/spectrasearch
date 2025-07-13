@@ -43,10 +43,6 @@ export default function SearchComp({ setDomain }) {
 
   const [sources, setSources] = useState(JSON.parse(dataSourcesJSON) || []);
 
-  // const querySorcesString = sources
-  //   .map((source) => source?.name.toLowerCase())
-  //   .join("&data_source=");
-
   const params = new URLSearchParams();
   params.append("reference", reference);
   params.append("provider", provider);
@@ -56,13 +52,17 @@ export default function SearchComp({ setDomain }) {
   params.append("instrument", instrument);
   params.append("wavelength", wavelengths);
 
+  const sourcesParams = new URLSearchParams();
+
   if (sources.length > 0) {
     sources.forEach((source) => {
       if (source?.name) {
         params.append("data_source", source.name.toLowerCase());
+        sourcesParams.append("data_source", source.name.toLowerCase());
       }
     });
   }
+  const queryStringSourcesParams = sourcesParams.toString();
 
   const queryString = params.toString();
 
@@ -118,6 +118,7 @@ export default function SearchComp({ setDomain }) {
                 setType={setType}
                 file={file}
                 setFile={setFile}
+                queryStringSourcesParams={queryStringSourcesParams}
               />
             </motion.div>
           )}
