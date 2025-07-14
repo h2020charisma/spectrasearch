@@ -188,7 +188,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
         {data &&
           !isNexusFile &&
           data?.datasets.map((k, i) => (
-            <p
+            <div
               className={`${dataset == k.key ? "datasetActive" : "dataset"}`}
               key={i}
               onClick={() => {
@@ -196,7 +196,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
               }}
             >
               {k.key.replace(/_/g, " ")}
-            </p>
+            </div>
           ))}
       </div>
       {!isNexusFile && (

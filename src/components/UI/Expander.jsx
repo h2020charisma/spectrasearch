@@ -90,7 +90,7 @@ export default function Expander({ children, title, status, data }) {
       <motion.div animate={{ height }}>
         <div
           ref={ref}
-          className={title == "Search Results" && open && "expanderContent"}
+          className={title == "Search Results" && open ? "expanderContent" : ""}
         >
           {open && (
             <div style={{ marginTop: "1rem" }}>

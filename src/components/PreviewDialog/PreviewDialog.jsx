@@ -55,13 +55,12 @@ export default function PreviewDialog({ img }) {
                     </div>
                   </Dialog.Close>
                 </div>
-                <Dialog.Description className="DialogDescription">
-                  <Chart
-                    imageSelected={img || imageSelectedStore}
-                    setDomain=""
-                    isNexusFile={false}
-                  />
-                </Dialog.Description>
+                <Chart
+                  imageSelected={img || imageSelectedStore}
+                  setDomain=""
+                  isNexusFile={false}
+                />
+                <Dialog.Description className="DialogDescription"></Dialog.Description>
               </motion.div>
             </Dialog.Content>
           </Dialog.Portal>

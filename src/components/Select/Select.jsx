@@ -55,8 +55,6 @@ export default function Select({ sources, setSources }) {
 
   const { data, loading, error } = useFetch(url);
 
-  console.log("Data sources fetched:", data);
-
   useEffect(
     () =>
       setFiltered(

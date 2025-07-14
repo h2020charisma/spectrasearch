@@ -40,8 +40,9 @@ export default function SearchComp({ setDomain }) {
   let [wavelengths, setWavelengths] = useState("*");
 
   const dataSourcesJSON = localStorage.getItem("dataSources");
+  const dataSources = JSON.parse(dataSourcesJSON);
 
-  const [sources, setSources] = useState(JSON.parse(dataSourcesJSON) || []);
+  const [sources, setSources] = useState(dataSources || []);
 
   const params = new URLSearchParams();
   params.append("reference", reference);
