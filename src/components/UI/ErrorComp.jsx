@@ -10,7 +10,7 @@ export default function ErrorComp({ loading, error }) {
       {loading
         ? "Loading..."
         : error
-        ? `Sorry, something went wrong while fetching the data: ${error.message}.`
+        ? `Sorry, something went wrong while fetching the data: ${error}.`
         : null}
     </div>
   );
