@@ -40,9 +40,6 @@ function useFetch(url) {
         if (!response.data) {
           throw new Error("No data found");
         }
-        if (response.status !== 200) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
         if (response.status === 401 || response.status === 403) {
           setError("Please log in again.");
           throw new Error("Unauthorized access - please log in again.");
@@ -50,6 +47,9 @@ function useFetch(url) {
         if (response.data.error) {
           throw new Error(`API error: ${response.data.error}`);
         }
+        // if (response.status !== 200) {
+        //   throw new Error(`HTTP error! status: ${response.status}`);
+        // }
 
         setData(response.data);
         console.log("Data fetched successfully.");
@@ -59,7 +59,12 @@ function useFetch(url) {
           console.log("Request was cancelled");
           return;
         }
-        setError(error.message || "Error fetching data");
+        if (error.response.status === 401) {
+          setError("Please log in again.");
+          return;
+        }
+
+        setError("Please log in." || "Error fetching data");
         console.error("Error fetching data:", error);
       })
       .finally(() => {
