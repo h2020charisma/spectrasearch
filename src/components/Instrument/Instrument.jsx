@@ -18,7 +18,7 @@ export default function Instrument({
   return (
     <div>
       <SearchSelect
-        data={data}
+        data={data?.response}
         setqQuery={setInstrument}
         qQuery={instrument}
         setImageSelected={setImageSelected}

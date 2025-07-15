@@ -12,7 +12,7 @@ export default function ImageSelect({ data, error, loading }) {
 
   const renderImageSelect =
     data &&
-    data.map((img, i) => (
+    data?.response.map((img, i) => (
       <div key={i}>
         <div
           onClick={() => {
@@ -33,7 +33,7 @@ export default function ImageSelect({ data, error, loading }) {
           </Link>
         </div>
         <p className="imgCaption">
-          {img.score && (
+          {img?.score && (
             <span
               style={{
                 display: "inline-block",
@@ -63,9 +63,9 @@ export default function ImageSelect({ data, error, loading }) {
       {data && Object.prototype.hasOwnProperty.call(data, "error") && (
         <p>Sorry</p>
       )}
-      {data && data.length > 0 ? (
+      {data && data?.response.length > 0 ? (
         tableView ? (
-          <DataTable data={data} />
+          <DataTable data={data?.response} />
         ) : (
           renderImageSelect
         )

@@ -45,7 +45,7 @@ h1 {
   background-color: light-dark(#fff, #202020);
 }
 .expanderContent {
-  height: 500px;
+  height: 760px;
   overflow: scroll;
 }
 
