@@ -57,7 +57,8 @@ export default function Expander({ children, title, status, data }) {
               {title}
               {title == "Search Results" && (
                 <p className="foundLabel">
-                  {data?.length > 0 ? data?.length : "no"} hits found
+                  {data?.response?.length > 0 ? data?.response?.length : "no"}{" "}
+                  hits found
                 </p>
               )}
             </div>
