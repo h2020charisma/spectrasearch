@@ -18,7 +18,7 @@ export default function Wavelengths({
   return (
     <div>
       <SearchSelect
-        data={data}
+        data={data?.response}
         setqQuery={setWavelengths}
         qQuery={wavelengths}
         setImageSelected={setImageSelected}

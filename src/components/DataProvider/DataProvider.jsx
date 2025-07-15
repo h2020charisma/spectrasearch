@@ -19,7 +19,7 @@ export default function DataProvider({
     <div>
       {/* <Select items={data} value={provider} setValue={setProvider} /> */}
       <SearchSelect
-        data={data}
+        data={data?.response}
         setqQuery={setProvider}
         qQuery={provider}
         setImageSelected={setImageSelected}

@@ -18,7 +18,7 @@ export default function Investigations({
   return (
     <div>
       <SearchSelect
-        data={data}
+        data={data?.response}
         setqQuery={setReference}
         qQuery={reference}
         setImageSelected={setImageSelected}
