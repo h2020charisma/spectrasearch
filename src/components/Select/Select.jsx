@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useAuth } from "react-oidc-context";
 import CloseIcon from "../Icons/Close";
 import SearchIcon from "../Icons/SearchIcon";
 import ErrorComp from "../UI/ErrorComp";
@@ -49,6 +50,7 @@ import useFetch from "../../utils/useFetch";
 export default function Select({ sources, setSources }) {
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
+  const auth = useAuth();
   // const [data, setData] = useState([]);
 
   const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
@@ -64,9 +66,14 @@ export default function Select({ sources, setSources }) {
       ),
     [search, data]
   );
+
   const sourcesJSON = JSON.stringify(sources);
 
-  localStorage.setItem("dataSources", sourcesJSON);
+  if (auth.isAuthenticated) {
+    localStorage.setItem("protectedDataSources", sourcesJSON);
+  } else {
+    localStorage.setItem("dataSources", sourcesJSON);
+  }
 
   const resetSource = () => {
     localStorage.setItem("source", "");

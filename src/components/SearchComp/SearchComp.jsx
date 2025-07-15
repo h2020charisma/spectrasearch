@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useAuth } from "react-oidc-context";
 
@@ -39,19 +39,41 @@ export default function SearchComp({ setDomain }) {
   let [instrument, setInstrument] = useState("*");
   let [wavelengths, setWavelengths] = useState("*");
 
-  const dataSourcesJSON = localStorage.getItem("dataSources");
+  const dataSourcesJSON = localStorage.getItem(
+    `${auth.isAuthenticated ? "protectedDataSources" : "dataSources"}`
+  );
   const dataSources = JSON.parse(dataSourcesJSON);
 
   const [sources, setSources] = useState(dataSources || []);
 
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      setSources(
+        JSON.parse(localStorage.getItem("protectedDataSources")) || []
+      );
+    } else {
+      setSources(JSON.parse(localStorage.getItem("dataSources")) || []);
+    }
+  }, [auth.isAuthenticated]);
+
   const params = new URLSearchParams();
-  params.append("reference", reference);
-  params.append("provider", provider);
+  if (qQuery !== "*" && qQuery !== "") {
+    params.append("q", qQuery);
+  }
+  if (reference !== "*" && reference !== "") {
+    params.append("q_reference", reference);
+  }
+  if (provider !== "*" && provider !== "") {
+    params.append("q_provider", provider);
+  }
+  if (instrument !== "*" && instrument !== "") {
+    params.append("instrument", instrument);
+  }
+  if (wavelengths !== "*" && wavelengths !== "") {
+    params.append("wavelength", wavelengths);
+  }
   params.append("page", pages);
   params.append("pagesize", pagesize);
-  params.append("q", qQuery);
-  params.append("instrument", instrument);
-  params.append("wavelength", wavelengths);
 
   const sourcesParams = new URLSearchParams();
 
@@ -67,12 +89,12 @@ export default function SearchComp({ setDomain }) {
 
   const queryString = params.toString();
 
-  const url = `db/query?q=${queryString}`;
-
   let [imageData, setImageData] = useState(null);
   let [type, setType] = useState("knnquery");
 
   const [file, setFile] = useState(null);
+
+  const url = `db/query?${queryString}`;
 
   const fileSearchUrlPath = `${url}&query_type=${type}&ann=${imageData?.cdf}`;
 
