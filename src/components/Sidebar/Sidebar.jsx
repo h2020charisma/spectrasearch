@@ -36,6 +36,7 @@ export default function Sidebar({
   file,
   setFile,
   queryStringSourcesParams,
+  setIsCustomSearch,
 }) {
   return (
     <div
@@ -51,7 +52,12 @@ export default function Sidebar({
         <ErrorBoundary
           fallback={<div className="errorMessage">{errorMsg}</div>}
         ></ErrorBoundary>
-        <CustomSearch setqQuery={setqQuery} qQuery={qQuery} label="hits" />
+        <CustomSearch
+          setqQuery={setqQuery}
+          qQuery={qQuery}
+          label="hits"
+          setIsCustomSearch={setIsCustomSearch}
+        />
       </Expander>
       <Expander title="Search by Spectrum File" status={false}>
         <UploadFile
