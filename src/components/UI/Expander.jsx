@@ -7,15 +7,17 @@ import ArrowOpen from "../Icons/Arrow";
 
 import { AiFillDatabase, AiFillTool } from "react-icons/ai";
 import { FaChartBar } from "react-icons/fa";
+import { IoSearch } from "react-icons/io5";
 import { MdFileUpload } from "react-icons/md";
 import { PiEyedropperFill, PiWaveSineBold } from "react-icons/pi";
 import { SiPowerpages } from "react-icons/si";
 import { TbZoomCodeFilled } from "react-icons/tb";
+
 import GridViewIcon from "../Icons/GridViewIcon";
 import TableViewIcon from "../Icons/TableViewIcon";
 
-import Notification from "./Notification";
 import { useStore } from "../../store/store";
+import Notification from "./Notification";
 
 // eslint-disable-next-line react/prop-types
 export default function Expander({ children, title, status, data }) {
@@ -54,6 +56,7 @@ export default function Expander({ children, title, status, data }) {
               {title == "Search by Wavelenth" && <PiWaveSineBold />}
               {title == "Pages" && <SiPowerpages />}
               {title == "Search Results" && <FaChartBar />}
+              {title == "Custom Search" && <IoSearch />}
               {title}
               {title == "Search Results" && (
                 <p className="foundLabel">
@@ -93,17 +96,7 @@ export default function Expander({ children, title, status, data }) {
           ref={ref}
           className={title == "Search Results" && open ? "expanderContent" : ""}
         >
-          {open && (
-            <div style={{ marginTop: "1rem" }}>
-              {/* <hr
-                style={{
-                  border: "1px solid #e7e7e7",
-                  marginTop: "1rem",
-                }}
-              /> */}
-              {children}
-            </div>
-          )}
+          {open && <div style={{ marginTop: "1rem" }}>{children}</div>}
         </div>
       </motion.div>
     </div>
