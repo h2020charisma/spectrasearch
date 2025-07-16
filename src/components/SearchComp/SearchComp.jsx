@@ -85,9 +85,11 @@ export default function SearchComp({ setDomain }) {
       }
     });
   }
-  const queryStringSourcesParams = sourcesParams.toString();
+  const queryStringSourcesParams = sourcesParams
+    .toString()
+    .replace(/\+/g, "%20");
 
-  const queryString = params.toString();
+  const queryString = params.toString().replace(/\+/g, "%20");
 
   let [imageData, setImageData] = useState(null);
   let [type, setType] = useState("knnquery");
