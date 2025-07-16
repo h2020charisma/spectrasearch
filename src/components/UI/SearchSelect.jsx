@@ -16,7 +16,7 @@ export default function SearchSelect({
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    if (qQuery === "*") {
+    if (qQuery === "*" || qQuery === "") {
       setSearch("");
     }
   }, [qQuery]);

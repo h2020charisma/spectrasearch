@@ -17,6 +17,7 @@ import "../../App.css";
 import Sidebar from "../Sidebar/Sidebar";
 
 import useFetch from "../../utils/useFetch";
+import useDebounce from "../../utils/useDebounce";
 
 export default function SearchComp({ setDomain }) {
   const location = useLocation();
@@ -45,6 +46,7 @@ export default function SearchComp({ setDomain }) {
   const dataSources = JSON.parse(dataSourcesJSON);
 
   const [sources, setSources] = useState(dataSources || []);
+  const [isCustomSearch, setIsCustomSearch] = useState(false);
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -102,7 +104,11 @@ export default function SearchComp({ setDomain }) {
 
   const urlPath = imageData && file ? fileSearchUrlPath : url;
 
-  const { data, loading, error } = useFetch(urlPath);
+  const debouncedQuery = useDebounce(urlPath, 1000);
+
+  const { data, loading, error } = useFetch(
+    isCustomSearch ? debouncedQuery : urlPath
+  );
 
   return (
     <div className="main">
@@ -144,6 +150,7 @@ export default function SearchComp({ setDomain }) {
                 file={file}
                 setFile={setFile}
                 queryStringSourcesParams={queryStringSourcesParams}
+                setIsCustomSearch={setIsCustomSearch}
               />
             </motion.div>
           )}
