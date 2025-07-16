@@ -19,7 +19,7 @@ export default function DisplaySearchFilters({
   setSources,
 }) {
   const filters = [
-    { label: "Sample", value: qQuery, onClick: () => setqQuery("*") },
+    { label: "Sample", value: qQuery, onClick: () => setqQuery("") },
     { label: "Provider", value: provider, onClick: () => setProvider("*") },
     {
       label: "Instrument",

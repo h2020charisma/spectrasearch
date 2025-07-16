@@ -35,7 +35,7 @@ export default function SearchComp({ setDomain }) {
   let [provider, setProvider] = useState("*");
   let [pages, setPages] = useState("0");
   let [pagesize, setPagesize] = useState("30");
-  let [qQuery, setqQuery] = useState("*");
+  let [qQuery, setqQuery] = useState("");
   let [instrument, setInstrument] = useState("*");
   let [wavelengths, setWavelengths] = useState("*");
 

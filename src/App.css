@@ -80,6 +80,7 @@ h1 {
 
 .toggleSidebar {
   padding: 10px 30px 16px 0;
+  width: fit-content;
   /* z-index: 999;
   cursor: pointer;
   position: absolute;

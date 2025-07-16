@@ -9,6 +9,7 @@ import Investigations from "../Investigations/Investigations";
 import Sample from "../Sample/Sample";
 import UploadFile from "../UploadFile/UploadFile";
 import Wavelengths from "../Wavelengths/Wavelengths";
+import CustomSearch from "../CustomSearch/CustomSearch";
 
 const errorMsg = "Sorry, no data available";
 
@@ -46,6 +47,12 @@ export default function Sidebar({
         marginTop: "0.6rem",
       }}
     >
+      <Expander title="Custom Search" status={false}>
+        <ErrorBoundary
+          fallback={<div className="errorMessage">{errorMsg}</div>}
+        ></ErrorBoundary>
+        <CustomSearch setqQuery={setqQuery} qQuery={qQuery} label="hits" />
+      </Expander>
       <Expander title="Search by Spectrum File" status={false}>
         <UploadFile
           setImageData={setImageData}
