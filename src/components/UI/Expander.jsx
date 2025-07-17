@@ -56,7 +56,7 @@ export default function Expander({ children, title, status, data }) {
               {title == "Search by Wavelenth" && <PiWaveSineBold />}
               {title == "Pages" && <SiPowerpages />}
               {title == "Search Results" && <FaChartBar />}
-              {title == "Custom Search" && <IoSearch />}
+              {title == "Free text search" && <IoSearch />}
               {title}
               {title == "Search Results" && (
                 <p className="foundLabel">
