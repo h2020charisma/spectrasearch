@@ -40,7 +40,7 @@ function useFetch(url) {
         if (!response.data) {
           throw new Error("No data found");
         }
-        if (response.status === 401 || response.status === 403) {
+        if (response.status === 401) {
           setError("Please log in again.");
           throw new Error("Unauthorized access - please log in again.");
         }
@@ -61,6 +61,10 @@ function useFetch(url) {
         }
         if (error.response.status === 401) {
           setError("Please log in again.");
+          return;
+        }
+        if (error.response.status === 403) {
+          setError("Check your sources.");
           return;
         }
 

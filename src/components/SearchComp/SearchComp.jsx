@@ -47,6 +47,9 @@ export default function SearchComp({ setDomain }) {
 
   const [sources, setSources] = useState(dataSources || []);
   const [isCustomSearch, setIsCustomSearch] = useState(false);
+  const [imageData, setImageData] = useState(null);
+  const [file, setFile] = useState(null);
+  const [type, setType] = useState("knnquery");
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -69,10 +72,17 @@ export default function SearchComp({ setDomain }) {
     params.append("q_provider", provider);
   }
   if (instrument !== "*" && instrument !== "") {
-    params.append("instrument", instrument);
+    params.append("instrument_s", instrument);
   }
   if (wavelengths !== "*" && wavelengths !== "") {
-    params.append("wavelength", wavelengths);
+    params.append("wavelength_s", wavelengths);
+  }
+  if (imageData && file && type === "text") {
+    params.append("query_type", type);
+  }
+  if (imageData && file && type !== "text") {
+    params.append("query_type", type);
+    params.append("ann", imageData.cdf);
   }
   params.append("page", pages);
   params.append("pagesize", pagesize);
@@ -93,22 +103,9 @@ export default function SearchComp({ setDomain }) {
 
   const queryString = params.toString().replace(/\+/g, "%20");
 
-  let [imageData, setImageData] = useState(null);
-  let [type, setType] = useState("knnquery");
-
-  const [file, setFile] = useState(null);
-
   const url = `db/query?${queryString}`;
 
-  const fileSearchUrlPath = `${url}&query_type=${type}&ann=${imageData?.cdf}`;
-
-  const urlPath = imageData && file ? fileSearchUrlPath : url;
-
-  const debouncedQuery = useDebounce(urlPath, 1000);
-
-  const { data, loading, error } = useFetch(
-    isCustomSearch ? debouncedQuery : urlPath
-  );
+  const { data, loading, error } = useFetch(url);
 
   return (
     <div className="main">

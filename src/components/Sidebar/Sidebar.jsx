@@ -48,7 +48,7 @@ export default function Sidebar({
         marginTop: "0.6rem",
       }}
     >
-      <Expander title="Custom Search" status={false}>
+      <Expander title="Free text search" status={false}>
         <ErrorBoundary
           fallback={<div className="errorMessage">{errorMsg}</div>}
         ></ErrorBoundary>

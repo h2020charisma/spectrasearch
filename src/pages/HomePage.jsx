@@ -7,6 +7,7 @@ import UnderDevelopent from "../components/UnderDevelopent/UnderDevelopent";
 import H5web from "../components/h5web/h5web";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
+import ToastComp from "../components/UI/Toast/Toast";
 
 export default function HomePage() {
   const location = useLocation();
@@ -15,7 +16,8 @@ export default function HomePage() {
   let [domain, setDomain] = useState(null);
 
   return (
-    <div>
+    <main>
+      <ToastComp />
       <Header />
       <UnderDevelopent />
       <div>
@@ -28,6 +30,6 @@ export default function HomePage() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }
