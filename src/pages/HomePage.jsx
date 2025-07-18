@@ -16,7 +16,7 @@ export default function HomePage() {
   let [domain, setDomain] = useState(null);
 
   return (
-    <main>
+    <div>
       <ToastComp />
       <Header />
       <UnderDevelopent />
@@ -30,6 +30,6 @@ export default function HomePage() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }
