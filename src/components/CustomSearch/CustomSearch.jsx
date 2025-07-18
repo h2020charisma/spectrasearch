@@ -1,32 +1,56 @@
 /* eslint-disable react/prop-types */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import SearchIcon from "../Icons/SearchIcon";
+import Close from "../Icons/Close";
+import "./CustomSearch.css";
 
 export default function CustomSearch({
   label,
-  setqQuery,
-  qQuery,
+  setFreeSearch,
+  freeSearch,
   setIsCustomSearch,
 }) {
+  const [searchInput, setSearchInput] = useState("");
+
   useEffect(() => {
-    if (qQuery === "") {
+    if (freeSearch === "") {
       setIsCustomSearch(false);
     }
-  }, [qQuery, setIsCustomSearch]);
+  }, [freeSearch, setIsCustomSearch]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsCustomSearch(true);
+    setFreeSearch(searchInput.trim());
+  };
 
   return (
-    <div className="selectBtn">
-      <SearchIcon />
-      <input
-        id="projectSearch"
-        className="searchSelectInput"
-        value={qQuery}
-        onChange={(e) => {
-          setqQuery(e.target.value);
-          setIsCustomSearch(true);
-        }}
-        placeholder={`Search for ${label}`}
-      />
+    <div className="searchContainer">
+      <form onSubmit={handleSubmit} className="searchForm">
+        <input
+          id="projectSearch"
+          className="searchSelectInput"
+          value={searchInput}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+          }}
+          placeholder={`Search for ${label}`}
+        />
+        <button
+          type="button"
+          className="closeBtn"
+          onClick={() => {
+            setSearchInput("");
+            setFreeSearch("");
+            setIsCustomSearch(false);
+          }}
+        >
+          <Close />
+        </button>
+        <button type="submit" className="searchButton">
+          <SearchIcon />
+        </button>
+      </form>
     </div>
   );
 }

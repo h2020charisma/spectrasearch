@@ -39,6 +39,7 @@ export default function SearchComp({ setDomain }) {
   let [qQuery, setqQuery] = useState("");
   let [instrument, setInstrument] = useState("*");
   let [wavelengths, setWavelengths] = useState("*");
+  let [freeSearch, setFreeSearch] = useState("");
 
   const dataSourcesJSON = localStorage.getItem(
     `${auth.isAuthenticated ? "protectedDataSources" : "dataSources"}`
@@ -62,6 +63,9 @@ export default function SearchComp({ setDomain }) {
   }, [auth.isAuthenticated]);
 
   const params = new URLSearchParams();
+  if (freeSearch !== "") {
+    params.append("q", freeSearch);
+  }
   if (qQuery !== "*" && qQuery !== "") {
     params.append("q", qQuery);
   }
@@ -148,6 +152,8 @@ export default function SearchComp({ setDomain }) {
                 setFile={setFile}
                 queryStringSourcesParams={queryStringSourcesParams}
                 setIsCustomSearch={setIsCustomSearch}
+                freeSearch={freeSearch}
+                setFreeSearch={setFreeSearch}
               />
             </motion.div>
           )}

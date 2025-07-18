@@ -37,6 +37,8 @@ export default function Sidebar({
   setFile,
   queryStringSourcesParams,
   setIsCustomSearch,
+  setFreeSearch,
+  freeSearch,
 }) {
   return (
     <div
@@ -53,9 +55,9 @@ export default function Sidebar({
           fallback={<div className="errorMessage">{errorMsg}</div>}
         ></ErrorBoundary>
         <CustomSearch
-          setqQuery={setqQuery}
-          qQuery={qQuery}
-          label="hits"
+          setFreeSearch={setFreeSearch}
+          freeSearch={freeSearch}
+          label="everything"
           setIsCustomSearch={setIsCustomSearch}
         />
       </Expander>
