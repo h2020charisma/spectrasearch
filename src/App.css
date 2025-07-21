@@ -607,7 +607,7 @@ h1 {
 .exploreH5web {
   background-color: #ecffd5;
   color: #454545;
-  height: 30px;
+  /* height: 30px; */
   font-size: smaller;
   border-radius: 4px;
   display: flex;

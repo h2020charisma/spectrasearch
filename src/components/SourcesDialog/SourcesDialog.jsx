@@ -24,7 +24,11 @@ export default function SourcesDialog({ sources, setSources }) {
               Choose data sources
             </Dialog.Title>
             <Dialog.Close asChild>
-              <div data-cy="ok-btn" id="okBtn" className="closeBtn">
+              <div
+                data-cy="ok-btn"
+                id="okBtn"
+                className="closeBtnSourcesDialog"
+              >
                 <Close />
               </div>
             </Dialog.Close>

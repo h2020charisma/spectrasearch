@@ -17,7 +17,7 @@ import "../../App.css";
 import Sidebar from "../Sidebar/Sidebar";
 
 import useFetch from "../../utils/useFetch";
-import useDebounce from "../../utils/useDebounce";
+import ToastDemo from "../UI/Toast/Toast";
 
 export default function SearchComp({ setDomain }) {
   const location = useLocation();
@@ -47,7 +47,6 @@ export default function SearchComp({ setDomain }) {
   const dataSources = JSON.parse(dataSourcesJSON);
 
   const [sources, setSources] = useState(dataSources || []);
-  const [isCustomSearch, setIsCustomSearch] = useState(false);
   const [imageData, setImageData] = useState(null);
   const [file, setFile] = useState(null);
   const [type, setType] = useState("knnquery");
@@ -113,6 +112,7 @@ export default function SearchComp({ setDomain }) {
 
   return (
     <div className="main">
+      <ToastDemo error={error} />
       <div>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
           <SideBarToggle />
@@ -151,7 +151,6 @@ export default function SearchComp({ setDomain }) {
                 file={file}
                 setFile={setFile}
                 queryStringSourcesParams={queryStringSourcesParams}
-                setIsCustomSearch={setIsCustomSearch}
                 freeSearch={freeSearch}
                 setFreeSearch={setFreeSearch}
               />

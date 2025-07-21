@@ -63,6 +63,27 @@
   margin-bottom: 1rem;
 }
 
+.closeBtnSourcesDialog {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  padding: 0;
+  background-color: #fff;
+  position: absolute;
+  right: 26px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.closeBtnSourcesDialog:hover {
+  background-color: #f0f0f0;
+}
+.closeBtnSourcesDialog:focus {
+  box-shadow: 0 0 0 2px #9aff6c;
+  outline: none;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

@@ -1,6 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "react-oidc-context";
 import axios from "axios";
+
+const axiosInstance = axios.create({
+  baseURL: `${import.meta.env.VITE_BaseURL}`,
+  timeout: 10000,
+  headers: { "Content-Type": "application/json" },
+});
 
 function useFetch(url) {
   const [data, setData] = useState(null);
@@ -8,79 +14,98 @@ function useFetch(url) {
   const [error, setError] = useState(null);
 
   const auth = useAuth();
-
   const kc_token = auth?.user?.access_token;
 
-  const axiosInstance = axios.create({
-    baseURL: `${import.meta.env.VITE_BaseURL}`,
-    timeout: 10000,
-    headers: { "Content-Type": "application/json" },
-  });
-
-  axiosInstance.interceptors.request.use(
-    function (config) {
-      if (kc_token) {
-        config.headers.Authorization = `Bearer ${kc_token}`;
-      }
-      return config;
-    },
-    function (error) {
-      return Promise.reject(error);
-    }
-  );
-
-  useEffect(() => {
-    const controller = new AbortController();
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
+    setData(null);
 
-    axiosInstance
-      .get(url, { signal: controller.signal })
-      .then((response) => {
-        if (!response.data) {
-          throw new Error("No data found");
-        }
-        if (response.status === 401) {
-          setError("Please log in again.");
-          throw new Error("Unauthorized access - please log in again.");
-        }
-        if (response.data.error) {
-          throw new Error(`API error: ${response.data.error}`);
-        }
-        // if (response.status !== 200) {
-        //   throw new Error(`HTTP error! status: ${response.status}`);
-        // }
+    const controller = new AbortController();
 
-        setData(response.data);
-        console.log("Data fetched successfully.");
-      })
-      .catch((error) => {
-        if (axios.isCancel(error) || error.name === "CanceledError") {
-          console.log("Request was cancelled");
-          return;
+    axiosInstance.interceptors.request.use(
+      function (config) {
+        if (kc_token) {
+          config.headers.Authorization = `Bearer ${kc_token}`;
         }
-        if (error.response.status === 401) {
-          setError("Please log in again.");
-          return;
-        }
-        if (error.response.status === 403) {
-          setError("Check your sources.");
-          return;
-        }
+        return config;
+      },
+      function (error) {
+        return Promise.reject(error);
+      }
+    );
 
-        setError("Please log in." || "Error fetching data");
-        console.error("Error fetching data:", error);
-      })
-      .finally(() => {
-        setLoading(false);
+    try {
+      const response = await axiosInstance.get(url, {
+        signal: controller.signal,
+        headers: {
+          Authorization: kc_token ? `Bearer ${kc_token}` : "",
+        },
       });
+      setData(response.data);
+      console.log("Data fetched successfully.");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response) {
+          switch (err.response.status) {
+            case 401:
+              setError(
+                "The requested information requires authorization. Please log in first, or select at least one publicly available data source."
+              );
+              console.error("Unauthorized access:", err.message);
+
+              break;
+            case 403:
+              setError(
+                "You are not granted access to some of the requested information. Please click the data sources button and select the desired sources again."
+              );
+              console.error("Forbidden access:", err.message);
+              break;
+            case 404:
+            case 502:
+            case 503:
+            case 504:
+              setError(
+                "There is a problem connecting to the data backend server. Please wait a few minutes and try again. If the problem persists, please write to <support@ideaconsult.net>"
+              );
+              console.error("Server/Resource issue:", err.message);
+              break;
+            default:
+              setError(
+                `An unexpected server error occurred (Status: ${err.response.status}). Please try again.`
+              );
+              console.error(
+                "Unhandled HTTP error:",
+                err.response.status,
+                err.response.data
+              );
+              break;
+          }
+        } else if (err.request) {
+          setError(
+            "There is a problem connecting to the data backend server. Please check your internet connectivity. If it works, please wait a few minutes and try again. If the problem persists, please write to <support@ideaconsult.net>."
+          );
+          console.error("Network Error: No response received.", err.message);
+        } else {
+          setError(`An error occurred: ${err.message}.`);
+          console.error("Axios request setup error:", err.message);
+        }
+      } else {
+        setError(`An unexpected error occurred: ${err.message}.`);
+        console.error("Non-Axios error:", err);
+      }
+    } finally {
+      setLoading(false);
+    }
 
     return () => {
-      controller.abort(); // Cancel request if component unmounts or deps change
+      controller.abort();
     };
+  }, [url, kc_token]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kc_token, url]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return { data, loading, error };
 }
