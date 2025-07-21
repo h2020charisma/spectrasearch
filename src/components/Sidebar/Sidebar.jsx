@@ -36,7 +36,7 @@ export default function Sidebar({
   file,
   setFile,
   queryStringSourcesParams,
-  setIsCustomSearch,
+
   setFreeSearch,
   freeSearch,
 }) {
@@ -58,7 +58,6 @@ export default function Sidebar({
           setFreeSearch={setFreeSearch}
           freeSearch={freeSearch}
           label="everything"
-          setIsCustomSearch={setIsCustomSearch}
         />
       </Expander>
       <Expander title="Search by Spectrum File" status={false}>

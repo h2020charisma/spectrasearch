@@ -1,26 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
-import SearchIcon from "../Icons/SearchIcon";
+import { useState } from "react";
 import Close from "../Icons/Close";
+import SearchIcon from "../Icons/SearchIcon";
 import "./CustomSearch.css";
 
-export default function CustomSearch({
-  label,
-  setFreeSearch,
-  freeSearch,
-  setIsCustomSearch,
-}) {
+export default function CustomSearch({ label, setFreeSearch }) {
   const [searchInput, setSearchInput] = useState("");
-
-  useEffect(() => {
-    if (freeSearch === "") {
-      setIsCustomSearch(false);
-    }
-  }, [freeSearch, setIsCustomSearch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsCustomSearch(true);
+
     setFreeSearch(searchInput.trim());
   };
 
@@ -42,7 +31,6 @@ export default function CustomSearch({
           onClick={() => {
             setSearchInput("");
             setFreeSearch("");
-            setIsCustomSearch(false);
           }}
         >
           <Close />
