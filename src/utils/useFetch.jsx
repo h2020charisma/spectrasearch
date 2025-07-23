@@ -49,10 +49,12 @@ function useFetch(url) {
         if (err.response) {
           switch (err.response.status) {
             case 401:
-              setError(
-                "The requested information requires authorization. Please log in first, or select at least one publicly available data source."
-              );
-              console.error("Unauthorized access:", err.message);
+              if (auth.isAuthenticated) {
+                setError(
+                  "The requested information requires authorization. Please log in first, or select at least one publicly available data source."
+                );
+                console.error("Unauthorized access:", err.message);
+              }
 
               break;
             case 403:
