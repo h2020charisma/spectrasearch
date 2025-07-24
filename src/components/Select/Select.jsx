@@ -9,49 +9,10 @@ import "./Select.css";
 
 import useFetch from "../../utils/useFetch";
 
-// const mockData = [
-//   {
-//     id: 1,
-//     name: "Charisma",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus interdum mi id ex dapibus, ac viverra libero facilisis. Maecenas feugiat libero viverra placerat sodales. Suspendisse potenti.",
-//     licence: "MIT",
-//   },
-//   {
-//     id: 2,
-//     name: "Polygonum",
-//     description:
-//       "Nullam tincidunt, enim sit amet malesuada euismod, velit augue convallis eros, quis consectetur felis massa non ligula. Proin ac urna mattis, accumsan justo at, eleifend libero. Maecenas vestibulum enim sed risus convallis pulvinar.",
-//     licence: "MIT",
-//   },
-//   {
-//     id: 3,
-//     name: "Nulla sodales",
-//     description:
-//       "Nulla sodales, lacus ac placerat auctor, velit augue iaculis eros, at pretium enim turpis et leo. Nulla bibendum nibh id est scelerisque, at venenatis ante convallis.",
-//     licence: "MIT",
-//   },
-//   {
-//     id: 4,
-//     name: "Pretium",
-//     description:
-//       "velit augue iaculis eros, at pretium enim turpis et leo. Nulla bibendum nibh id est scelerisque, at venenatis ante convallis.",
-//     licence: "MIT",
-//   },
-//   {
-//     id: 5,
-//     name: "Velit",
-//     description:
-//       "Nullam tincidunt, enim sit amet malesuada euismod, velit augue convallis eros, quis consectetur felis massa non ligula. Proin ac urna mattis, accumsan justo at, eleifend libero. Maecenas vestibulum enim sed risus convallis pulvinar.",
-//     licence: "MIT",
-//   },
-// ];
-
 export default function Select({ sources, setSources }) {
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
   const auth = useAuth();
-  // const [data, setData] = useState([]);
 
   const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
 
