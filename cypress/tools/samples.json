@@ -1,0 +1,52 @@
+[
+  {
+    "value": "/CHARISMA_RR1/ELODIZ/Elodiz_EZI860/532/Cal_532nm_EZI860.cha",
+    "text": "sCal",
+    "imageLink": "https://api-dev.ramanchada.ideaconsult.net/db/download?what=thumbnail&domain=/CHARISMA_RR1/ELODIZ/Elodiz_EZI860/532/Cal_532nm_EZI860.cha&extra="
+  },
+  {
+    "value": "/CHARISMA_RR1/ELODIZ/Elodiz_EZI860/785/Cal_785nm_EZI860.cha",
+    "text": "sCal",
+    "imageLink": "https://api-dev.ramanchada.ideaconsult.net/db/download?what=thumbnail&domain=/CHARISMA_RR1/ELODIZ/Elodiz_EZI860/785/Cal_785nm_EZI860.cha&extra="
+  },
+  {
+    "value": "/CHARISMA_RR1/ELODIZ/Elodiz_ExemplarPro/785/sCAL12_Exem_Probe_P100_10sx5.cha",
+    "text": "sCal",
+    "imageLink": "https://api-dev.ramanchada.ideaconsult.net/db/download?what=thumbnail&domain=/CHARISMA_RR1/ELODIZ/Elodiz_ExemplarPro/785/sCAL12_Exem_Probe_P100_10sx5.cha&extra="
+  },
+  {
+    "value": "/CHARISMA_RR1/ELODIZ/Elodiz_SEX139/532/Cal_532_SEX139.cha",
+    "text": "sCal",
+    "imageLink": "https://api-dev.ramanchada.ideaconsult.net/db/download?what=thumbnail&domain=/CHARISMA_RR1/ELODIZ/Elodiz_SEX139/532/Cal_532_SEX139.cha&extra="
+  },
+  {
+    "value": "/CHARISMA_RR1/ELODIZ/Elodiz_SEX139/785/Cal_785_SEX139.cha",
+    "text": "sCal",
+    "imageLink": "https://api-dev.ramanchada.ideaconsult.net/db/download?what=thumbnail&domain=/CHARISMA_RR1/ELODIZ/Elodiz_SEX139/785/Cal_785_SEX139.cha&extra="
+  },
+  {
+    "value": "/CHARISMA_RR1/ELODIZ/Elodiz_Wasatch/532/enlighten-20210715-110406-397395-WP-00532-sCAL12.cha",
+    "text": "sCal",
+    "imageLink": "https://api-dev.ramanchada.ideaconsult.net/db/download?what=thumbnail&domain=/CHARISMA_RR1/ELODIZ/Elodiz_Wasatch/532/enlighten-20210715-110406-397395-WP-00532-sCAL12.cha&extra="
+  },
+  {
+    "value": "/CHARISMA_RR1/ELODIZ/Elodiz_ZLM896/532/Cal_532_ZLM896.cha",
+    "text": "sCal",
+    "imageLink": "https://api-dev.ramanchada.ideaconsult.net/db/download?what=thumbnail&domain=/CHARISMA_RR1/ELODIZ/Elodiz_ZLM896/532/Cal_532_ZLM896.cha&extra="
+  },
+  {
+    "value": "/CHARISMA_RR1/ELODIZ/Elodiz_ZLM896/785/Cal_785_ZLM896.cha",
+    "text": "sCal",
+    "imageLink": "https://api-dev.ramanchada.ideaconsult.net/db/download?what=thumbnail&domain=/CHARISMA_RR1/ELODIZ/Elodiz_ZLM896/785/Cal_785_ZLM896.cha&extra="
+  },
+  {
+    "value": "/CHARISMA_RR1/FNMT-Madrid/BWTEC_nan/532/sCAL10_iR532_Probe_100_3200msx4.cha",
+    "text": "sCal",
+    "imageLink": "https://api-dev.ramanchada.ideaconsult.net/db/download?what=thumbnail&domain=/CHARISMA_RR1/FNMT-Madrid/BWTEC_nan/532/sCAL10_iR532_Probe_100_3200msx4.cha&extra="
+  },
+  {
+    "value": "/CHARISMA_RR1/FNMT-Madrid/Horiba_nan/785/sCAL10_iR785_OP01_4000msx4.cha",
+    "text": "sCal",
+    "imageLink": "https://api-dev.ramanchada.ideaconsult.net/db/download?what=thumbnail&domain=/CHARISMA_RR1/FNMT-Madrid/Horiba_nan/785/sCAL10_iR785_OP01_4000msx4.cha&extra="
+  }
+]
