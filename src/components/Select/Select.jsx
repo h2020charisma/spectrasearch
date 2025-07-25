@@ -48,7 +48,7 @@ export default function Select({ sources, setSources }) {
 
   return (
     <section>
-      <ErrorComp loading={loading} error={error} />
+      {/* <ErrorComp loading={loading} error={error} /> */}
       <div className="projectName">
         <AnimatePresence>
           {sources?.map((item) => (
@@ -77,17 +77,17 @@ export default function Select({ sources, setSources }) {
           ))}
         </AnimatePresence>
       </div>
-      {!error && (
-        <div data-cy="select-btn" className="sourcesSelectBtn">
-          <SearchIcon />
-          <input
-            id="projectSearch"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={`Search for the source...`}
-          />
-        </div>
-      )}
+      {/* {!error && ( */}
+      <div data-cy="select-btn" className="sourcesSelectBtn">
+        <SearchIcon />
+        <input
+          id="projectSearch"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder={`Search for the source...`}
+        />
+      </div>
+      {/* )} */}
 
       {open && (
         <div
