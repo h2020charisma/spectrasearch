@@ -1,0 +1,124 @@
+.sourcesSelectBtn {
+  width: -webkit-fill-available;
+  padding: 0.6rem;
+  background-color: #f3f3f3;
+  border-radius: 6px;
+  color: #282828;
+  font-size: 0.8rem;
+  font-weight: 600;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.selectOptionsSourses {
+  border-radius: 6px;
+  padding: 0.6rem 0;
+  font-size: 0.8rem;
+  cursor: pointer;
+  user-select: none;
+  /* height: 260px; */
+  overflow-y: auto;
+}
+
+.projectLabel {
+  font-size: 0.6rem 9.6px;
+  display: block;
+  padding: 0.2rem 0.6rem;
+  margin: 0.6rem 0;
+  width: fit-content;
+  background-color: #d9ffd1;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.projectName {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0.6rem;
+  height: 26px;
+}
+
+.sourceName {
+  font-size: 0.7rem;
+  color: #282828;
+  font-weight: 600;
+}
+
+.sourceNameLabel {
+  font-size: 0.7rem;
+  color: #494949;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.closeSourceBtn {
+  cursor: pointer;
+  /* margin-left: 1rem; */
+}
+.selectItem {
+  color: #7a7a7a;
+}
+
+.selectItem:hover {
+  color: #282828;
+}
+
+#projectSearch {
+  outline: none;
+  border: none;
+  height: 30px;
+  padding: 0 0.6rem;
+  border-radius: 6px;
+  width: -webkit-fill-available;
+}
+.sourceItem {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.1rem 0.6rem;
+  border-left: 5px solid rgb(255, 255, 255);
+  margin-left: 4px;
+}
+
+.sourceItemActive {
+  background-color: #f3ffee;
+  border-left: 5px solid #c3ffab;
+}
+
+.sourceItem:hover {
+  background-color: #f6f6f6;
+  border-left: 5px solid #e2e2e2;
+
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.sourceItemLabel {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: baseline;
+  background: #e1ffd5;
+  padding: 0 10px 3px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.sourceName {
+  width: 20%;
+}
+.sourceDesc {
+  width: 60%;
+}
+.sourceLicence {
+  width: 20%;
+  text-align: right;
+  font-size: 0.8rem;
+  color: #7a7a7a;
+}

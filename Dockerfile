@@ -9,13 +9,8 @@ COPY \
       ./package*.json \
       ./vite.config.js \
       /tmp
-COPY ./components /tmp/components
-COPY ./data /tmp/data
-COPY ./pages /tmp/pages
 COPY ./public /tmp/public
 COPY ./src /tmp/src
-COPY ./store /tmp/store
-COPY ./utils /tmp/utils
 
 RUN npm install
 RUN npm run build-docker

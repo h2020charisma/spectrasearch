@@ -45,7 +45,7 @@ h1 {
   background-color: light-dark(#fff, #202020);
 }
 .expanderContent {
-  height: 500px;
+  height: 760px;
   overflow: scroll;
 }
 
@@ -80,6 +80,7 @@ h1 {
 
 .toggleSidebar {
   padding: 10px 30px 16px 0;
+  width: fit-content;
   /* z-index: 999;
   cursor: pointer;
   position: absolute;
@@ -101,7 +102,7 @@ h1 {
 .imageSelectWrap {
   padding: 1rem 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 20px;
@@ -541,7 +542,9 @@ h1 {
 
 .search-filters-wrap {
   height: 62px;
-  /* margin-bottom: 6px; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .search-filters {
@@ -604,7 +607,7 @@ h1 {
 .exploreH5web {
   background-color: #ecffd5;
   color: #454545;
-  height: 30px;
+  /* height: 30px; */
   font-size: smaller;
   border-radius: 4px;
   display: flex;
@@ -633,4 +636,32 @@ h1 {
   background-color: aliceblue;
   border-radius: 4px;
   transition: all 0.2s;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.loginWelcom {
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.closeBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+.closeBtn:hover {
+  background-color: rgb(238, 238, 238);
+  outline: none;
+}
+
+.closeBtn:focus {
+  outline: none;
 }
