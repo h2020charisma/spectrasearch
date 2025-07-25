@@ -70,7 +70,8 @@ export default function ImageSelect({ data, error, loading }) {
           renderImageSelect
         )
       ) : (
-        <ErrorComp loading={loading} error={error} />
+        <></>
+        // <ErrorComp loading={loading} error={error} />
       )}
     </div>
   );
