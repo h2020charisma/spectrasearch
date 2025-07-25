@@ -28,7 +28,7 @@ h1 {
 /* Main Layout */
 .main {
   display: flex;
-  margin: 4rem 1rem 0 1rem;
+  margin: 1rem 1rem 0 1rem;
 }
 
 .sidebar {
@@ -45,7 +45,7 @@ h1 {
   background-color: light-dark(#fff, #202020);
 }
 .expanderContent {
-  height: 500px;
+  height: 760px;
   overflow: scroll;
 }
 
@@ -79,11 +79,12 @@ h1 {
 /* Sidebar */
 
 .toggleSidebar {
-  padding: 10px 30px 10px 0;
-  z-index: 999;
+  padding: 10px 30px 16px 0;
+  width: fit-content;
+  /* z-index: 999;
   cursor: pointer;
   position: absolute;
-  top: 60px;
+  top: 60px; */
 }
 
 /* Header */
@@ -115,10 +116,33 @@ h1 {
 }
 
 .imageNonSelected {
-  border: 4px solid light-dark(#fff, #3d3d3d);
+  border: 2px solid light-dark(#fff, #3d3d3d);
   padding: 0.8rem;
   cursor: pointer;
   background-color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.imageNonSelected:hover {
+  border: 2px solid #74deff;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: all 0.5s;
+}
+
+.imgDiscription {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+}
+.imgDiscription > span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0b5990;
 }
 
 .selectItem {
@@ -145,11 +169,11 @@ h1 {
 
 .imgCaption {
   text-align: center;
-  background-color: #f0f8ff;
-  color: #12194b;
-  padding: 0.4rem 0.2rem;
-  margin-bottom: 0;
-  font-size: 14px;
+  /* background-color: #f0f8ff; */
+  color: #0b5990;
+  /* padding: 0.4rem 0.2rem; */
+  margin: 5px 0 0 0;
+  font-size: 16px;
   font-weight: 500;
 }
 
@@ -221,9 +245,9 @@ h1 {
 
 .downloadBtn {
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem 1rem 0rem 1rem;
 }
 
 .imageUploded {
@@ -285,14 +309,14 @@ h1 {
 }
 
 .chartWrap {
-  margin: 4rem;
+  margin: 0 4rem;
   color: light-dark(#202020, #aaa);
   background-color: light-dark(#fff, #242424);
 }
 
 .chart {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   background-color: light-dark(#fff, #242424);
 }
@@ -328,12 +352,12 @@ h1 {
   outline: none;
 }
 
-.metadataSection {
+/* .metadataSection {
   padding: 1rem;
-  /* margin: 1rem 0 2rem 0; */
+  margin: 1rem 0 2rem 0;
   background-color: light-dark(#74deff24, #3d3d3d);
   border-radius: 6px;
-}
+} */
 
 .metadataTitle {
   margin-top: 0;
@@ -405,7 +429,41 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  height: 36px;
+  height: 40px;
+}
+
+.tableBody {
+  width: 100%;
+  padding: 0 0.6rem;
+}
+
+.tableView {
+  width: 100%;
+}
+.tableHeader {
+  text-align: left;
+}
+
+.tableRow {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  gap: 40px;
+}
+
+.tableImage {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.tableRowWrap {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
 }
 
 .footer {
@@ -430,8 +488,10 @@ h1 {
 
 .shiftLabel {
   font-weight: 500;
-  margin: 1rem 0 0 3rem;
+  margin: 0rem 0 1rem 3rem;
   background-color: light-dark(#fff, #242424);
+  font-size: x-small;
+  text-align: center;
 }
 
 .company {
@@ -482,7 +542,9 @@ h1 {
 
 .search-filters-wrap {
   height: 62px;
-  /* margin-bottom: 6px; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .search-filters {
@@ -540,4 +602,66 @@ h1 {
   justify-content: flex-start;
   align-items: baseline;
   gap: 6px;
+}
+
+.exploreH5web {
+  background-color: #ecffd5;
+  color: #454545;
+  /* height: 30px; */
+  font-size: smaller;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.exploreH5web:hover {
+  border-color: #6eca44;
+  transition: all 0.2s;
+}
+.exploreH5web:focus {
+  outline: none;
+}
+
+.viewMode {
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.viewMode:hover {
+  background-color: aliceblue;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.loginWelcom {
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.closeBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+.closeBtn:hover {
+  background-color: rgb(238, 238, 238);
+  outline: none;
+}
+
+.closeBtn:focus {
+  outline: none;
 }
