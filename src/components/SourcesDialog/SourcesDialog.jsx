@@ -8,11 +8,7 @@ export default function SourcesDialog({ sources, setSources }) {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button
-          data-cy="preferences-btn"
-          id="preferences"
-          className="sourcesBtn"
-        >
+        <button data-cy="sources-btn" id="sources" className="sourcesBtn">
           Choose data source
         </button>
       </Dialog.Trigger>

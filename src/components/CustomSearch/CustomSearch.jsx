@@ -27,7 +27,7 @@ export default function CustomSearch({ label, freeSearch, setFreeSearch }) {
         />
         <button
           type="button"
-          className="closeBtn"
+          className="clearBtn"
           onClick={() => {
             setSearchInput("");
             setFreeSearch("");
