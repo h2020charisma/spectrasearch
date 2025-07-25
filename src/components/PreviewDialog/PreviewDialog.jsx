@@ -18,19 +18,11 @@ export default function PreviewDialog({ img }) {
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
         {tableView ? (
-          <button
-            data-cy="preferences-btn"
-            id="preferences"
-            className="exploreH5web"
-          >
+          <button data-cy="preview-btn" id="preview" className="exploreH5web">
             <PreviewIcon />
           </button>
         ) : (
-          <button
-            data-cy="preferences-btn"
-            id="preferences"
-            className="exploreH5web"
-          >
+          <button data-cy="preview-btn" id="preview" className="exploreH5web">
             Preview
           </button>
         )}

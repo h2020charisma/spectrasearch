@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import useFetch from "../../utils/useFetch";
 
-import ErrorComp from "../UI/ErrorComp";
+// import ErrorComp from "../UI/ErrorComp";
 
 export default function Chart({ imageSelected, isNexusFile }) {
   const containerRef = useRef();
@@ -207,7 +207,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
           </div>
         </>
       )}
-      <ErrorComp loading={loading} error={error} />
+      {/* <ErrorComp loading={loading} error={error} /> */}
     </div>
   );
 }
