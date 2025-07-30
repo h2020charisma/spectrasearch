@@ -1,9 +1,38 @@
+import { useEffect } from "react";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const auth = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const token = auth.user?.access_token;
+      const exp = auth.user?.expires_at;
+      const now = Math.floor(Date.now() / 1000);
+
+      if (token && exp && now >= exp) {
+        console.log("Token expired. Redirecting to login...");
+        auth.signinRedirect({
+          state: {
+            returnUrl: window.location.href,
+          },
+        });
+      }
+    }, 30 * 1000); // check every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [auth]);
+
+  // useEffect(() => {
+  //   if (auth.isAuthenticated && auth.user?.expired) {
+  //     auth.signinRedirect(); // triggers login
+  //     console.log(
+  //       "User is authenticated but token is expired, redirecting to login..."
+  //     );
+  //   }
+  // }, [auth.isAuthenticated, auth.user?.expired, auth.signinRedirect, auth]);
 
   return (
     <div className="logo">

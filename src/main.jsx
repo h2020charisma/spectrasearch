@@ -6,15 +6,19 @@ import ReactDOM from "react-dom/client";
 import HitPage from "./pages/HitPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import H5webPage from "./pages/H5webPage.jsx";
+import CallbackPage from "./pages/CallbackPage.jsx";
+
 import "./index.css";
 
 const oidcConfig = {
   authority: "https://iam.ideaconsult.net/auth/realms/nano",
   client_id: "idea-ui",
   redirect_uri: window.location.origin + "/search/",
+  automaticSilentRenew: false,
   post_logout_redirect_uri: window.location.origin + "/search/",
   response_type: "code",
   scope: "openid profile email",
+  loadUserInfo: true,
 };
 
 const router = createBrowserRouter(
@@ -30,6 +34,10 @@ const router = createBrowserRouter(
     {
       path: "/hits/:hitId/*",
       Component: HitPage,
+    },
+    {
+      path: "/callback",
+      Component: CallbackPage,
     },
   ],
   { basename: "/search/" }
@@ -76,6 +84,7 @@ export const Main = () => {
   }, [token]);
   return <></>;
 };
+
 function onSigninCallback() {
   window.location.href = "/search/";
 }
