@@ -10,7 +10,7 @@ import { FaChartBar } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { MdFileUpload } from "react-icons/md";
 import { PiEyedropperFill, PiWaveSineBold } from "react-icons/pi";
-import { SiPowerpages } from "react-icons/si";
+import { FaSignsPost } from "react-icons/fa6";
 import { TbZoomCodeFilled } from "react-icons/tb";
 
 import GridViewIcon from "../Icons/GridViewIcon";
@@ -54,7 +54,7 @@ export default function Expander({ children, title, status, data }) {
               {title == "Search by Dataset" && <TbZoomCodeFilled />}
               {title == "Search by Instrument" && <AiFillTool />}
               {title == "Search by Wavelenth" && <PiWaveSineBold />}
-              {title == "Pages" && <SiPowerpages />}
+              {title == "Pages" && <FaSignsPost />}
               {title == "Search Results" && <FaChartBar />}
               {title == "Free text search" && <IoSearch />}
               {title}
