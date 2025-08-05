@@ -48,15 +48,15 @@ export default function Expander({ children, title, status, data }) {
         >
           <IconContext.Provider value={{ size: "1.6rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              {title == "Search by Spectrum File" && <MdFileUpload />}
-              {title == "Search by Sample" && <PiEyedropperFill />}
-              {title == "Search by Data provider" && <AiFillDatabase />}
-              {title == "Search by Dataset" && <TbZoomCodeFilled />}
-              {title == "Search by Instrument" && <AiFillTool />}
-              {title == "Search by Wavelenth" && <PiWaveSineBold />}
-              {title == "Pages" && <FaSignsPost />}
-              {title == "Search Results" && <FaChartBar />}
-              {title == "Free text search" && <IoSearch />}
+              {title == "Search by Spectrum File" ? <MdFileUpload /> : null}
+              {title == "Search by Sample" ? <PiEyedropperFill /> : null}
+              {title == "Search by Data provider" ? <AiFillDatabase /> : null}
+              {title == "Search by Dataset" ? <TbZoomCodeFilled /> : null}
+              {title == "Search by Instrument" ? <AiFillTool /> : null}
+              {title == "Search by Wavelenth" ? <PiWaveSineBold /> : null}
+              {title == "Pages" ? <FaSignsPost /> : null}
+              {title == "Search Results" ? <FaChartBar /> : null}
+              {title == "Free text search" ? <IoSearch /> : null}
               {title}
               {title == "Search Results" && (
                 <p className="foundLabel">
