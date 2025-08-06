@@ -6,6 +6,8 @@ export default function Header() {
   const auth = useAuth();
   const navigate = useNavigate();
 
+  console.log("Header auth", auth.isAuthenticated, auth.user);
+
   useEffect(() => {
     const interval = setInterval(() => {
       const token = auth.user?.access_token;
