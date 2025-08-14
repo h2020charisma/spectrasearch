@@ -18,9 +18,9 @@ export default function Sample({
   return (
     <div>
       <SearchSelect
-        data={data?.response}
-        setqQuery={setqQuery}
         qQuery={qQuery}
+        setqQuery={setqQuery}
+        data={data?.response}
         setImageSelected={setImageSelected}
         label="Samples"
       />

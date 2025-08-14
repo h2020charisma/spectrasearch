@@ -4,7 +4,7 @@ import Close from "../Icons/Close";
 import SearchIcon from "../Icons/SearchIcon";
 import "./CustomSearch.css";
 
-export default function CustomSearch({ label, setFreeSearch }) {
+export default function CustomSearch({ label, freeSearch, setFreeSearch }) {
   const [searchInput, setSearchInput] = useState("");
 
   const handleSubmit = (e) => {
@@ -23,7 +23,7 @@ export default function CustomSearch({ label, setFreeSearch }) {
           onChange={(e) => {
             setSearchInput(e.target.value);
           }}
-          placeholder={`Search for ${label}`}
+          placeholder={freeSearch ? freeSearch : `Search for ${label}`}
         />
         <button
           type="button"
