@@ -23,7 +23,7 @@ export default function ImageSelect({ data, error, loading }) {
             "imageNonSelected"
           }`}
         >
-          <Link to={`/h5web/${img.value}`} target="_blank">
+          <Link to={`/h5web/${img.value}`}>
             <img
               className="imgSelected"
               src={img.imageLink}

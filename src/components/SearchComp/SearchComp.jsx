@@ -1,23 +1,23 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { useAuth } from "react-oidc-context";
 
+import { useAuth } from "react-oidc-context";
 import { useLocation } from "react-router-dom";
+import useFetch from "../../utils/useFetch";
+import { useSessionStorage } from "../../utils/useSessionStorage";
+
+import { ErrorBoundary } from "react-error-boundary";
+
 import Chart from "../Chart/Chart";
+import DisplaySearchFilters from "../DisplaySearchFilters/DisplaySearchFilters";
 import SideBarToggle from "../Icons/SideBarToggle";
 import ImageSelect from "../ImageSelect/ImageSelect";
+import Sidebar from "../Sidebar/Sidebar";
 import Expander from "../UI/Expander";
-
-import DisplaySearchFilters from "../DisplaySearchFilters/DisplaySearchFilters";
+import ToastDemo from "../UI/Toast/Toast";
 
 import "../../App.css";
-
-import Sidebar from "../Sidebar/Sidebar";
-
-import useFetch from "../../utils/useFetch";
-import ToastDemo from "../UI/Toast/Toast";
 
 export default function SearchComp({ setDomain }) {
   const location = useLocation();
@@ -30,16 +30,16 @@ export default function SearchComp({ setDomain }) {
 
   let isNexusFile = false;
 
-  const auth = useAuth();
+  let [q_reference, setQReference] = useSessionStorage("reference", "*");
+  let [provider, setProvider] = useSessionStorage("provider", "*");
+  let [pages, setPages] = useSessionStorage("pages", "0");
+  let [pagesize, setPagesize] = useSessionStorage("pagesize", "30");
+  let [q, setQ] = useSessionStorage("q", "*");
+  let [instrument, setInstrument] = useSessionStorage("instrument", "*");
+  let [wavelengths, setWavelengths] = useSessionStorage("wavelengths", "*");
+  let [freeSearch, setFreeSearch] = useSessionStorage("freeSearch", "");
 
-  let [reference, setReference] = useState("*");
-  let [provider, setProvider] = useState("*");
-  let [pages, setPages] = useState("0");
-  let [pagesize, setPagesize] = useState("30");
-  let [qQuery, setqQuery] = useState("");
-  let [instrument, setInstrument] = useState("*");
-  let [wavelengths, setWavelengths] = useState("*");
-  let [freeSearch, setFreeSearch] = useState("");
+  const auth = useAuth();
 
   const dataSourcesJSON = localStorage.getItem(
     `${auth.isAuthenticated ? "protectedDataSources" : "dataSources"}`
@@ -47,8 +47,12 @@ export default function SearchComp({ setDomain }) {
   const dataSources = JSON.parse(dataSourcesJSON);
 
   const [sources, setSources] = useState(dataSources || []);
-  const [imageData, setImageData] = useState(null);
-  const [file, setFile] = useState(null);
+  const [imageData, setImageData] = useSessionStorage("imgData", null);
+
+  const [file, setFile] = useSessionStorage("file", "");
+  // const [fileName, setFileName] = useSessionStorage("fileName", "");
+  // console.log(fileName, "fileName in SearchComp");
+
   const [type, setType] = useState("knnquery");
 
   useEffect(() => {
@@ -65,11 +69,11 @@ export default function SearchComp({ setDomain }) {
   if (freeSearch !== "") {
     params.append("q", freeSearch);
   }
-  if (qQuery !== "*" && qQuery !== "") {
-    params.append("q", qQuery);
+  if (q !== "*" && q !== "") {
+    params.append("q", q);
   }
-  if (reference !== "*" && reference !== "") {
-    params.append("q_reference", reference);
+  if (q_reference !== "*" && q_reference !== "") {
+    params.append("q_reference", q_reference);
   }
   if (provider !== "*" && provider !== "") {
     params.append("q_provider", provider);
@@ -130,16 +134,16 @@ export default function SearchComp({ setDomain }) {
                 data={data}
                 imageSelected={imageSelected}
                 setImageSelected={setImageSelected}
-                reference={reference}
-                setReference={setReference}
+                reference={q_reference}
+                setReference={setQReference}
                 provider={provider}
                 setProvider={setProvider}
                 pages={pages}
                 setPages={setPages}
                 pagesize={pagesize}
                 setPagesize={setPagesize}
-                setqQuery={setqQuery}
-                qQuery={qQuery}
+                setqQuery={setQ}
+                qQuery={q}
                 setImageData={setImageData}
                 imageData={imageData}
                 instrument={instrument}
@@ -161,18 +165,20 @@ export default function SearchComp({ setDomain }) {
 
       <div className="content">
         <DisplaySearchFilters
-          qQuery={qQuery}
-          setqQuery={setqQuery}
+          qQuery={q}
+          setqQuery={setQ}
           provider={provider}
           setProvider={setProvider}
           instrument={instrument}
           setInstrument={setInstrument}
           wavelengths={wavelengths}
           setWavelengths={setWavelengths}
-          reference={reference}
-          setReference={setReference}
+          reference={q_reference}
+          setReference={setQReference}
           sources={sources}
           setSources={setSources}
+          freeSearch={freeSearch}
+          setFreeSearch={setFreeSearch}
         />
         {file && imageData && (
           <div className="imageUploded">

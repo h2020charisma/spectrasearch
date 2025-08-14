@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Close from "../Icons/Close";
 import Spinner from "../Icons/Spinner";
+import { useSessionStorage } from "../../utils/useSessionStorage";
 
 // eslint-disable-next-line react/prop-types
 export default function UploadFile({ setImageData, setType, file, setFile }) {
@@ -9,6 +10,16 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
 
   const [isNotRightFile, setIsNotRightFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [fileName, setFileName] = useSessionStorage("fileName", "");
+
+  console.log(fileName, "fileName in UploadFile");
+
+  useEffect(() => {
+    if (file && fileName === "") {
+      setFileName(file.name);
+    }
+  }, [file, fileName, setFileName]);
 
   useEffect(() => {
     async function fetchDate() {
@@ -40,7 +51,7 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
     <form>
       <div className="fileNameWrap">
         <div>
-          {file && !isNotRightFile && !isLoading && (
+          {fileName && (
             <div>
               <>
                 <span className="fileName">File Name</span>
@@ -51,9 +62,15 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
                     justifyContent: "space-between",
                   }}
                 >
-                  <span className="fileNameStr">{file.name}</span>
+                  <span className="fileNameStr">{fileName}</span>
 
-                  <div className="closeBtn" onClick={() => setFile(null)}>
+                  <div
+                    className="closeBtn"
+                    onClick={() => {
+                      setFile(null);
+                      setFileName("");
+                    }}
+                  >
                     <Close />
                   </div>
                 </div>
@@ -61,12 +78,14 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
             </div>
           )}
         </div>
-        {!file && <span className="uploadPlaceholder">No file selected</span>}
-        {isNotRightFile && (
+        {!fileName && (
+          <span className="uploadPlaceholder">No file selected</span>
+        )}
+        {/* {!fileName && (
           <span className="uploadPlaceholder">
             Please upload a spectrum file
           </span>
-        )}
+        )} */}
         {isLoading && <Spinner />}
       </div>
       <div className="uploadBtnsWrap">
@@ -76,6 +95,9 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
             type="file"
             id="file"
             onChange={(e) => {
+              if (file) {
+                setFile(null);
+              }
               setFile(e.target.files[0]);
               setIsLoading(true);
               setIsNotRightFile(false);

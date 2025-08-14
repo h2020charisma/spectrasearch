@@ -39,6 +39,8 @@ export default function Sidebar({
 
   setFreeSearch,
   freeSearch,
+  fileName,
+  setFileName,
 }) {
   return (
     <div
@@ -60,7 +62,10 @@ export default function Sidebar({
           label="everything"
         />
       </Expander>
-      <Expander title="Search by Spectrum File" status={false}>
+      <Expander
+        title="Search by Spectrum File"
+        status={fileName === "" ? false : true}
+      >
         <UploadFile
           setImageData={setImageData}
           imageData={imageData}
@@ -69,6 +74,8 @@ export default function Sidebar({
           file={file}
           setFile={setFile}
           queryStringSourcesParams={queryStringSourcesParams}
+          fileName={fileName}
+          setFileName={setFileName}
         />
       </Expander>
       <Expander title="Search by Sample" status={false}>

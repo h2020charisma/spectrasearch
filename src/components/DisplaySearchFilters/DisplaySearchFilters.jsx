@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import "../../App.css";
 import Close from "../Icons/Close";
 import SourcesDialog from "../SourcesDialog/SourcesDialog";
+import { useSessionStorage } from "../../utils/useSessionStorage";
 
 export default function DisplaySearchFilters({
   qQuery,
@@ -17,10 +18,26 @@ export default function DisplaySearchFilters({
   setReference,
   sources,
   setSources,
+  freeSearch,
+  setFreeSearch,
 }) {
   const filters = [
-    { label: "Sample", value: qQuery, onClick: () => setqQuery("") },
-    { label: "Provider", value: provider, onClick: () => setProvider("*") },
+    // {
+    //   label: "File",
+    //   value: fileName,
+    //   onClick: () => setFileName(""),
+    // },
+    {
+      label: "Free Search",
+      value: freeSearch,
+      onClick: () => setFreeSearch(""),
+    },
+    { label: "Sample", value: qQuery, onClick: () => setqQuery("*") },
+    {
+      label: "Provider",
+      value: provider,
+      onClick: () => setProvider("*"),
+    },
     {
       label: "Instrument",
       value: instrument,
@@ -29,7 +46,7 @@ export default function DisplaySearchFilters({
     {
       label: "Wavelengths",
       value: wavelengths,
-      onClick: () => setWavelengths([]),
+      onClick: () => setWavelengths("*"),
     },
     { label: "Dataset", value: reference, onClick: () => setReference("*") },
   ];
@@ -39,7 +56,10 @@ export default function DisplaySearchFilters({
       <div className="search-filters">
         <AnimatePresence>
           {filters
-            .filter(({ value }) => value !== "*" && value?.length !== 0)
+            .filter(
+              ({ value }) =>
+                value !== "" && value !== "*" && value?.length !== 0
+            )
             .map(({ label, value, onClick }) => (
               <FilterBadge
                 key={label}
