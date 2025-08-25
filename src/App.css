@@ -33,7 +33,7 @@ h1 {
 
 .sidebar {
   /* background-color: aliceblue; */
-  width: 400px;
+  width: 360px;
   max-height: max-content;
   position: relative;
   padding: 0.5rem 1rem 0 0;
@@ -282,14 +282,15 @@ h1 {
 
 .datasetActive {
   color: #00ace1;
-  text-decoration: underline;
+  /* text-decoration: underline;
   text-underline-offset: 8px;
-  text-decoration-thickness: 4px;
+  text-decoration-thickness: 4px; */
 }
 
 .dataset,
 .datasetActive {
   user-select: none;
+  cursor: none;
 }
 
 .underDev {
@@ -365,7 +366,7 @@ h1 {
 
 .metadataInfoValue {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   padding-right: 0.2rem;
   color: light-dark(#3d3d3d, #fff);
 }
@@ -374,23 +375,22 @@ h1 {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 12px;
 }
 
 .metadataInfo {
   display: flex;
-  flex-direction: column;
+
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 2px;
+  align-items: center;
+  gap: 8px;
 }
 
 .metadataLabel {
   font-size: 11px;
   letter-spacing: 0.4px;
   background-color: #c3f2ff;
-  cursor: pointer;
-  padding: 0.2rem 0.6rem;
+  padding: 0.12rem 0.6rem;
   border-radius: 4px;
   text-transform: uppercase;
   font-weight: 500;
@@ -568,7 +568,7 @@ h1 {
 
   width: fit-content;
   border-radius: 4px;
-  padding-right: 10px;
+  padding: 0 10px 0 2px;
   /* cursor: pointer; */
 }
 .search-filters-item:hover {

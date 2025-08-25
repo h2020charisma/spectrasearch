@@ -4,9 +4,8 @@ import Header from "../components/Header/Header";
 
 export default function H5webPage() {
   const location = useLocation();
-  console.log("loc", location.pathname.substring(6));
 
-  let domain = location.pathname.substring(6);
+  let domain = decodeURIComponent(location.pathname.substring(6));
 
   return (
     <>
