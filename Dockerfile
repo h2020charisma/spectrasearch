@@ -3,7 +3,6 @@ FROM node:lts-alpine AS requirements-stage
 WORKDIR /tmp
 
 COPY \
-      ./.env \
       ./.eslintrc.cjs \
       ./index.html \
       ./package*.json \
@@ -13,6 +12,8 @@ COPY ./public /tmp/public
 COPY ./src /tmp/src
 
 RUN npm install
+
+ENV VITE_BaseURL="https://api-dev.ramanchada.ideaconsult.net/"
 RUN npm run build-docker
 
 
