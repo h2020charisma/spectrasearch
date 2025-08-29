@@ -87,7 +87,11 @@ const FilterBadge = ({ label, value, onClick }) => {
     >
       <p className="metadataLabel">{label}</p>
       <p className="metadataInfoValue">{value}</p>
-      <div onClick={onClick} style={{ cursor: "pointer" }}>
+      <div
+        data-cy="close-badge-btn"
+        onClick={onClick}
+        style={{ cursor: "pointer" }}
+      >
         <Close />
       </div>
     </motion.div>

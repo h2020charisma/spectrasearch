@@ -1,17 +1,9 @@
 {
-  "default": "fghjk8hj",
+  "default": "charisma",
   "data_sources": [
     {
-      "name": "fghjk8hj",
-      "description": "FGHJK8HJ"
-    },
-    {
-      "name": "ghhjhu",
-      "description": "GHHJHU"
-    },
-    {
-      "name": "fsdcxv",
-      "description": "FSDCXV"
+      "name": "charisma",
+      "description": "CHARISMA"
     }
   ]
 }

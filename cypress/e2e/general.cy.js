@@ -61,6 +61,42 @@ function setProviderIntercepts() {
   ).as("getAllSamples");
 }
 
+function setDatasetIntercepts() {
+  cy.intercept(
+    {
+      method: "GET",
+      url: "http://localhost:8000/db/query/field?name=reference_s",
+    },
+    {
+      fixture: "json/bk_rcapi_reference_s.json",
+    }
+  ).as("getAllSamples");
+}
+
+function setInstrumentIntercepts() {
+  cy.intercept(
+    {
+      method: "GET",
+      url: "http://localhost:8000/db/query/field?name=instrument_s",
+    },
+    {
+      fixture: "json/bk_rcapi_instrument_s.json",
+    }
+  ).as("getAllSamples");
+}
+
+function setWavelenghIntercepts() {
+  cy.intercept(
+    {
+      method: "GET",
+      url: "http://localhost:8000/db/query/field?name=wavelength_s",
+    },
+    {
+      fixture: "json/bk_rcapi_wavelength_s.json",
+    }
+  ).as("getAllSamples");
+}
+
 describe("General site functionality", () => {
   beforeEach(() => {
     cy.visit(testURLRoot);
@@ -111,5 +147,38 @@ describe("General site functionality", () => {
     cy.contains("RRUFF").click();
     cy.get(".metadataInfoValue").should("contain.text", "RRUFF");
     cy.get('[data-cy="close-badge-btn"]').click();
+  });
+
+  it("opens Search by Dataset Widget and looks for the dataset", () => {
+    setDatasetIntercepts();
+    cy.get('[data-cy="search-by-dataset"]').click();
+    cy.get('[data-cy="dataset"]').should("be.visible");
+    cy.get('[data-cy="dataset"]').click();
+    setMainIntercepts();
+    cy.contains("RRUF").click();
+    cy.get(".metadataInfoValue").should("contain.text", "RRUF");
+    cy.get('[data-cy="close-badge-btn"]').click();
+  });
+
+  it("opens Search by Instrument Widget and looks for the instrument", () => {
+    setInstrumentIntercepts();
+    cy.get('[data-cy="search-by-instrument"]').click();
+    cy.get('[data-cy="instruments"]').should("be.visible");
+    cy.get('[data-cy="instruments"]').click();
+    setMainIntercepts();
+    cy.contains("RRUF").click();
+    cy.get(".metadataInfoValue").should("contain.text", "RRUF");
+    cy.get('[data-cy="close-badge-btn"]').click();
+  });
+
+  it("opens Search by Wavelength Widget and looks for the wavelangth", () => {
+    setWavelenghIntercepts();
+    cy.get('[data-cy="search-by-wavelenth"]').click();
+    cy.get('[data-cy="wavelengths"]').should("be.visible");
+    cy.get('[data-cy="wavelengths"]').click();
+    // setMainIntercepts();
+    // cy.contains("RRUF").click();
+    // cy.get(".metadataInfoValue").should("contain.text", "RRUF");
+    // cy.get('[data-cy="close-badge-btn"]').click();
   });
 });

@@ -1,0 +1,49 @@
+{
+  "status": 200,
+  "response": [
+    {
+      "value": "RRUF ",
+      "count": 231
+    },
+    {
+      "value": "HORIBA XploRA PLUS",
+      "count": 163
+    },
+    {
+      "value": " Thermo Scientific DXR Raman Microscope",
+      "count": 79
+    },
+    {
+      "value": "BWTec iRaman",
+      "count": 30
+    },
+    {
+      "value": "Horiba LabRam",
+      "count": 20
+    },
+    {
+      "value": "Renishaw InVia Reflex",
+      "count": 15
+    },
+    {
+      "value": " ",
+      "count": 10
+    },
+    {
+      "value": "Zolix FinderEdge",
+      "count": 10
+    },
+    {
+      "value": "ELODIZ Neegala",
+      "count": 6
+    },
+    {
+      "value": "WITec Alpha 500",
+      "count": 5
+    },
+    {
+      "value": "Renishaw Qontor Invia",
+      "count": 1
+    }
+  ]
+}
