@@ -1,0 +1,405 @@
+{
+  "status": 200,
+  "response": [
+    {
+      "value": "R050192",
+      "count": 54
+    },
+    {
+      "value": "R040070",
+      "count": 43
+    },
+    {
+      "value": "R040029",
+      "count": 23
+    },
+    {
+      "value": "R040137",
+      "count": 21
+    },
+    {
+      "value": "Neon",
+      "count": 19
+    },
+    {
+      "value": "R040135",
+      "count": 18
+    },
+    {
+      "value": "S0B",
+      "count": 18
+    },
+    {
+      "value": "R040099",
+      "count": 15
+    },
+    {
+      "value": "R040075",
+      "count": 12
+    },
+    {
+      "value": "R050084",
+      "count": 12
+    },
+    {
+      "value": "sCal",
+      "count": 10
+    },
+    {
+      "value": "PST",
+      "count": 9
+    },
+    {
+      "value": "S0N",
+      "count": 8
+    },
+    {
+      "value": "S0P",
+      "count": 8
+    },
+    {
+      "value": "S1N",
+      "count": 8
+    },
+    {
+      "value": "Sil",
+      "count": 7
+    },
+    {
+      "value": "R050031",
+      "count": 6
+    },
+    {
+      "value": "R050125",
+      "count": 6
+    },
+    {
+      "value": "R050172",
+      "count": 6
+    },
+    {
+      "value": "R060132",
+      "count": 6
+    },
+    {
+      "value": "R060277",
+      "count": 6
+    },
+    {
+      "value": "PETE",
+      "count": 4
+    },
+    {
+      "value": "PP",
+      "count": 4
+    },
+    {
+      "value": "bone",
+      "count": 4
+    },
+    {
+      "value": "PS",
+      "count": 3
+    },
+    {
+      "value": "R050145",
+      "count": 3
+    },
+    {
+      "value": "cellulose",
+      "count": 3
+    },
+    {
+      "value": "chitin",
+      "count": 3
+    },
+    {
+      "value": "Acrylonitrile Butadiene Styrene 10. Brown LEGO",
+      "count": 2
+    },
+    {
+      "value": "Acrylonitrile Butadiene Styrene 14. White Refrigerator Lining",
+      "count": 2
+    },
+    {
+      "value": "Acrylonitrile Butadiene Styrene 2. Red LEGO",
+      "count": 2
+    },
+    {
+      "value": "Acrylonitrile Butadiene Styrene 3. Light Blue LEGO",
+      "count": 2
+    },
+    {
+      "value": "Acrylonitrile Butadiene Styrene 5. Dark Blue LEGO",
+      "count": 2
+    },
+    {
+      "value": "Acrylonitrile Butadiene Styrene 6. Dark Green LEGO",
+      "count": 2
+    },
+    {
+      "value": "Acrylonitrile Butadiene Styrene 7. Light Green LEGO",
+      "count": 2
+    },
+    {
+      "value": "Acrylonitrile Butadiene Styrene 8. Yellow LEGO",
+      "count": 2
+    },
+    {
+      "value": "Acrylonitrile Butadiene Styrene 9. Brown LEGO",
+      "count": 2
+    },
+    {
+      "value": "HDPE",
+      "count": 2
+    },
+    {
+      "value": "PA",
+      "count": 2
+    },
+    {
+      "value": "PE",
+      "count": 2
+    },
+    {
+      "value": "Polyamide 10. Yellow Fiber",
+      "count": 2
+    },
+    {
+      "value": "calcium carbonate",
+      "count": 2
+    },
+    {
+      "value": "myofibrillar protein",
+      "count": 2
+    },
+    {
+      "value": "ABS",
+      "count": 1
+    },
+    {
+      "value": "Acrylic 1. Red Fiber (Polyacrylonitrile)",
+      "count": 1
+    },
+    {
+      "value": "Acrylic 10. Pink Fiber",
+      "count": 1
+    },
+    {
+      "value": "Acrylic 2. Pink Fiber Bundle (Polyacrylonitrile)",
+      "count": 1
+    },
+    {
+      "value": "Acrylic 3. Brown Fiber (Polyacrylonitrile)",
+      "count": 1
+    },
+    {
+      "value": "Acrylic 4. Purple Yarn",
+      "count": 1
+    },
+    {
+      "value": "Acrylic 5. Pink Yarn",
+      "count": 1
+    },
+    {
+      "value": "Acrylic 6. Orange Yarn",
+      "count": 1
+    },
+    {
+      "value": "Acrylic 7. White Yarn",
+      "count": 1
+    },
+    {
+      "value": "Acrylic 8. Orange Fiber",
+      "count": 1
+    },
+    {
+      "value": "Acrylic 9. Yellow Fiber",
+      "count": 1
+    },
+    {
+      "value": "Acrylonitrile Butadiene Styrene 1. Clear Fragment",
+      "count": 1
+    },
+    {
+      "value": "BPF",
+      "count": 1
+    },
+    {
+      "value": "BR",
+      "count": 1
+    },
+    {
+      "value": "CA",
+      "count": 1
+    },
+    {
+      "value": "Cellulose Acetate 1. Clear Film",
+      "count": 1
+    },
+    {
+      "value": "Cellulose Acetate 1. Red Sphere",
+      "count": 1
+    },
+    {
+      "value": "Cellulose Acetate 2. White Fragment",
+      "count": 1
+    },
+    {
+      "value": "Cellulose Acetate 3. Pink Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cellulose Acetate 3. White Cigarette Filter",
+      "count": 1
+    },
+    {
+      "value": "Cellulose Acetate 4. White Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cellulose Acetate 5. Brown Photography Film",
+      "count": 1
+    },
+    {
+      "value": "Cotton 1. Grey Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 10. Purple Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 11. Brown Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 11a. Brown Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 12a. Grey Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 14. Yellow Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 16. White Lab Coat",
+      "count": 1
+    },
+    {
+      "value": "Cotton 16a. White Lab Coat",
+      "count": 1
+    },
+    {
+      "value": "Cotton 17. White Tea Bag",
+      "count": 1
+    },
+    {
+      "value": "Cotton 2. Pink Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 2a. Pink Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 3. Yellow Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 3a. Yellow Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 7. Orange Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 8. Red Fiber",
+      "count": 1
+    },
+    {
+      "value": "Cotton 9. Black Fiber",
+      "count": 1
+    },
+    {
+      "value": "Dyed Cellulose 1. Red Fiber",
+      "count": 1
+    },
+    {
+      "value": "Dyed Cellulose 2. Pink Fiber",
+      "count": 1
+    },
+    {
+      "value": "Dyed Cellulose 3. Green Fiber",
+      "count": 1
+    },
+    {
+      "value": "Dyed Cellulose 4. Yellow Fiber",
+      "count": 1
+    },
+    {
+      "value": "Dyed Cellulose 5. Red Fiber",
+      "count": 1
+    },
+    {
+      "value": "EPS",
+      "count": 1
+    },
+    {
+      "value": "FEP",
+      "count": 1
+    },
+    {
+      "value": "FPM",
+      "count": 1
+    },
+    {
+      "value": "LDPE",
+      "count": 1
+    },
+    {
+      "value": "Latex",
+      "count": 1
+    },
+    {
+      "value": "NBR",
+      "count": 1
+    },
+    {
+      "value": "P",
+      "count": 1
+    },
+    {
+      "value": "PBAT",
+      "count": 1
+    },
+    {
+      "value": "PBS",
+      "count": 1
+    },
+    {
+      "value": "PC",
+      "count": 1
+    },
+    {
+      "value": "PCL",
+      "count": 1
+    },
+    {
+      "value": "PEEK",
+      "count": 1
+    },
+    {
+      "value": "PEI",
+      "count": 1
+    },
+    {
+      "value": "PETG",
+      "count": 1
+    }
+  ]
+}
