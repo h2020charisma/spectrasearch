@@ -1,11 +1,27 @@
 /* eslint-disable no-undef */
 const testURLRoot = "http://127.0.0.1:50722/search/";
+const baseURL = "http://localhost:8000";
+
+import { ann } from "../fixtures/json/ann_params";
 
 function setMainIntercepts() {
   cy.intercept(
     {
       method: "GET",
-      url: "http://localhost:8000/db/query?page=0&pagesize=30",
+      url: `${baseURL}/db/query?page=0&pagesize=30`,
+    },
+    {
+      fixture: "json/bk_rcapi_samples_generated.json",
+    }
+  ).as("getAllSamples");
+}
+function setMainInterceptsWithParams(pages, hits, ann) {
+  cy.intercept(
+    {
+      method: "GET",
+      url: `${baseURL}/db/query?page=${pages ? pages : 0}&pagesize=${
+        hits ? hits : 30
+      }ann=${ann ? ann : false}`,
     },
     {
       fixture: "json/bk_rcapi_samples_generated.json",
@@ -13,11 +29,23 @@ function setMainIntercepts() {
   ).as("getAllSamples");
 }
 
+function setMainFreeSearchIntercepts() {
+  cy.intercept(
+    {
+      method: "GET",
+      url: `${baseURL}/db/query?q=Neon&page=0&pagesize=30`,
+    },
+    {
+      fixture: "json/bk_rcapi_q.json",
+    }
+  ).as("getSamplesBySearch");
+}
+
 function setSourcesIntercepts() {
   cy.intercept(
     {
       method: "GET",
-      url: "http://localhost:8000/db/query/sources",
+      url: `${baseURL}/db/query/sources`,
     },
     {
       fixture: "json/bk_rcapi_sources_generated.json",
@@ -29,7 +57,7 @@ function setDomainIntercepts() {
   cy.intercept(
     {
       method: "GET",
-      url: "http://localhost:8000/db/dataset?domain=Neon&values=True",
+      url: `${baseURL}/db/dataset?domain=Neon&values=True`,
     },
     {
       fixture: "json/bk_rcapi_domain.json",
@@ -41,7 +69,7 @@ function setSampleIntercepts() {
   cy.intercept(
     {
       method: "GET",
-      url: "http://localhost:8000/db/query/field?name=publicname_s",
+      url: `${baseURL}/db/query/field?name=publicname_s`,
     },
     {
       fixture: "json/bk_rcapi_publicname_s.json",
@@ -53,7 +81,7 @@ function setProviderIntercepts() {
   cy.intercept(
     {
       method: "GET",
-      url: "http://localhost:8000/db/query/field?name=reference_owner_s",
+      url: `${baseURL}/db/query/field?name=reference_owner_s`,
     },
     {
       fixture: "json/bk_rcapi_reference_owner_s.json",
@@ -61,11 +89,18 @@ function setProviderIntercepts() {
   ).as("getAllSamples");
 }
 
+function setFileUploadIntercepts() {
+  cy.intercept({
+    method: "POST",
+    url: `${baseURL}/db/download?what=knnquery`,
+  }).as("postFile");
+}
+
 function setDatasetIntercepts() {
   cy.intercept(
     {
       method: "GET",
-      url: "http://localhost:8000/db/query/field?name=reference_s",
+      url: `${baseURL}/db/query/field?name=reference_s`,
     },
     {
       fixture: "json/bk_rcapi_reference_s.json",
@@ -77,7 +112,7 @@ function setInstrumentIntercepts() {
   cy.intercept(
     {
       method: "GET",
-      url: "http://localhost:8000/db/query/field?name=instrument_s",
+      url: `${baseURL}/db/query/field?name=instrument_s`,
     },
     {
       fixture: "json/bk_rcapi_instrument_s.json",
@@ -89,7 +124,7 @@ function setWavelenghIntercepts() {
   cy.intercept(
     {
       method: "GET",
-      url: "http://localhost:8000/db/query/field?name=wavelength_s",
+      url: `${baseURL}/db/query/field?name=wavelength_s`,
     },
     {
       fixture: "json/bk_rcapi_wavelength_s.json",
@@ -125,6 +160,20 @@ describe("General site functionality", () => {
     cy.get(".chart").should("be.visible");
     cy.get(".chart").type("{esc}");
     cy.get(".chart").should("not.exist");
+  });
+
+  it("opens Free Search Widget and makes search", () => {
+    setMainFreeSearchIntercepts();
+    cy.get('[data-cy="free-text-search"]').click();
+    cy.get("#projectSearch").type("Neon").type("{enter}");
+  });
+
+  it("opens file", () => {
+    setFileUploadIntercepts();
+    setMainInterceptsWithParams(0, 30, ann);
+    cy.get("input[type=file]").selectFile("Cal_785_SEX139.txt", {
+      force: true,
+    });
   });
 
   it("opens Search by Sample Widget and looks for the sample", () => {
@@ -180,5 +229,12 @@ describe("General site functionality", () => {
     // cy.contains("RRUF").click();
     // cy.get(".metadataInfoValue").should("contain.text", "RRUF");
     // cy.get('[data-cy="close-badge-btn"]').click();
+  });
+
+  it("opens Pages Widget and increase page number", () => {
+    setMainInterceptsWithParams(1, 31);
+    cy.get('[data-cy="pages"]').click();
+    cy.get('[data-cy="Pages-input"]').type("{uparrow}");
+    cy.get('[data-cy="Numbers of Hits-input"]').type("{uparrow}");
   });
 });
