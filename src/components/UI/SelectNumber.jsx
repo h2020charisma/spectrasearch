@@ -6,8 +6,10 @@ export default function SelectNumber({ value, setValue, label }) {
         <p>{label}</p>
         <input
           onChange={(e) => setValue(e.target.value)}
+          name={label}
+          data-cy={label + "-input"}
           type="number"
-          min={1}
+          min={0}
           value={value}
           style={{
             width: "80px",
