@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const testURLRoot = "http://127.0.0.1:50722/search/";
-const baseURL = "http://localhost:8000";
+const baseURL = Cypress.env("VITE_BaseURL");
 
 import { ann } from "../fixtures/json/ann_params";
 
@@ -15,6 +15,7 @@ function setMainIntercepts() {
     }
   ).as("getAllSamples");
 }
+
 function setMainInterceptsWithParams(pages, hits, ann) {
   cy.intercept(
     {
@@ -132,10 +133,36 @@ function setWavelenghIntercepts() {
   ).as("getAllSamples");
 }
 
+function setGenericImageIntercepts() {
+  cy.intercept(
+    {
+      method: "GET",
+      url: `${testURLRoot}/blank.png`,
+    },
+    {
+      fixture: "images/blank.png",
+    }
+  );
+}
+
+function setThumbnailImageIntercepts() {
+  cy.intercept(
+    {
+      method: "GET",
+      url: /\/db\/download\?what=thumbnail&domain=.*/,
+    },
+    {
+      fixture: "images/blank.png",
+    }
+  );
+}
+
 describe("General site functionality", () => {
   beforeEach(() => {
     cy.visit(testURLRoot);
     setMainIntercepts();
+    setGenericImageIntercepts();
+    setThumbnailImageIntercepts();
   });
 
   it("displays the under development notice", () => {
@@ -171,7 +198,7 @@ describe("General site functionality", () => {
   it("opens file", () => {
     setFileUploadIntercepts();
     setMainInterceptsWithParams(0, 30, ann);
-    cy.get("input[type=file]").selectFile("Cal_785_SEX139.txt", {
+    cy.get("input[type=file]").selectFile("cypress/fixtures/generic/Cal_785_SEX139.txt", {
       force: true,
     });
   });
