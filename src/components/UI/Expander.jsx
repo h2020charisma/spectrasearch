@@ -31,6 +31,7 @@ export default function Expander({ children, title, status, data }) {
     <div className="expander">
       <div
         onClick={() => title !== "Search Results" && setOpen(!open)}
+        data-cy={title.replace(/\s+/g, "-").toLowerCase()}
         style={{
           display: "flex",
           alignItems: "center",

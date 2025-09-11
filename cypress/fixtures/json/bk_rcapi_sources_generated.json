@@ -1,0 +1,9 @@
+{
+  "default": "charisma",
+  "data_sources": [
+    {
+      "name": "charisma",
+      "description": "CHARISMA"
+    }
+  ]
+}

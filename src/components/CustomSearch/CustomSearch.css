@@ -32,27 +32,29 @@
   outline: none;
 }
 
-.closeBtn {
+.clearBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 20px;
   height: 20px;
   border-radius: 50%;
   padding: 0;
-  background-color: #fff;
+
   position: absolute;
   right: 66px;
 }
 
-.closeBtn:hover {
+.clearBtn:hover {
   background-color: #f8f8f8;
+  border: 1px solid #00ace1;
   transition: all 0.3s ease;
-  border: none;
+}
+.clearBtn:focus {
   outline: none;
 }
-.closeBtn:focus {
-  outline: none;
-}
-.closeBtn:focus-visible,
-.closeBtn:active {
+.clearBtn:focus-visible,
+.clearBtn:active {
   outline: none;
   border: none;
 }

@@ -39,7 +39,8 @@ export default function SearchSelect({
       <div onClick={() => setOpen(!open)} className="selectBtn">
         <SearchIcon />
         <input
-          id="projectSearch"
+          id={`Search for ${label}`}
+          data-cy={label.replace(/\s+/g, "-").toLowerCase()}
           className="searchSelectInput"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
