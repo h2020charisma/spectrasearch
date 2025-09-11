@@ -33,6 +33,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
+      - name: Set a fake .env file
+        run: echo 'VITE_BaseURL="http://localhost:8080/"' >.env
+
       - name: Run Cypress
         uses: cypress-io/github-action@v6.10.2
         with:
