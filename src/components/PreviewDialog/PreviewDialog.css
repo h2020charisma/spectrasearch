@@ -7,7 +7,7 @@
 }
 
 .PreviewDialogContent {
-  background-color: white;
+  background-color: light-dark(#fff, #242424);
   color: #292929;
   border-radius: 6px;
   box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
@@ -31,13 +31,13 @@
 .DialogTitle {
   margin: 0 0 1rem 0;
   font-weight: 500;
-  color: var(--mauve-12);
+  color: light-dark(#3d3d3d, #fff);
   font-size: 20px !important;
 }
 
 .DialogDescription {
   margin: 10px 0 20px;
-  color: var(--mauve-11);
+  color: light-dark(#3d3d3d, #fff);
   font-size: 15px;
   line-height: 1.5;
 }
