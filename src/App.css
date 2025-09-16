@@ -19,7 +19,7 @@ h1 {
   /* margin-bottom: 4rem; */
   height: 60px;
   padding: 0 20px;
-  border-bottom: 1px solid #dadada;
+  border-bottom: 1px solid light-dark(#dadada, #606060);
   cursor: pointer;
   color: light-dark(#202020, #fff);
   background-color: light-dark(#fff, #202020);
@@ -42,7 +42,7 @@ h1 {
 
 .content {
   width: 100%;
-  background-color: light-dark(#fff, #202020);
+  background-color: light-dark(#fff, #242424);
 }
 .expanderContent {
   height: 760px;
@@ -142,7 +142,7 @@ h1 {
 .imgDiscription > span {
   font-size: 14px;
   font-weight: 500;
-  color: #0b5990;
+  color: light-dark(#202020, #05ace1);
 }
 
 .selectItem {
@@ -241,6 +241,7 @@ h1 {
 
 .closeBtn {
   cursor: pointer;
+  background-color: light-dark(#fff, #6d6d6d);
 }
 
 .downloadBtn {
@@ -334,7 +335,7 @@ h1 {
 
 .shareBtn {
   background-color: light-dark(#fff, #202020);
-  color: light-dark(#00ace1, #ccc);
+  color: #00ace1;
   padding: 6px 12px 8px 12px;
 
   font-size: 14px;
@@ -368,9 +369,14 @@ h1 {
   font-size: 14px;
   font-weight: 600;
   padding-right: 0.2rem;
-  color: light-dark(#3d3d3d, #fff);
+  color: #292929;
 }
-
+.metadataInfoValuePreview {
+  font-size: 14px;
+  font-weight: 600;
+  padding-right: 0.2rem;
+  /* color: light-dark(#ebebeb, #2c2c2c) !important; */
+}
 .annotationInfo {
   display: flex;
   align-items: baseline;
@@ -565,6 +571,7 @@ h1 {
   gap: 8px;
   border: #c2f2ff 1px solid;
   background-color: #f8fdff;
+  /* background-color: light-dark(#f8fdff, #6d6d6d); */
 
   width: fit-content;
   border-radius: 4px;
@@ -578,7 +585,8 @@ h1 {
 }
 
 .backArrow {
-  border: 1px solid #cccccc;
+  border: 1px solid #00ace1;
+  color: #00ace1;
   border-radius: 6px;
   width: fit-content;
   padding: 0 0.6rem;
@@ -590,12 +598,19 @@ h1 {
   gap: 12px;
   height: 40px;
   margin-bottom: 2rem;
+  fill: #00ace1;
 }
 .backArrow:hover {
-  background-color: #f0f8ff;
+  color: #fff;
+  background-color: #00ace1;
   border: 1px solid #00ace1;
   transition: all 0.2s;
+  fill: #fff;
 }
+
+/* .backArrow svg {
+  fill: #00ace1;
+} */
 
 .domainInfoTitle {
   display: flex;
@@ -605,10 +620,12 @@ h1 {
 }
 
 .exploreH5web {
-  background-color: #ecffd5;
+  background-color: light-dark(#ecffd5, #d8ffb3);
   color: #454545;
-  /* height: 30px; */
+  height: 14px;
   font-size: smaller;
+  font-weight: 600;
+
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -653,8 +670,8 @@ h1 {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
 }
 .closeBtn:hover {

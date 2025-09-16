@@ -1,7 +1,7 @@
 .sourcesSelectBtn {
   width: -webkit-fill-available;
   padding: 0.6rem;
-  background-color: #f3f3f3;
+  background-color: light-dark(#f3f3f3, #1b1b1b);
   border-radius: 6px;
   color: #282828;
   font-size: 0.8rem;
@@ -77,24 +77,26 @@
   width: -webkit-fill-available;
 }
 .sourceItem {
+  color: light-dark(#3d3d3d, #fff);
   display: flex;
   gap: 12px;
   justify-content: space-between;
   align-items: center;
   padding: 0.1rem 0.6rem;
-  border-left: 5px solid rgb(255, 255, 255);
+  border-left: 5px solid light-dark(#f3f3f3, #323232);
   margin-left: 4px;
 }
 
 .sourceItemActive {
-  background-color: #f3ffee;
+  background-color: light-dark(#fff, #3d3d3d);
   border-left: 5px solid #c3ffab;
+  color: light-dark(#3d3d3d, #848484);
 }
 
 .sourceItem:hover {
-  background-color: #f6f6f6;
+  background-color: light-dark(#f6f6f6, #3d3d3d);
   border-left: 5px solid #e2e2e2;
-
+  color: light-dark(#fff, #3d3d3d);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
@@ -111,9 +113,12 @@
 }
 
 .sourceName {
+  color: light-dark(#3d3d3d, #fff);
   width: 20%;
 }
+
 .sourceDesc {
+  color: light-dark(#3d3d3d, #fff);
   width: 60%;
 }
 .sourceLicence {
