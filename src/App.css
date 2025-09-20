@@ -545,6 +545,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: light-dark(#fff, #242424);
 }
 
 .search-filters {
@@ -614,6 +615,7 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 6px;
+  border: 1px solid #a8ff32;
 }
 
 .exploreH5web:hover {
