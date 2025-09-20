@@ -15,7 +15,7 @@
 
 .selectOptionsSourses {
   border-radius: 6px;
-  padding: 0.6rem 0;
+
   font-size: 0.8rem;
   cursor: pointer;
   user-select: none;
@@ -88,9 +88,8 @@
 }
 
 .sourceItemActive {
-  background-color: light-dark(#fff, #3d3d3d);
-  border-left: 5px solid #c3ffab;
-  color: light-dark(#3d3d3d, #848484);
+  background-color: #f3ffee;
+  border-left: 3px solid #366000;
 }
 
 .sourceItem:hover {
@@ -112,6 +111,21 @@
   text-transform: uppercase;
 }
 
+.resetLabel {
+  background-color: firebrick;
+  padding: 4px 10px 4px 10px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.7rem;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+}
+.resetLabel:hover {
+  background-color: #dc0c0c;
+  transition: all 0.2s ease-in-out;
+}
 .sourceName {
   color: light-dark(#3d3d3d, #fff);
   width: 20%;
@@ -126,4 +140,13 @@
   text-align: right;
   font-size: 0.8rem;
   color: #7a7a7a;
+}
+.defaultSourceLabel {
+  background-color: #366000;
+  color: #fff;
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
 }

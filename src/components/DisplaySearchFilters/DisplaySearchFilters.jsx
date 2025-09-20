@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import "../../App.css";
 import Close from "../Icons/Close";
 import SourcesDialog from "../SourcesDialog/SourcesDialog";
-import { useSessionStorage } from "../../utils/useSessionStorage";
 
 export default function DisplaySearchFilters({
   qQuery,
@@ -70,6 +69,7 @@ export default function DisplaySearchFilters({
             ))}
         </AnimatePresence>
       </div>
+      {/* <span className="vdataSourcesCaption">Select Data Sources</span> */}
       <SourcesDialog sources={sources} setSources={setSources} />
     </div>
   );

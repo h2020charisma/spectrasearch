@@ -45,15 +45,17 @@ export default function SearchComp({ setDomain }) {
     `${auth.isAuthenticated ? "protectedDataSources" : "dataSources"}`
   );
   const dataSources = JSON.parse(dataSourcesJSON);
-
   const [sources, setSources] = useState(dataSources || []);
+
   const [imageData, setImageData] = useSessionStorage("imgData", null);
 
   const [file, setFile] = useSessionStorage("file", "");
-  // const [fileName, setFileName] = useSessionStorage("fileName", "");
-  // console.log(fileName, "fileName in SearchComp");
-
   const [type, setType] = useState("knnquery");
+
+  const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
+  const { data: defaultSources } = useFetch(sorcesUrl);
+
+  // const defaultSource = localStorage.getItem("defaultSource") || "";
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -63,7 +65,18 @@ export default function SearchComp({ setDomain }) {
     } else {
       setSources(JSON.parse(localStorage.getItem("dataSources")) || []);
     }
-  }, [auth.isAuthenticated]);
+
+    localStorage.setItem("defaultSource", defaultSources?.default || "");
+    localStorage.setItem(
+      "numberOfDefaultSources",
+      defaultSources?.data_sources?.length || 0
+    );
+  }, [
+    auth.isAuthenticated,
+    defaultSources?.data_sources,
+    defaultSources?.data_sources?.length,
+    defaultSources,
+  ]);
 
   const params = new URLSearchParams();
   if (freeSearch !== "") {

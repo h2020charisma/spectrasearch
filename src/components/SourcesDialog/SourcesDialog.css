@@ -3,16 +3,16 @@
   color: #454545;
   padding: 6px 12px 8px 12px;
   font-size: 14px;
-  font-weight: 600;
-  background-color: #ecffd5;
   border-radius: 5px;
+  border: 1px solid #366000;
 }
 .sourcesBtn:hover {
-  border-color: #6eca44;
+  background-color: #f8ffee;
+  border: 1px solid #366000;
 }
 .sourcesBtn:focus {
   outline: none;
-  border-color: #9aff6c;
+  border: 1px solid #366000;
 }
 
 .DialogOverlay {
@@ -32,8 +32,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 90vw;
-  max-width: 700px;
+  width: 60vw;
+  max-width: 1000px;
   max-height: 85vh;
   padding: 25px;
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -83,6 +83,25 @@
 .closeBtnSourcesDialog:focus {
   box-shadow: 0 0 0 2px #9aff6c;
   outline: none;
+}
+
+.dataSourcesCaption {
+  color: #366000;
+  font-weight: 600;
+}
+
+.dataSourcesNumber {
+  background: #366000;
+  border-radius: 4px;
+  padding: 3px 7px;
+  font-weight: 800;
+  color: #fff;
+  font-size: 11px;
+  text-transform: uppercase;
+  margin-left: 6px;
+}
+.dataSourcesNumberZero {
+  background-color: #366000;
 }
 
 @keyframes fadeIn {
