@@ -19,7 +19,7 @@ export default function SourcesDialog({ sources, setSources }) {
         <span className="dataSourcesNumber">
           {sources.length === 0 ? defaultSource : sources[0].name}
         </span>
-        {sources.length > 1 && <span>&nbsp;&nbsp;+ {sources.length - 1}</span>}
+        {sources.length > 0 && <span>&nbsp;&nbsp;+ {sources.length}</span>}
       </span>
     );
   };
