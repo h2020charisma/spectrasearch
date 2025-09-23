@@ -4,22 +4,17 @@ import Close from "../Icons/Close";
 import Select from "../Select/Select";
 import "./SourcesDialog.css";
 
-// `Data sources: ${sources.length} of ${sourcesNumber} selected`
-
 export default function SourcesDialog({ sources, setSources }) {
-  const sourcesNumber = localStorage.getItem("numberOfsources") || 0;
-  const defaultSource = localStorage.getItem("defaultSource") || "";
-
-  console.log(sources.length, "!!!sources in SourcesDialog");
-
   const dataSourcesCaption = () => {
     return (
       <span className="dataSourcesCaption">
         Data sources:{"  "}
         <span className="dataSourcesNumber">
-          {sources.length === 0 ? defaultSource : sources[0].name}
+          {sources && sources[sources?.length - 1]?.name}
         </span>
-        {sources.length > 0 && <span>&nbsp;&nbsp;+ {sources.length}</span>}
+        {sources && sources?.length > 1 && (
+          <span>&nbsp;&nbsp;+ {sources?.length - 1}</span>
+        )}
       </span>
     );
   };

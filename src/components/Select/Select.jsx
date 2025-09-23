@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useAuth } from "react-oidc-context";
 import CloseIcon from "../Icons/Close";
 import SearchIcon from "../Icons/SearchIcon";
 import "./Select.css";
@@ -13,17 +12,18 @@ export default function Select({ sources, setSources }) {
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
-  const auth = useAuth();
 
   const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
 
   const { data } = useFetch(url);
 
-  console.log(sources, "!!!sources in Select");
-
-  // useEffect(() => {
-
-  // }, [defaultSource]);
+  useEffect(() => {
+    if (sources?.length < 1) {
+      setSources(
+        data?.data_sources.filter((item) => item.name === defaultSource)
+      );
+    }
+  }, [data, defaultSource, setSources, sources]);
 
   useEffect(
     () =>
@@ -36,32 +36,17 @@ export default function Select({ sources, setSources }) {
     [search, data, defaultSource]
   );
 
-  const sourcesJSON = JSON.stringify(sources);
-
-  if (auth.isAuthenticated) {
-    localStorage.setItem("protectedDataSources", sourcesJSON);
-  } else {
-    localStorage.setItem("dataSources", sourcesJSON);
-  }
-
-  const resetSource = () => {
-    localStorage.setItem("source", "");
-    localStorage.clear();
-  };
-
-  const removeSorce = (name) => {
+  const removeSource = (name) => {
     const updatedSources = sources.filter((item) => item.name !== name);
     setSources(updatedSources);
   };
 
   return (
     <section>
-      {/* <ErrorComp loading={loading} error={error} /> */}
       <div className="projectName">
         <div
           className="resetLabel"
           onClick={() => {
-            // resetSource();
             setSources([]);
           }}
         >
@@ -85,8 +70,7 @@ export default function Select({ sources, setSources }) {
                   id="cleanProject"
                   className="closeSourceBtn"
                   onClick={() => {
-                    // resetSource();
-                    removeSorce(item.name);
+                    removeSource(item.name);
                   }}
                 >
                   <CloseIcon />
@@ -96,7 +80,7 @@ export default function Select({ sources, setSources }) {
           })}
         </AnimatePresence>
       </div>
-      {/* {!error && ( */}
+
       <div data-cy="select-btn" className="sourcesSelectBtn">
         <SearchIcon />
         <input
@@ -106,7 +90,6 @@ export default function Select({ sources, setSources }) {
           placeholder={`Search for the source...`}
         />
       </div>
-      {/* )} */}
 
       {open && (
         <div
@@ -115,11 +98,9 @@ export default function Select({ sources, setSources }) {
         >
           {filtered?.map((item) => {
             let isSelected = !sources?.some(
-              (source) => source.name === item.name
+              (source) => source?.name === item?.name
             );
-            if (item.name === defaultSource) {
-              isSelected = false;
-            }
+
             return (
               <div
                 data-source={item.name}

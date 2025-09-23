@@ -43,7 +43,6 @@ function useFetch(url) {
         },
       });
       setData(response.data);
-      console.log("Data fetched successfully.");
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response) {

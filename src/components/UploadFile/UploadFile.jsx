@@ -13,8 +13,6 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
 
   const [fileName, setFileName] = useSessionStorage("fileName", "");
 
-  console.log(fileName, "fileName in UploadFile");
-
   useEffect(() => {
     if (file && fileName === "") {
       setFileName(file.name);

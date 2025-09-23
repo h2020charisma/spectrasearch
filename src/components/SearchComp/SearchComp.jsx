@@ -41,11 +41,11 @@ export default function SearchComp({ setDomain }) {
 
   const auth = useAuth();
 
-  const dataSourcesJSON = localStorage.getItem(
-    `${auth.isAuthenticated ? "protectedDataSources" : "dataSources"}`
-  );
-  const dataSources = JSON.parse(dataSourcesJSON);
-  const [sources, setSources] = useState(dataSources || []);
+  // const dataSourcesJSON = localStorage.getItem(
+  //   `${auth.isAuthenticated ? "protectedDataSources" : "dataSources"}`
+  // );
+  // const dataSources = JSON.parse(dataSourcesJSON);
+  const [sources, setSources] = useState([]);
 
   const [imageData, setImageData] = useSessionStorage("imgData", null);
 
@@ -53,30 +53,16 @@ export default function SearchComp({ setDomain }) {
   const [type, setType] = useState("knnquery");
 
   const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
-  const { data: defaultSources } = useFetch(sorcesUrl);
+  const { data: allDataSources } = useFetch(sorcesUrl);
 
-  // const defaultSource = localStorage.getItem("defaultSource") || "";
+  const defaultSource = localStorage.getItem("defaultSource") || "";
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
-      setSources(
-        JSON.parse(localStorage.getItem("protectedDataSources")) || []
-      );
-    } else {
-      setSources(JSON.parse(localStorage.getItem("dataSources")) || []);
-    }
-
-    localStorage.setItem("defaultSource", defaultSources?.default || "");
-    localStorage.setItem(
-      "numberOfDefaultSources",
-      defaultSources?.data_sources?.length || 0
+    localStorage.setItem("defaultSource", allDataSources?.default || "");
+    setSources(
+      allDataSources?.data_sources.filter((item) => item.name === defaultSource)
     );
-  }, [
-    auth.isAuthenticated,
-    defaultSources?.data_sources,
-    defaultSources?.data_sources?.length,
-    defaultSources,
-  ]);
+  }, [allDataSources, defaultSource]);
 
   const params = new URLSearchParams();
   if (freeSearch !== "") {
@@ -109,7 +95,7 @@ export default function SearchComp({ setDomain }) {
 
   const sourcesParams = new URLSearchParams();
 
-  if (sources.length > 0) {
+  if (sources?.length > 0) {
     sources.forEach((source) => {
       if (source?.name) {
         params.append("data_source", source.name.toLowerCase());
