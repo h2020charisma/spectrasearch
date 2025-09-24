@@ -41,11 +41,11 @@ export default function SearchComp({ setDomain }) {
 
   const auth = useAuth();
 
-  // const dataSourcesJSON = localStorage.getItem(
-  //   `${auth.isAuthenticated ? "protectedDataSources" : "dataSources"}`
-  // );
-  // const dataSources = JSON.parse(dataSourcesJSON);
-  const [sources, setSources] = useState([]);
+  const dataSourcesString = `${
+    auth.isAuthenticated ? "protectedDataSources" : "dataSources"
+  }`;
+
+  const [sources, setSources] = useSessionStorage(dataSourcesString, []);
 
   const [imageData, setImageData] = useSessionStorage("imgData", null);
 
@@ -62,7 +62,7 @@ export default function SearchComp({ setDomain }) {
     setSources(
       allDataSources?.data_sources.filter((item) => item.name === defaultSource)
     );
-  }, [allDataSources, defaultSource]);
+  }, [allDataSources, defaultSource, setSources]);
 
   const params = new URLSearchParams();
   if (freeSearch !== "") {
