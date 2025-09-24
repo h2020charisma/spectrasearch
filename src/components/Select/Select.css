@@ -83,19 +83,20 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.1rem 0.6rem;
-  border-left: 3px solid rgb(255, 255, 255);
+  border-left: 5px solid light-dark(#f3f3f3, #323232);
   margin-left: 4px;
 }
 
 .sourceItemActive {
-  background-color: #f3ffee;
-  border-left: 3px solid #366000;
+  background-color: light-dark(#fff, #3d3d3d);
+  border-left: 5px solid #c3ffab;
+  color: light-dark(#3d3d3d, #848484);
 }
 
 .sourceItem:hover {
-  background-color: #f6f6f6;
-  border-left: 3px solid #e2e2e2;
-
+  background-color: light-dark(#f6f6f6, #3d3d3d);
+  border-left: 5px solid #e2e2e2;
+  color: light-dark(#fff, #3d3d3d);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
