@@ -1,8 +1,10 @@
 .sourcesBtn {
-  background-color: light-dark(#fff, #202020);
-  color: light-dark(#454545, #8f8f8f);
+  background-color: light-dark(#ecffd5, #d8ffb3) !important;
+  color: #454545;
   padding: 6px 12px 8px 12px;
   font-size: 14px;
+  font-weight: 600;
+  background-color: #ecffd5;
   border-radius: 5px;
   border: 1px solid #366000;
 }
@@ -23,7 +25,7 @@
 }
 
 .SourcesDialogContent {
-  background-color: white;
+  background-color: light-dark(#fff, #242424);
   color: #292929;
   border-radius: 6px;
   box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
@@ -32,8 +34,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 60vw;
-  max-width: 1000px;
+  width: 90vw;
+  max-width: 700px;
   max-height: 85vh;
   padding: 25px;
   animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -69,7 +71,7 @@
   height: 24px;
   border-radius: 50%;
   padding: 0;
-  background-color: #fff;
+  background-color: light-dark(#fff, #6d6d6d);
   position: absolute;
   right: 26px;
   cursor: pointer;
