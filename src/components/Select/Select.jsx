@@ -1,83 +1,86 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useAuth } from "react-oidc-context";
 import CloseIcon from "../Icons/Close";
 import SearchIcon from "../Icons/SearchIcon";
-import ErrorComp from "../UI/ErrorComp";
 import "./Select.css";
 
 import useFetch from "../../utils/useFetch";
 
 export default function Select({ sources, setSources }) {
+  const defaultSource = localStorage.getItem("defaultSource") || "";
+
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
-  const auth = useAuth();
 
   const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
 
-  const { data, loading, error } = useFetch(url);
+  const { data } = useFetch(url);
+
+  useEffect(() => {
+    if (sources?.length < 1) {
+      setSources(
+        data?.data_sources.filter((item) => item.name === defaultSource)
+      );
+    }
+  }, [data, defaultSource, setSources, sources]);
 
   useEffect(
     () =>
       setFiltered(
         data?.data_sources?.filter((item) =>
           item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
-        )
+        ),
+        localStorage.setItem("numberOfsources", data?.data_sources?.length || 0)
       ),
-    [search, data]
+    [search, data, defaultSource]
   );
 
-  const sourcesJSON = JSON.stringify(sources);
-
-  if (auth.isAuthenticated) {
-    localStorage.setItem("protectedDataSources", sourcesJSON);
-  } else {
-    localStorage.setItem("dataSources", sourcesJSON);
-  }
-
-  const resetSource = () => {
-    localStorage.setItem("source", "");
-    localStorage.clear();
-  };
-
-  const removeSorce = (name) => {
+  const removeSource = (name) => {
     const updatedSources = sources.filter((item) => item.name !== name);
     setSources(updatedSources);
   };
 
   return (
     <section>
-      {/* <ErrorComp loading={loading} error={error} /> */}
       <div className="projectName">
+        <div
+          className="resetLabel"
+          onClick={() => {
+            setSources([]);
+          }}
+        >
+          Reset to default
+        </div>
         <AnimatePresence>
-          {sources?.map((item) => (
-            <motion.div
-              key={item.name}
-              className="sourceItemLabel"
-              layout
-              initial={{ opacity: 0, scale: 0.8, x: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8, x: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <span className="sourceNameLabel">{item.name}</span>
-              <div
-                data-cy="clean-btn"
-                id="cleanProject"
-                className="closeSourceBtn"
-                onClick={() => {
-                  resetSource();
-                  removeSorce(item.name);
-                }}
+          {sources?.map((item) => {
+            return (
+              <motion.div
+                key={item.name}
+                className="sourceItemLabel"
+                layout
+                initial={{ opacity: 0, scale: 0.8, x: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8, x: 0 }}
+                transition={{ duration: 0.2 }}
               >
-                <CloseIcon />
-              </div>
-            </motion.div>
-          ))}
+                <span className="sourceNameLabel">{item.name}</span>
+                <div
+                  data-cy="clean-btn"
+                  id="cleanProject"
+                  className="closeSourceBtn"
+                  onClick={() => {
+                    removeSource(item.name);
+                  }}
+                >
+                  <CloseIcon />
+                </div>
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
       </div>
-      {/* {!error && ( */}
+
       <div data-cy="select-btn" className="sourcesSelectBtn">
         <SearchIcon />
         <input
@@ -87,7 +90,6 @@ export default function Select({ sources, setSources }) {
           placeholder={`Search for the source...`}
         />
       </div>
-      {/* )} */}
 
       {open && (
         <div
@@ -96,8 +98,9 @@ export default function Select({ sources, setSources }) {
         >
           {filtered?.map((item) => {
             let isSelected = !sources?.some(
-              (source) => source.name === item.name
+              (source) => source?.name === item?.name
             );
+
             return (
               <div
                 data-source={item.name}
@@ -118,6 +121,9 @@ export default function Select({ sources, setSources }) {
                 <p className="sourceName">{item.name}</p>
                 <p className="sourceDesc">{item.description}</p>
                 <p className="sourceLicence">{item.licence}</p>
+                {item.name === defaultSource && (
+                  <span className="defaultSourceLabel">default</span>
+                )}
               </div>
             );
           })}

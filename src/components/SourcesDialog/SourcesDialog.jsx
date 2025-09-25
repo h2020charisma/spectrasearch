@@ -5,11 +5,25 @@ import Select from "../Select/Select";
 import "./SourcesDialog.css";
 
 export default function SourcesDialog({ sources, setSources }) {
+  const dataSourcesCaption = () => {
+    return (
+      <span className="dataSourcesCaption">
+        Data sources:{"  "}
+        <span className="dataSourcesNumber">
+          {sources && sources[sources?.length - 1]?.name}
+        </span>
+        {sources && sources?.length > 1 && (
+          <span>&nbsp;&nbsp;+ {sources?.length - 1}</span>
+        )}
+      </span>
+    );
+  };
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button data-cy="sources-btn" id="sources" className="sourcesBtn">
-          Choose data source
+          {dataSourcesCaption()}
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>

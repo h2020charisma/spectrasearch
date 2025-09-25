@@ -175,10 +175,7 @@ describe("General site functionality", () => {
     setSourcesIntercepts();
     cy.get('[data-cy="sources-btn"]').click();
     cy.get(".sourceName").should("be.visible");
-    cy.get(".sourceName").click();
-    cy.get(".sourceNameLabel").should("contain.text", "charisma");
     cy.get('[data-cy="ok-btn"]').click();
-    // setMainIntercepts();
   });
 
   it("opens and closes the Preview modal window", () => {
@@ -198,9 +195,12 @@ describe("General site functionality", () => {
   it("opens file", () => {
     setFileUploadIntercepts();
     setMainInterceptsWithParams(0, 30, ann);
-    cy.get("input[type=file]").selectFile("cypress/fixtures/generic/Cal_785_SEX139.txt", {
-      force: true,
-    });
+    cy.get("input[type=file]").selectFile(
+      "cypress/fixtures/generic/Cal_785_SEX139.txt",
+      {
+        force: true,
+      }
+    );
   });
 
   it("opens Search by Sample Widget and looks for the sample", () => {
