@@ -4,13 +4,19 @@ import Close from "../Icons/Close";
 import Select from "../Select/Select";
 import "./SourcesDialog.css";
 
-export default function SourcesDialog({ sources, setSources }) {
+export default function SourcesDialog({
+  sources,
+  setSources,
+  allDataSources,
+  dialog,
+  setDialog,
+}) {
   const dataSourcesCaption = () => {
     return (
       <span className="dataSourcesCaption">
         Data sources:{"  "}
         <span className="dataSourcesNumber">
-          {sources && sources[sources?.length - 1]?.name}
+          {(sources && sources[sources?.length - 1]?.name) || "No one selected"}
         </span>
         {sources && sources?.length > 1 && (
           <span>&nbsp;&nbsp;+ {sources?.length - 1}</span>
@@ -20,7 +26,7 @@ export default function SourcesDialog({ sources, setSources }) {
   };
 
   return (
-    <Dialog.Root>
+    <Dialog.Root open={dialog} onOpenChange={setDialog}>
       <Dialog.Trigger asChild>
         <button data-cy="sources-btn" id="sources" className="sourcesBtn">
           {dataSourcesCaption()}
@@ -48,7 +54,11 @@ export default function SourcesDialog({ sources, setSources }) {
             <br />
           </Dialog.Description>
 
-          <Select sources={sources} setSources={setSources} />
+          <Select
+            sources={sources}
+            setSources={setSources}
+            allDataSources={allDataSources}
+          />
 
           <div
             style={{

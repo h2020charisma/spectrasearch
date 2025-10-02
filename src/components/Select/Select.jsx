@@ -5,35 +5,26 @@ import CloseIcon from "../Icons/Close";
 import SearchIcon from "../Icons/SearchIcon";
 import "./Select.css";
 
-import useFetch from "../../utils/useFetch";
-
-export default function Select({ sources, setSources }) {
+export default function Select({ sources, setSources, allDataSources }) {
   const defaultSource = localStorage.getItem("defaultSource") || "";
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
 
-  const url = `${import.meta.env.VITE_BaseURL}db/query/sources`;
-
-  const { data } = useFetch(url);
-
-  useEffect(() => {
-    if (sources?.length < 1) {
-      setSources(
-        data?.data_sources.filter((item) => item.name === defaultSource)
-      );
-    }
-  }, [data, defaultSource, setSources, sources]);
+  // useEffect(() => {}, []);
 
   useEffect(
     () =>
       setFiltered(
-        data?.data_sources?.filter((item) =>
+        allDataSources?.data_sources?.filter((item) =>
           item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
         ),
-        localStorage.setItem("numberOfsources", data?.data_sources?.length || 0)
+        localStorage.setItem(
+          "numberOfsources",
+          allDataSources?.data_sources?.length || 0
+        )
       ),
-    [search, data, defaultSource]
+    [search, allDataSources, defaultSource]
   );
 
   const removeSource = (name) => {
@@ -107,9 +98,9 @@ export default function Select({ sources, setSources }) {
                 className={`${
                   isSelected
                     ? "sourceItem"
-                    : item.name === defaultSource
-                    ? "sorseItem sourceItemDefault"
-                    : "sourceItem sourceItemActive"
+                    : // : item.name === defaultSource
+                      // ? "sorseItem sourceItemDefault"
+                      "sourceItem sourceItemActive"
                 }`}
                 key={item.name}
                 onClick={() => {

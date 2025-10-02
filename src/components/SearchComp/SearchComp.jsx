@@ -27,6 +27,7 @@ export default function SearchComp({ setDomain }) {
   const queryParams = new URLSearchParams(location.search);
   const domainParams = queryParams.get("domain");
   let [open, setOpen] = useState(true);
+  let [dialog, setDialog] = useState(false);
   let [imageSelected, setImageSelected] = useState(
     domainParams ? domainParams : ""
   );
@@ -54,7 +55,6 @@ export default function SearchComp({ setDomain }) {
 
   const [file, setFile] = useSessionStorage("file", "");
   const [type, setType] = useState("knnquery");
-  // const [showDefaultNotification, setShowDefaultNotification] = useState(false);
 
   const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
   const { data: allDataSources } = useFetch(sorcesUrl);
@@ -62,11 +62,19 @@ export default function SearchComp({ setDomain }) {
   const defaultSource = localStorage.getItem("defaultSource") || "";
 
   useEffect(() => {
+    if (sources?.length < 1 && !dialog) {
+      setSources(
+        allDataSources?.data_sources.filter(
+          (item) => item.name === defaultSource
+        )
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dialog, defaultSource]);
+
+  useEffect(() => {
     localStorage.setItem("defaultSource", allDataSources?.default || "");
-    setSources(
-      allDataSources?.data_sources.filter((item) => item.name === defaultSource)
-    );
-  }, [allDataSources, defaultSource, setSources]);
+  }, [allDataSources, defaultSource, setSources, sources]);
 
   const params = new URLSearchParams();
   if (freeSearch !== "") {
@@ -105,9 +113,6 @@ export default function SearchComp({ setDomain }) {
         params.append("data_source", source.name.toLowerCase());
         sourcesParams.append("data_source", source.name.toLowerCase());
       }
-      // if (source?.name === defaultSource && !showDefaultNotification) {
-      //   setShowDefaultNotification(true);
-      // }
     });
   }
   const queryStringSourcesParams = sourcesParams
@@ -124,7 +129,7 @@ export default function SearchComp({ setDomain }) {
     <div className="main">
       <ToastDemo error={error} />
       <ToastDemo
-        error={defaultSource && sources.length === 1 && defaultSourceMessage}
+        error={sources[0]?.name === defaultSource ? defaultSourceMessage : ""}
       />
       <div>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
@@ -186,6 +191,9 @@ export default function SearchComp({ setDomain }) {
           setReference={setQReference}
           sources={sources}
           setSources={setSources}
+          dialog={dialog}
+          setDialog={setDialog}
+          allDataSources={allDataSources}
           freeSearch={freeSearch}
           setFreeSearch={setFreeSearch}
         />
@@ -216,26 +224,13 @@ export default function SearchComp({ setDomain }) {
           </ErrorBoundary>
         </Expander>
         {imageSelected && auth.isAuthenticated ? (
-          // <ErrorBoundary
-          //   fallback={
-          //     <div className="errorMessage">
-          //       <p>Sorry, something went wrong</p>
-          //       <button onClick={() => setImageSelected(null)}>
-          //         Please Try Again
-          //       </button>
-          //     </div>
-          //   }
-          // >
           <Chart
             imageSelected={imageSelected}
             setDomain={setDomain}
             isNexusFile={isNexusFile}
           />
         ) : (
-          // </ErrorBoundary>
-          <div className="errorMessage">
-            {/* {auth.isAuthenticated && <p>No image selected</p>} */}
-          </div>
+          <div className="errorMessage"></div>
         )}
       </div>
     </div>
