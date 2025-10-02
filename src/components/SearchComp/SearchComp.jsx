@@ -19,6 +19,9 @@ import ToastDemo from "../UI/Toast/Toast";
 
 import "../../App.css";
 
+const defaultSourceMessage =
+  "Since you have not selected any data sources, the default one was automatically selected for you.";
+
 export default function SearchComp({ setDomain }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -51,6 +54,7 @@ export default function SearchComp({ setDomain }) {
 
   const [file, setFile] = useSessionStorage("file", "");
   const [type, setType] = useState("knnquery");
+  // const [showDefaultNotification, setShowDefaultNotification] = useState(false);
 
   const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
   const { data: allDataSources } = useFetch(sorcesUrl);
@@ -101,6 +105,9 @@ export default function SearchComp({ setDomain }) {
         params.append("data_source", source.name.toLowerCase());
         sourcesParams.append("data_source", source.name.toLowerCase());
       }
+      // if (source?.name === defaultSource && !showDefaultNotification) {
+      //   setShowDefaultNotification(true);
+      // }
     });
   }
   const queryStringSourcesParams = sourcesParams
@@ -116,6 +123,9 @@ export default function SearchComp({ setDomain }) {
   return (
     <div className="main">
       <ToastDemo error={error} />
+      <ToastDemo
+        error={defaultSource && sources.length === 1 && defaultSourceMessage}
+      />
       <div>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
           <SideBarToggle />

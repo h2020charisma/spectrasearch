@@ -105,7 +105,11 @@ export default function Select({ sources, setSources }) {
               <div
                 data-source={item.name}
                 className={`${
-                  isSelected ? "sourceItem" : "sourceItem sourceItemActive"
+                  isSelected
+                    ? "sourceItem"
+                    : item.name === defaultSource
+                    ? "sorseItem sourceItemDefault"
+                    : "sourceItem sourceItemActive"
                 }`}
                 key={item.name}
                 onClick={() => {
