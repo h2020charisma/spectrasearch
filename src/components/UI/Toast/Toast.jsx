@@ -21,21 +21,12 @@ const ToastDemo = ({ error }) => {
   return (
     <div className="ToastWrapper">
       <Toast.Provider swipeDirection="right">
-        {/* <button
-          className="Button large violet"
-          onClick={() => {
-            setOpen(false);
-            window.clearTimeout(timerRef.current);
-            timerRef.current = window.setTimeout(() => {
-              eventDateRef.current = oneWeekAway();
-              setOpen(true);
-            }, 100);
-          }}
+        <Toast.Root
+          className="ToastRoot"
+          open={open}
+          onOpenChange={setOpen}
+          duration={5000}
         >
-          Add to calendar
-        </button> */}
-
-        <Toast.Root className="ToastRoot" open={open} onOpenChange={setOpen}>
           <Toast.Title className="ToastTitle">{error}</Toast.Title>
           <Toast.Description asChild></Toast.Description>
           <Toast.Action
