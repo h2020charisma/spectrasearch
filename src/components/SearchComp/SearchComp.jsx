@@ -65,8 +65,6 @@ export default function SearchComp({ setDomain }) {
 
   useEffect(() => {
     if (allDataSources && sources?.length < 1 && !dialog) {
-      console.log("Effect: default source set");
-
       setSources(
         allDataSources?.data_sources.filter(
           (item) => item?.name === defaultSourceLower

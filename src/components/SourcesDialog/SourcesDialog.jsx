@@ -16,7 +16,7 @@ export default function SourcesDialog({
       <span className="dataSourcesCaption">
         Data sources:{"  "}
         <span className="dataSourcesNumber">
-          {(sources && sources[sources?.length - 1]?.name) || "No one selected"}
+          {(sources && sources[sources?.length - 1]?.name) || "Default"}
         </span>
         {sources && sources?.length > 1 && (
           <span>&nbsp;&nbsp;+ {sources?.length - 1}</span>
