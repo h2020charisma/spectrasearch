@@ -174,7 +174,7 @@ describe("General site functionality", () => {
   it("opens and closes the sources modal window", () => {
     setSourcesIntercepts();
     cy.get('[data-cy="sources-btn"]').click();
-    cy.get(".sourceName").should("be.visible");
+    cy.get(".DialogHeader").should("be.visible");
     cy.get('[data-cy="ok-btn"]').click();
   });
 
