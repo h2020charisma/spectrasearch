@@ -61,16 +61,20 @@ export default function SearchComp({ setDomain }) {
 
   const defaultSource = localStorage.getItem("defaultSource") || "";
 
+  const defaultSourceLower = allDataSources?.default.toLowerCase();
+
   useEffect(() => {
-    if (sources?.length < 1 && !dialog) {
+    if (allDataSources && sources?.length < 1 && !dialog) {
+      console.log("Effect: default source set");
+
       setSources(
         allDataSources?.data_sources.filter(
-          (item) => item.name === defaultSource
+          (item) => item?.name === defaultSourceLower
         )
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dialog, defaultSource]);
+  }, [dialog, sources, allDataSources]);
 
   useEffect(() => {
     localStorage.setItem("defaultSource", allDataSources?.default || "");
@@ -129,7 +133,12 @@ export default function SearchComp({ setDomain }) {
     <div className="main">
       <ToastDemo error={error} />
       <ToastDemo
-        error={sources[0]?.name === defaultSource ? defaultSourceMessage : ""}
+        error={
+          sources[0]?.name &&
+          sources[0]?.name.toLowerCase() === defaultSourceLower
+            ? defaultSourceMessage
+            : ""
+        }
       />
       <div>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
