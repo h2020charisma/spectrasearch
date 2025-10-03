@@ -41,7 +41,7 @@ export default function Select({ sources, setSources, allDataSources }) {
             setSources([]);
           }}
         >
-          Reset to default
+          Reset
         </div>
         <AnimatePresence>
           {sources?.map((item) => {
