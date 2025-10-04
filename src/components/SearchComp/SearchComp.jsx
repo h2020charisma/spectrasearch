@@ -51,6 +51,8 @@ export default function SearchComp({ setDomain }) {
 
   const [sources, setSources] = useSessionStorage(dataSourcesString, []);
 
+  const [toast, setToast] = useState(false);
+
   const [imageData, setImageData] = useSessionStorage("imgData", null);
 
   const [file, setFile] = useSessionStorage("file", "");
@@ -71,8 +73,11 @@ export default function SearchComp({ setDomain }) {
         )
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dialog, sources, allDataSources]);
+    let isDefault = sources.some(
+      (source) => source?.name.toLowerCase() === defaultSourceLower
+    );
+    setToast(sources.length == 1 && isDefault);
+  }, [dialog, sources, allDataSources, setSources, toast, defaultSourceLower]);
 
   useEffect(() => {
     localStorage.setItem("defaultSource", allDataSources?.default || "");
@@ -130,14 +135,8 @@ export default function SearchComp({ setDomain }) {
   return (
     <div className="main">
       <ToastDemo error={error} />
-      <ToastDemo
-        error={
-          sources[0]?.name &&
-          sources[0]?.name.toLowerCase() === defaultSourceLower
-            ? defaultSourceMessage
-            : ""
-        }
-      />
+
+      {toast && !dialog ? <ToastDemo error={defaultSourceMessage} /> : null}
       <div>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
           <SideBarToggle />
