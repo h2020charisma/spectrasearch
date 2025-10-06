@@ -37,7 +37,7 @@ export default function SearchComp({ setDomain }) {
   let [q_reference, setQReference] = useSessionStorage("reference", "*");
   let [provider, setProvider] = useSessionStorage("provider", "*");
   let [pages, setPages] = useSessionStorage("pages", "0");
-  let [pagesize, setPagesize] = useSessionStorage("pagesize", "30");
+  let [pagesize, setPagesize] = useSessionStorage("pagesize", "10");
   let [q, setQ] = useSessionStorage("q", "*");
   let [instrument, setInstrument] = useSessionStorage("instrument", "*");
   let [wavelengths, setWavelengths] = useSessionStorage("wavelengths", "*");
