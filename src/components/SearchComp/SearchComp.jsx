@@ -19,11 +19,15 @@ import ToastDemo from "../UI/Toast/Toast";
 
 import "../../App.css";
 
+const defaultSourceMessage =
+  "Since you have not selected any data sources, the default one was automatically selected for you.";
+
 export default function SearchComp({ setDomain }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const domainParams = queryParams.get("domain");
   let [open, setOpen] = useState(true);
+  let [dialog, setDialog] = useState(false);
   let [imageSelected, setImageSelected] = useState(
     domainParams ? domainParams : ""
   );
@@ -47,6 +51,8 @@ export default function SearchComp({ setDomain }) {
 
   const [sources, setSources] = useSessionStorage(dataSourcesString, []);
 
+  const [toast, setToast] = useState(false);
+
   const [imageData, setImageData] = useSessionStorage("imgData", null);
 
   const [file, setFile] = useSessionStorage("file", "");
@@ -57,12 +63,25 @@ export default function SearchComp({ setDomain }) {
 
   const defaultSource = localStorage.getItem("defaultSource") || "";
 
+  const defaultSourceLower = allDataSources?.default.toLowerCase();
+
+  useEffect(() => {
+    if (allDataSources && sources?.length < 1 && !dialog) {
+      setSources(
+        allDataSources?.data_sources.filter(
+          (item) => item?.name === defaultSourceLower
+        )
+      );
+    }
+    let isDefault = sources.some(
+      (source) => source?.name.toLowerCase() === defaultSourceLower
+    );
+    setToast(sources.length == 1 && isDefault);
+  }, [dialog, sources, allDataSources, setSources, toast, defaultSourceLower]);
+
   useEffect(() => {
     localStorage.setItem("defaultSource", allDataSources?.default || "");
-    setSources(
-      allDataSources?.data_sources.filter((item) => item.name === defaultSource)
-    );
-  }, [allDataSources, defaultSource, setSources]);
+  }, [allDataSources, defaultSource, setSources, sources]);
 
   const params = new URLSearchParams();
   if (freeSearch !== "") {
@@ -116,6 +135,8 @@ export default function SearchComp({ setDomain }) {
   return (
     <div className="main">
       <ToastDemo error={error} />
+
+      {toast && !dialog ? <ToastDemo error={defaultSourceMessage} /> : null}
       <div>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
           <SideBarToggle />
@@ -176,6 +197,9 @@ export default function SearchComp({ setDomain }) {
           setReference={setQReference}
           sources={sources}
           setSources={setSources}
+          dialog={dialog}
+          setDialog={setDialog}
+          allDataSources={allDataSources}
           freeSearch={freeSearch}
           setFreeSearch={setFreeSearch}
         />
@@ -206,26 +230,13 @@ export default function SearchComp({ setDomain }) {
           </ErrorBoundary>
         </Expander>
         {imageSelected && auth.isAuthenticated ? (
-          // <ErrorBoundary
-          //   fallback={
-          //     <div className="errorMessage">
-          //       <p>Sorry, something went wrong</p>
-          //       <button onClick={() => setImageSelected(null)}>
-          //         Please Try Again
-          //       </button>
-          //     </div>
-          //   }
-          // >
           <Chart
             imageSelected={imageSelected}
             setDomain={setDomain}
             isNexusFile={isNexusFile}
           />
         ) : (
-          // </ErrorBoundary>
-          <div className="errorMessage">
-            {/* {auth.isAuthenticated && <p>No image selected</p>} */}
-          </div>
+          <div className="errorMessage"></div>
         )}
       </div>
     </div>

@@ -16,7 +16,11 @@ export default function DisplaySearchFilters({
   reference,
   setReference,
   sources,
+  dialog,
+  setDialog,
   setSources,
+  allDataSources,
+
   freeSearch,
   setFreeSearch,
 }) {
@@ -70,7 +74,13 @@ export default function DisplaySearchFilters({
         </AnimatePresence>
       </div>
       {/* <span className="vdataSourcesCaption">Select Data Sources</span> */}
-      <SourcesDialog sources={sources} setSources={setSources} />
+      <SourcesDialog
+        sources={sources}
+        setSources={setSources}
+        allDataSources={allDataSources}
+        dialog={dialog}
+        setDialog={setDialog}
+      />
     </div>
   );
 }
