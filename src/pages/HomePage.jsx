@@ -3,10 +3,9 @@ import { useLocation } from "react-router-dom";
 
 import SearchComp from "../components/SearchComp/SearchComp";
 
-import UnderDevelopent from "../components/UnderDevelopent/UnderDevelopent";
+import Footer from "../components/Footer/Footer";
 import H5web from "../components/h5web/h5web";
 import Header from "../components/Header/Header";
-import Footer from "../components/Footer/Footer";
 import ToastComp from "../components/UI/Toast/Toast";
 
 export default function HomePage() {
@@ -19,7 +18,7 @@ export default function HomePage() {
     <div>
       <ToastComp />
       <Header />
-      <UnderDevelopent />
+
       <div>
         {h5webParams ? (
           <H5web domain={domain} />
