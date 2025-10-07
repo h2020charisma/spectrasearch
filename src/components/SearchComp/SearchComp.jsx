@@ -41,6 +41,8 @@ export default function SearchComp({ setDomain }) {
   let [q, setQ] = useSessionStorage("q", "*");
   let [instrument, setInstrument] = useSessionStorage("instrument", "*");
   let [wavelengths, setWavelengths] = useSessionStorage("wavelengths", "*");
+  let [methods, setMethods] = useSessionStorage("methods", "*");
+
   let [freeSearch, setFreeSearch] = useSessionStorage("freeSearch", "");
 
   const auth = useAuth();
@@ -99,8 +101,8 @@ export default function SearchComp({ setDomain }) {
   if (instrument !== "*" && instrument !== "") {
     params.append("instrument_s", instrument);
   }
-  if (wavelengths !== "*" && wavelengths !== "") {
-    params.append("wavelength_s", wavelengths);
+  if (methods !== "*" && methods !== "") {
+    params.append("E.method_s", methods);
   }
   if (imageData && file && type === "text") {
     params.append("query_type", type);
@@ -166,9 +168,10 @@ export default function SearchComp({ setDomain }) {
                 qQuery={q}
                 setImageData={setImageData}
                 imageData={imageData}
-                instrument={instrument}
                 setInstrument={setInstrument}
                 wavelengths={wavelengths}
+                methods={methods}
+                setMethods={setMethods}
                 setWavelengths={setWavelengths}
                 type={type}
                 setType={setType}
