@@ -37,5 +37,6 @@ self.addEventListener("fetch", (event) => {
     });
     event.respondWith(fetch(authRequest));
   } else {
+    console.log("");
   }
 });
