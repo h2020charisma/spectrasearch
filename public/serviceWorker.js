@@ -36,7 +36,5 @@ self.addEventListener("fetch", (event) => {
       mode: "cors",
     });
     event.respondWith(fetch(authRequest));
-  } else {
-    console.log("");
   }
 });
