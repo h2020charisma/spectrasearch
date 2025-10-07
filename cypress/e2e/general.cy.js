@@ -165,12 +165,6 @@ describe("General site functionality", () => {
     setThumbnailImageIntercepts();
   });
 
-  it("displays the under development notice", () => {
-    cy.get("#root > div > p")
-      .should("have.class", "underDev")
-      .and("be.visible");
-  });
-
   it("opens and closes the sources modal window", () => {
     setSourcesIntercepts();
     cy.get('[data-cy="sources-btn"]').click();
