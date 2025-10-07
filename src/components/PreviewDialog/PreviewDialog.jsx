@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import * as Dialog from "@radix-ui/react-dialog";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "../../store/store";
 import Chart from "../Chart/Chart";
 import PreviewIcon from "../Icons/PreviewIcon";

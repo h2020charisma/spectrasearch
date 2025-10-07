@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import * as Plot from "@observablehq/plot";
 import { useEffect, useRef, useState } from "react";
-
+import { useQueryStringSourcesParams } from "../../utils/useQueryStringSourcesParams";
 import useFetch from "../../utils/useFetch";
 
 // import ErrorComp from "../UI/ErrorComp";
@@ -9,27 +9,15 @@ import useFetch from "../../utils/useFetch";
 export default function Chart({ imageSelected, isNexusFile }) {
   const containerRef = useRef();
 
+  const { querySourcesString } = useQueryStringSourcesParams();
+
   const datasetQuery = !isNexusFile
     ? `${import.meta.env.VITE_BaseURL}db/dataset?domain=${encodeURIComponent(
         imageSelected
-      )}&values=True`
+      )}&values=True&${querySourcesString}`
     : "";
 
   const { data, loading, error } = useFetch(imageSelected && datasetQuery);
-
-  // const [copied, setCopied] = useState(false);
-
-  // setTimeout(() => {
-  //   setCopied(false);
-  // }, 3000);
-
-  // const urlToCopy = import.meta.env.PROD
-  //   ? `${window.location.href}`
-  //   : `http://localhost:5173/search?domain=${imageSelected}`;
-
-  // const copyLink = () => {
-  //   imageSelected && navigator.clipboard.writeText(urlToCopy);
-  // };
 
   const [dataset, setDataset] = useState(null);
   const [valuesX, setValuesX] = useState([]);
