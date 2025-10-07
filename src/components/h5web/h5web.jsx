@@ -1,6 +1,6 @@
 import "@h5web/app/dist/styles.css";
 
-import { App, HsdsProvider } from "@h5web/app";
+import { App, HsdsProvider, createBasicFetcher } from "@h5web/app";
 import { useState } from "react";
 import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "react-oidc-context";
@@ -23,6 +23,12 @@ export default function H5web({ domain }) {
   const [hash, useHash] = useState(
     decodeURIComponent(window.location.hash.substring(1))
   );
+
+  const fetcher = createBasicFetcher({
+    headers: {
+      Authorization: `Bearer ${auth.user.access_token}`,
+    },
+  });
 
   const initialPath = initialPathParams ? initialPathParams : hash ? hash : "/";
 
@@ -65,6 +71,7 @@ export default function H5web({ domain }) {
       <div style={{ height: "100vh" }}>
         <HsdsProvider
           url="https://hsds-kc.ideaconsult.net"
+          fetcher={fetcher}
           username="system-public-user"
           password="system-public-user"
           filepath={`${domain ? domain : h5webParams}`}
