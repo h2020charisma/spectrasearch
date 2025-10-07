@@ -26,7 +26,7 @@ export default function H5web({ domain }) {
 
   const fetcher = createBasicFetcher({
     headers: {
-      Authorization: `Bearer ${auth.user.access_token}`,
+      Authorization: `Bearer ${auth?.user?.access_token}`,
     },
   });
 
@@ -39,7 +39,7 @@ export default function H5web({ domain }) {
       }&${querySourcesString}`,
       {
         headers: {
-          Authorization: `Bearer ${auth.user.access_token}`,
+          Authorization: `Bearer ${auth?.user?.access_token}`,
         },
       }
     )
@@ -71,7 +71,7 @@ export default function H5web({ domain }) {
       <div style={{ height: "100vh" }}>
         <HsdsProvider
           url="https://hsds-kc.ideaconsult.net"
-          fetcher={fetcher}
+          fetcher={auth?.user?.access_token ? fetcher : undefined}
           username="system-public-user"
           password="system-public-user"
           filepath={`${domain ? domain : h5webParams}`}
