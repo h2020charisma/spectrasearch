@@ -4,7 +4,7 @@ import { App, HsdsProvider } from "@h5web/app";
 import { useState } from "react";
 import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "react-oidc-context";
-
+import { useQueryStringSourcesParams } from "../../utils/useQueryStringSourcesParams";
 import BackArrow from "../Icons/BackArrow";
 
 // eslint-disable-next-line react/prop-types
@@ -13,6 +13,7 @@ export default function H5web({ domain }) {
   const location = useLocation();
   const navigate = useNavigate();
   const auth = useAuth();
+  const { querySourcesString } = useQueryStringSourcesParams();
 
   const queryParams = new URLSearchParams(location.search);
   const h5webParams = queryParams.get("h5web");
@@ -29,7 +30,7 @@ export default function H5web({ domain }) {
     fetch(
       `${import.meta.env.VITE_BaseURL}db/download?what=h5&domain=${
         domain ? domain : h5webParams
-      }`,
+      }&${querySourcesString}`,
       {
         headers: {
           Authorization: `Bearer ${auth.user.access_token}`,
