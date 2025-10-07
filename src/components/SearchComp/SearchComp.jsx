@@ -102,7 +102,7 @@ export default function SearchComp({ setDomain }) {
     params.append("instrument_s", instrument);
   }
   if (methods !== "*" && methods !== "") {
-    params.append("E.method_s", methods);
+    params.append("q_method", methods);
   }
   if (imageData && file && type === "text") {
     params.append("query_type", type);
@@ -205,6 +205,8 @@ export default function SearchComp({ setDomain }) {
           allDataSources={allDataSources}
           freeSearch={freeSearch}
           setFreeSearch={setFreeSearch}
+          methods={methods}
+          setMethods={setMethods}
         />
         {file && imageData && (
           <div className="imageUploded">
