@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { useQueryStringSourcesParams } from "../../utils/useQueryStringSourcesParams";
 import useFetch from "../../utils/useFetch";
 
+import { latexToUnicode } from "../../utils/latexToUnicode";
+import "katex/dist/katex.min.css";
+
 // import ErrorComp from "../UI/ErrorComp";
 
 export default function Chart({ imageSelected, isNexusFile }) {
@@ -53,9 +56,14 @@ export default function Chart({ imageSelected, isNexusFile }) {
       stroke: "#454545",
       marks: [
         Plot.axisY({
-          label: "Relative intensity",
+          label: `${latexToUnicode(data?.datasets[0]?.ytitle)}`,
           labelAnchor: "center",
           marginLeft: 60,
+        }),
+        Plot.axisX({
+          label: `${latexToUnicode(data?.datasets[0]?.xtitle)}`,
+          labelAnchor: "center",
+          marginTop: 60,
         }),
         Plot.ruleY([0], { stroke: "gray" }),
         Plot.lineX(valuesX, {
@@ -208,9 +216,9 @@ export default function Chart({ imageSelected, isNexusFile }) {
       {!isNexusFile && (
         <>
           <div className="chart" ref={containerRef} />
-          <div className="shiftLabel">
+          {/* <div className="shiftLabel">
             Raman shift (cm<sup>&ndash;1</sup>)
-          </div>
+          </div> */}
         </>
       )}
       {/* <ErrorComp loading={loading} error={error} /> */}
