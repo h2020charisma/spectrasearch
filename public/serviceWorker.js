@@ -25,7 +25,7 @@ self.addEventListener("fetch", (event) => {
     request.method === "GET" &&
     url.origin !== "https://iam.ideaconsult.net" &&
     url.origin !== "https://idp.ideaconsult.net" &&
-    request.destination === "image" &&
+    // request.destination === "image" &&
     event.request.headers["Authorization"] == undefined
   ) {
     const authRequest = new Request(request, {
