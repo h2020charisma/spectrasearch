@@ -29,6 +29,8 @@ export default function Sidebar({
   setImageSelected,
   setImageData,
   imageData,
+  methods,
+  setMethods,
   wavelengths,
   setWavelengths,
   type,
@@ -126,13 +128,13 @@ export default function Sidebar({
           />
         </ErrorBoundary>
       </Expander>
-      <Expander title="Search by Wavelenth" status={false}>
+      <Expander title="Search by Method" status={false}>
         <ErrorBoundary
           fallback={<div className="errorMessage">{errorMsg}</div>}
         >
           <Wavelengths
-            wavelengths={wavelengths}
-            setWavelengths={setWavelengths}
+            methods={methods}
+            setMethods={setMethods}
             setImageSelected={setImageSelected}
             queryStringSourcesParams={queryStringSourcesParams}
           />

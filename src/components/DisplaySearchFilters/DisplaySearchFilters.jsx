@@ -23,6 +23,8 @@ export default function DisplaySearchFilters({
 
   freeSearch,
   setFreeSearch,
+  methods,
+  setMethods,
 }) {
   const filters = [
     // {
@@ -47,9 +49,9 @@ export default function DisplaySearchFilters({
       onClick: () => setInstrument("*"),
     },
     {
-      label: "Wavelengths",
-      value: wavelengths,
-      onClick: () => setWavelengths("*"),
+      label: "Methods",
+      value: methods,
+      onClick: () => setMethods("*"),
     },
     { label: "Dataset", value: reference, onClick: () => setReference("*") },
   ];

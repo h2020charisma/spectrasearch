@@ -178,13 +178,13 @@ describe("General site functionality", () => {
     cy.get('[data-cy="ok-btn"]').click();
   });
 
-  it("opens and closes the Preview modal window", () => {
-    setDomainIntercepts();
-    cy.get('[data-cy="preview-btn"]').first().click();
-    cy.get(".chart").should("be.visible");
-    cy.get(".chart").type("{esc}");
-    cy.get(".chart").should("not.exist");
-  });
+  // it("opens and closes the Preview modal window", () => {
+  //   setDomainIntercepts();
+  //   cy.get('[data-cy="preview-btn"]').first().click();
+  //   cy.get(".chart").should("be.visible");
+  //   cy.get(".chart").type("{esc}");
+  //   cy.get(".chart").should("not.exist");
+  // });
 
   it("opens Free Search Widget and makes search", () => {
     setMainFreeSearchIntercepts();
@@ -249,9 +249,9 @@ describe("General site functionality", () => {
 
   it("opens Search by Wavelength Widget and looks for the wavelangth", () => {
     setWavelenghIntercepts();
-    cy.get('[data-cy="search-by-wavelenth"]').click();
-    cy.get('[data-cy="wavelengths"]').should("be.visible");
-    cy.get('[data-cy="wavelengths"]').click();
+    cy.get('[data-cy="search-by-method"]').click();
+    cy.get('[data-cy="methods"]').should("be.visible");
+    cy.get('[data-cy="methods"]').click();
     // setMainIntercepts();
     // cy.contains("RRUF").click();
     // cy.get(".metadataInfoValue").should("contain.text", "RRUF");

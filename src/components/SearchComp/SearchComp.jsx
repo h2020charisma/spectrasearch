@@ -37,10 +37,12 @@ export default function SearchComp({ setDomain }) {
   let [q_reference, setQReference] = useSessionStorage("reference", "*");
   let [provider, setProvider] = useSessionStorage("provider", "*");
   let [pages, setPages] = useSessionStorage("pages", "0");
-  let [pagesize, setPagesize] = useSessionStorage("pagesize", "30");
+  let [pagesize, setPagesize] = useSessionStorage("pagesize", "10");
   let [q, setQ] = useSessionStorage("q", "*");
   let [instrument, setInstrument] = useSessionStorage("instrument", "*");
   let [wavelengths, setWavelengths] = useSessionStorage("wavelengths", "*");
+  let [methods, setMethods] = useSessionStorage("methods", "*");
+
   let [freeSearch, setFreeSearch] = useSessionStorage("freeSearch", "");
 
   const auth = useAuth();
@@ -99,8 +101,8 @@ export default function SearchComp({ setDomain }) {
   if (instrument !== "*" && instrument !== "") {
     params.append("instrument_s", instrument);
   }
-  if (wavelengths !== "*" && wavelengths !== "") {
-    params.append("wavelength_s", wavelengths);
+  if (methods !== "*" && methods !== "") {
+    params.append("q_method", methods);
   }
   if (imageData && file && type === "text") {
     params.append("query_type", type);
@@ -166,9 +168,10 @@ export default function SearchComp({ setDomain }) {
                 qQuery={q}
                 setImageData={setImageData}
                 imageData={imageData}
-                instrument={instrument}
                 setInstrument={setInstrument}
                 wavelengths={wavelengths}
+                methods={methods}
+                setMethods={setMethods}
                 setWavelengths={setWavelengths}
                 type={type}
                 setType={setType}
@@ -202,6 +205,8 @@ export default function SearchComp({ setDomain }) {
           allDataSources={allDataSources}
           freeSearch={freeSearch}
           setFreeSearch={setFreeSearch}
+          methods={methods}
+          setMethods={setMethods}
         />
         {file && imageData && (
           <div className="imageUploded">

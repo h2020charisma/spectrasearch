@@ -4,12 +4,12 @@ import SearchSelect from "../UI/SearchSelect";
 import useFetch from "../../utils/useFetch";
 
 export default function Wavelengths({
-  wavelengths,
-  setWavelengths,
+  methods,
+  setMethods,
   setImageSelected,
   queryStringSourcesParams,
 }) {
-  const providerURL = `db/query/field?name=wavelength_s${
+  const providerURL = `db/query/field?name=E.method_s${
     queryStringSourcesParams && `&${queryStringSourcesParams}`
   }`;
 
@@ -19,10 +19,10 @@ export default function Wavelengths({
     <div>
       <SearchSelect
         data={data?.response}
-        setqQuery={setWavelengths}
-        qQuery={wavelengths}
+        setqQuery={setMethods}
+        qQuery={methods}
         setImageSelected={setImageSelected}
-        label="Wavelengths"
+        label="Methods"
       />
     </div>
   );

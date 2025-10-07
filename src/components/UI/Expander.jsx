@@ -54,7 +54,7 @@ export default function Expander({ children, title, status, data }) {
               {title == "Search by Data provider" ? <AiFillDatabase /> : null}
               {title == "Search by Dataset" ? <TbZoomCodeFilled /> : null}
               {title == "Search by Instrument" ? <AiFillTool /> : null}
-              {title == "Search by Wavelenth" ? <PiWaveSineBold /> : null}
+              {title == "Search by Method" ? <PiWaveSineBold /> : null}
               {title == "Pages" ? <FaSignsPost /> : null}
               {title == "Search Results" ? <FaChartBar /> : null}
               {title == "Free text search" ? <IoSearch /> : null}
