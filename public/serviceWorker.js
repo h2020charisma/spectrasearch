@@ -1,11 +1,11 @@
 let accessToken = "";
 
 self.addEventListener("install", (event) => {
-  self.skipWaiting();
+  console.log("SW installed, waiting for activation...");
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  console.log("SW activated");
 });
 
 self.addEventListener("message", (event) => {
