@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import { useAuth } from "react-oidc-context";
 import { useLocation } from "react-router-dom";
@@ -45,13 +45,19 @@ export default function SearchComp({ setDomain }) {
 
   let [freeSearch, setFreeSearch] = useSessionStorage("freeSearch", "");
 
+  // let [dataSourcesString, setDataSourcesString] = useState("dataSources");
+
   const auth = useAuth();
 
-  const dataSourcesString = `${
-    auth.isAuthenticated ? "protectedDataSources" : "dataSources"
-  }`;
+  useEffect(() => {
+    if (auth.user) {
+      console.log("Y:", auth);
+    } else {
+      console.log("N:", auth);
+    }
+  }, [auth]);
 
-  const [sources, setSources] = useSessionStorage(dataSourcesString, []);
+  const [sources, setSources] = useSessionStorage("dataSources", []);
 
   const [toast, setToast] = useState(false);
 
