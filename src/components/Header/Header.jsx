@@ -53,6 +53,7 @@ export default function Header() {
               style={{ marginLeft: "18px" }}
               onClick={() => {
                 // auth.removeUser();
+                sessionStorage.removeItem("dataSources");
 
                 auth.signoutRedirect();
               }}
@@ -69,6 +70,7 @@ export default function Header() {
               className="shareBtn"
               style={{ marginLeft: "18px" }}
               onClick={() => {
+                sessionStorage.removeItem("dataSources");
                 auth.signinRedirect();
               }}
             >

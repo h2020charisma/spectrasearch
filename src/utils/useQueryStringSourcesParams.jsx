@@ -8,7 +8,7 @@ export function useQueryStringSourcesParams() {
     auth.isAuthenticated ? "protectedDataSources" : "dataSources"
   }`;
 
-  const [sources] = useSessionStorage(dataSourcesString, []);
+  const [sources] = useSessionStorage("dataSources", []);
   const sourcesParams = new URLSearchParams();
 
   if (sources?.length > 0) {
