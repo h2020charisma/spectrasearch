@@ -79,11 +79,7 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
         {!fileName && (
           <span className="uploadPlaceholder">No file selected</span>
         )}
-        {/* {!fileName && (
-          <span className="uploadPlaceholder">
-            Please upload a spectrum file
-          </span>
-        )} */}
+
         {isLoading && <Spinner />}
       </div>
       <div className="uploadBtnsWrap">
@@ -95,6 +91,7 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
             onChange={(e) => {
               if (file) {
                 setFile(null);
+                setFileName("");
               }
               setFile(e.target.files[0]);
               setIsLoading(true);
