@@ -93,7 +93,6 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
                 setFile(null);
                 setFileName("");
               }
-              setFileName("");
               setFile(e.target.files[0]);
               setIsLoading(true);
               setIsNotRightFile(false);
