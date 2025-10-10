@@ -45,17 +45,7 @@ export default function SearchComp({ setDomain }) {
 
   let [freeSearch, setFreeSearch] = useSessionStorage("freeSearch", "");
 
-  // let [dataSourcesString, setDataSourcesString] = useState("dataSources");
-
   const auth = useAuth();
-
-  useEffect(() => {
-    if (auth.user) {
-      console.log("Y:", auth);
-    } else {
-      console.log("N:", auth);
-    }
-  }, [auth]);
 
   const [sources, setSources] = useSessionStorage("dataSources", []);
 
