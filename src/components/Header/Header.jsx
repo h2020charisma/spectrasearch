@@ -20,31 +20,15 @@ export default function Header() {
           },
         });
       }
-    }, 30 * 1000); // check every 30 seconds
+    }, 30 * 1000);
 
     return () => clearInterval(interval);
   }, [auth]);
-
-  // useEffect(() => {
-  //   if (auth.isAuthenticated && auth.user?.expired) {
-  //     auth.signinRedirect(); // triggers login
-  //     console.log(
-  //       "User is authenticated but token is expired, redirecting to login..."
-  //     );
-  //   }
-  // }, [auth.isAuthenticated, auth.user?.expired, auth.signinRedirect, auth]);
 
   return (
     <div className="logo">
       <h1 onClick={() => navigate("/")}>Raman spectra search</h1>
       <div className="helpUserMenu">
-        {/* <Link
-          to="https://zenodo.org/records/14163315"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <button className="shareBtn">Help</button>
-        </Link> */}
         {auth.isAuthenticated ? (
           <div className="userInfo">
             <p className="userName">{auth.user?.profile.name}</p>
@@ -52,7 +36,6 @@ export default function Header() {
               className="shareBtn"
               style={{ marginLeft: "18px" }}
               onClick={() => {
-                // auth.removeUser();
                 sessionStorage.removeItem("dataSources");
 
                 auth.signoutRedirect();
