@@ -7,6 +7,5 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-    target-branch: "develop"
     assignees:
       - "kerberizer"

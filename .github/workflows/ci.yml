@@ -5,11 +5,9 @@ on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - main
-      - develop
   pull_request:
     branches:
       - main
-      - develop
   workflow_dispatch:
 
 env:
@@ -78,8 +76,7 @@ jobs:
             org.opencontainers.image.url=https://github.com/h2020charisma/spectrasearch/blob/main/README.md
             org.opencontainers.image.vendor=IDEAconsult
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/develop' }}
-            type=raw,value=stable,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=ref,event=branch
             type=ref,event=tag
             type=ref,event=pr
