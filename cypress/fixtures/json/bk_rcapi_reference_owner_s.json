@@ -1,0 +1,45 @@
+{
+  "status": 200,
+  "response": [
+    {
+      "value": "RRUFF",
+      "count": 231
+    },
+    {
+      "value": "10.1021/acs.analchem.9b03626",
+      "count": 173
+    },
+    {
+      "value": "10.17605/OSF.IO/7CQV4",
+      "count": 79
+    },
+    {
+      "value": "CSIC-ICV",
+      "count": 29
+    },
+    {
+      "value": "FNMT-Madrid",
+      "count": 21
+    },
+    {
+      "value": "NTUA",
+      "count": 15
+    },
+    {
+      "value": "TOPSOE",
+      "count": 10
+    },
+    {
+      "value": "Elodiz",
+      "count": 6
+    },
+    {
+      "value": "LBF",
+      "count": 5
+    },
+    {
+      "value": "CSIC-ICP",
+      "count": 1
+    }
+  ]
+}

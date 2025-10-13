@@ -1,0 +1,25 @@
+{
+  "status": 200,
+  "response": [
+    {
+      "value": "RRUF",
+      "count": 231
+    },
+    {
+      "value": "SLoPP-E",
+      "count": 105
+    },
+    {
+      "value": "10.5281/zenodo.13387413",
+      "count": 87
+    },
+    {
+      "value": "10.1038/s41597-022-01883-5",
+      "count": 79
+    },
+    {
+      "value": "SLoPP",
+      "count": 68
+    }
+  ]
+}

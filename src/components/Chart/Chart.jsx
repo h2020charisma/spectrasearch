@@ -1,0 +1,227 @@
+/* eslint-disable react/prop-types */
+import * as Plot from "@observablehq/plot";
+import { useEffect, useRef, useState } from "react";
+import { useQueryStringSourcesParams } from "../../utils/useQueryStringSourcesParams";
+import useFetch from "../../utils/useFetch";
+
+import { latexToUnicode } from "../../utils/latexToUnicode";
+import "katex/dist/katex.min.css";
+
+// import ErrorComp from "../UI/ErrorComp";
+
+export default function Chart({ imageSelected, isNexusFile }) {
+  const containerRef = useRef();
+
+  const { querySourcesString } = useQueryStringSourcesParams();
+
+  const datasetQuery = !isNexusFile
+    ? `${import.meta.env.VITE_BaseURL}db/dataset?domain=${encodeURIComponent(
+        imageSelected
+      )}&values=True&${querySourcesString}`
+    : "";
+
+  const { data, loading, error } = useFetch(imageSelected && datasetQuery);
+
+  const [dataset, setDataset] = useState(null);
+  const [valuesX, setValuesX] = useState([]);
+  const [valuesY, setValuesY] = useState([]);
+
+  useEffect(() => {
+    if (isNexusFile) return;
+
+    data && imageSelected && setDataset(data?.datasets[0]?.key);
+  }, [data, imageSelected, isNexusFile]);
+
+  useEffect(() => {
+    if (isNexusFile) return;
+
+    data &&
+      !isNexusFile &&
+      data?.datasets.map((k) => {
+        if (dataset === k.key) {
+          setValuesX([...k.value[0]]);
+          setValuesY([...k.value[1]]);
+        }
+      });
+  }, [data, dataset, isNexusFile]);
+
+  useEffect(() => {
+    if (data === undefined) return;
+    if (isNexusFile) return;
+
+    const plot = Plot.plot({
+      // caption: dataset,
+      grid: true,
+      color: "#454545",
+      stroke: "#454545",
+      marks: [
+        Plot.axisY({
+          label: `${latexToUnicode(data?.datasets[0]?.ytitle)}`,
+          labelAnchor: "center",
+          marginLeft: 60,
+        }),
+        Plot.axisX({
+          label: `${latexToUnicode(data?.datasets[0]?.xtitle)}`,
+          labelAnchor: "center",
+          marginTop: 60,
+        }),
+        Plot.ruleY([0], { stroke: "gray" }),
+        Plot.lineX(valuesX, {
+          x: valuesX,
+          y: valuesY,
+          stroke: "steelblue",
+        }),
+      ],
+    });
+
+    data && dataset & containerRef.current.append(plot);
+
+    return () => {
+      plot.remove();
+    };
+  }, [data, valuesX, valuesY, imageSelected, dataset, isNexusFile]);
+
+  return (
+    <div className="chartWrap">
+      <div className="domainInfo">
+        {/* <div className="domainInfoTitle">
+          {!isNexusFile && <div className="fileName">Domain</div>}
+          <div className="metadataInfoValuePreview">{data && data.domain}</div>
+        </div> */}
+        {/* <div>
+          <button
+            className="shareBtn"
+            onClick={() => {
+              copyLink();
+              setCopied(true);
+            }}
+          >
+            {copied ? "Copied to clipboard" : "Share a link"}
+          </button>
+
+          <button
+            className="shareBtn"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ marginLeft: "16px" }}
+            onClick={() => {
+              navigate(`/h5web/${imageSelected}`);
+              // window.open(`?h5web=${imageSelected}`, "_blank");
+              if (!isNexusFile) {
+                setDomain(data.domain);
+              }
+            }}
+          >
+            Explore in h5web
+          </button>
+        </div> */}
+      </div>
+      {/* this section not displayed */}
+      {data &&
+        !isNexusFile &&
+        data.annotation.map((ann, k) => (
+          <div key={k} className="metadataSection">
+            {/* <h3 className="metadataTitle">Metadata</h3> */}
+            <div className="annotationInfo">
+              {ann.sample && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Sample</span>
+                  <span className="metadataInfoValuePreview">
+                    {" "}
+                    {ann.sample}
+                  </span>
+                </div>
+              )}
+              {ann.instrument && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Instrument</span>
+                  <span className="metadataInfoValuePreview">
+                    {" "}
+                    {ann.instrument}
+                  </span>
+                </div>
+              )}
+              {ann.investigation && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Investigation</span>
+                  <span className="metadataInfoValuePreview">
+                    {" "}
+                    {ann.investigation}
+                  </span>
+                </div>
+              )}
+              {ann.laser_power && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Laser power</span>
+                  <span className="metadataInfoValuePreview">
+                    {" "}
+                    {ann.laser_power}
+                  </span>
+                </div>
+              )}
+              {ann.optical_path && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Optical path</span>
+                  <span className="metadataInfoValuePreview">
+                    {" "}
+                    {ann.optical_path}
+                  </span>
+                </div>
+              )}
+              {ann.provider && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Provider</span>
+                  <span className="metadataInfoValuePreview">
+                    {" "}
+                    {ann.provider}
+                  </span>
+                </div>
+              )}
+              {ann.wavelength && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Wavelength</span>
+                  <span className="metadataInfoValuePreview">
+                    {" "}
+                    {ann.wavelength}
+                  </span>
+                </div>
+              )}
+              {ann.native_filename && (
+                <div className="metadataInfo">
+                  <span className="metadataLabel">Native filename</span>
+                  <span className="metadataInfoValuePreview">
+                    {ann.native_filename}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      <div className="datasetsTabs">
+        {/* {imageSelected && <span className="fileName">Datasets</span>} */}
+        {data &&
+          !isNexusFile &&
+          data?.datasets.map((k, i) => (
+            <div
+              className={`${dataset == k.key ? "datasetActive" : "dataset"}`}
+              key={i}
+              onClick={() => {
+                setDataset(k.key);
+              }}
+            >
+              {k.key.replace(/_/g, " ")}
+            </div>
+          ))}
+      </div>
+      {!isNexusFile && (
+        <>
+          <div className="chart" ref={containerRef} />
+          {/* <div className="shiftLabel">
+            Raman shift (cm<sup>&ndash;1</sup>)
+          </div> */}
+        </>
+      )}
+      {/* <ErrorComp loading={loading} error={error} /> */}
+    </div>
+  );
+}
