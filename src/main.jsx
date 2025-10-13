@@ -14,7 +14,7 @@ const oidcConfig = {
   authority: "https://iam.ideaconsult.net/auth/realms/nano",
   client_id: "idea-ui",
   redirect_uri: window.location.origin + "/search/",
-  automaticSilentRenew: false,
+  automaticSilentRenew: true,
   post_logout_redirect_uri: window.location.origin + "/search/",
   response_type: "code",
   scope: "openid profile email",
@@ -86,7 +86,7 @@ export const Main = () => {
 };
 
 function onSigninCallback() {
-  window.location.href = "/search/";
+  window.history.replaceState({}, document.title, window.location.pathname);
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(

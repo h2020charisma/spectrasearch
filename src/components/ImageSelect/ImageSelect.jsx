@@ -12,7 +12,7 @@ export default function ImageSelect({ data, error, loading }) {
 
   const renderImageSelect =
     data &&
-    data?.response.map((img, i) => (
+    data?.response?.map((img, i) => (
       <div key={i}>
         <div
           onClick={() => {
