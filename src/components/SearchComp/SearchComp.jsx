@@ -61,12 +61,12 @@ export default function SearchComp({ setDomain }) {
 
   const defaultSource = localStorage.getItem("defaultSource") || "";
 
-  const defaultSourceLower = allDataSources?.default.toLowerCase();
+  const defaultSourceLower = allDataSources?.default?.toLowerCase();
 
   useEffect(() => {
     if (allDataSources && sources?.length < 1 && !dialog) {
       setSources(
-        allDataSources?.data_sources.filter(
+        allDataSources?.data_sources?.filter(
           (item) => item?.name === defaultSourceLower
         )
       );
@@ -74,7 +74,7 @@ export default function SearchComp({ setDomain }) {
     let isDefault = sources.some(
       (source) => source?.name.toLowerCase() === defaultSourceLower
     );
-    setToast(sources.length == 1 && isDefault);
+    setToast(sources?.length == 1 && isDefault);
   }, [dialog, sources, allDataSources, setSources, toast, defaultSourceLower]);
 
   useEffect(() => {
