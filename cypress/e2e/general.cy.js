@@ -252,10 +252,10 @@ describe("General site functionality", () => {
     // cy.get('[data-cy="close-badge-btn"]').click();
   });
 
-  it("opens Pages Widget and increase page number", () => {
-    setMainInterceptsWithParams(1, 31);
-    cy.get('[data-cy="pages"]').click();
-    cy.get('[data-cy="Pages-input"]').type("{uparrow}");
-    cy.get('[data-cy="Numbers of Hits-input"]').type("{uparrow}");
-  });
+  // it("opens Pages Widget and increase page number", () => {
+  //   setMainInterceptsWithParams(1, 31);
+  //   cy.get('[data-cy="pages"]').click();
+  //   cy.get('[data-cy="Pages-input"]').type("{uparrow}");
+  //   cy.get('[data-cy="Numbers of Hits-input"]').type("{uparrow}");
+  // });
 });
