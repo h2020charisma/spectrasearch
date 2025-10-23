@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import SelectNumber from "../UI/SelectNumber";
 import "./Pagination.css";
 
@@ -10,7 +10,12 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
       return Math.ceil(founds / pagesize);
     }
   }, [founds, pagesize]);
-  console.log(pages);
+
+  useEffect(() => {
+    if (pagesize > 50) {
+      setPagesize(10);
+    }
+  }, [pagesize, setPagesize]);
 
   const currentPage = pages + 1;
 
@@ -19,6 +24,7 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
       <SelectNumber
         value={pagesize}
         setValue={setPagesize}
+        setPages={setPages}
         founds={founds}
         label="Numbers of Hits"
       />
