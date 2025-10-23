@@ -18,6 +18,7 @@ import Expander from "../UI/Expander";
 import ToastDemo from "../UI/Toast/Toast";
 
 import "../../App.css";
+import Pagination from "../Pagination/Pagination";
 
 const defaultSourceMessage =
   "Since you have not selected any data sources, the default one was automatically selected for you.";
@@ -36,8 +37,8 @@ export default function SearchComp({ setDomain }) {
 
   let [q_reference, setQReference] = useSessionStorage("reference", "*");
   let [provider, setProvider] = useSessionStorage("provider", "*");
-  let [pages, setPages] = useSessionStorage("pages", "0");
-  let [pagesize, setPagesize] = useSessionStorage("pagesize", "10");
+  let [pages, setPages] = useState(0);
+  let [pagesize, setPagesize] = useSessionStorage("pagesize", "12");
   let [q, setQ] = useSessionStorage("q", "*");
   let [instrument, setInstrument] = useSessionStorage("instrument", "*");
   let [wavelengths, setWavelengths] = useSessionStorage("wavelengths", "*");
@@ -230,6 +231,13 @@ export default function SearchComp({ setDomain }) {
             />
           </ErrorBoundary>
         </Expander>
+        <Pagination
+          pagesize={pagesize}
+          pages={pages}
+          setPagesize={setPagesize}
+          setPages={setPages}
+          founds={data?.numFound}
+        />
         {imageSelected && auth.isAuthenticated ? (
           <Chart
             imageSelected={imageSelected}

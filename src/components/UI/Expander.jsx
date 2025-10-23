@@ -60,10 +60,7 @@ export default function Expander({ children, title, status, data }) {
               {title == "Free text search" ? <IoSearch /> : null}
               {title}
               {title == "Search Results" && (
-                <p className="foundLabel">
-                  {data?.response?.length > 0 ? data?.response?.length : "no"}{" "}
-                  hits found
-                </p>
+                <p className="foundLabel">{data?.numFound} hits found</p>
               )}
             </div>
           </IconContext.Provider>
