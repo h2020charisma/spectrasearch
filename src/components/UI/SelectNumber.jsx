@@ -22,7 +22,7 @@ export default function SelectNumber({
         name={label}
         data-cy={label + "-input"}
         type="number"
-        max={99}
+        max={100}
         min={1}
         value={value}
         style={{

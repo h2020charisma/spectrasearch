@@ -12,7 +12,7 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
   }, [founds, pagesize]);
 
   useEffect(() => {
-    if (pagesize > 99 || pagesize < 1) {
+    if (pagesize > 100 || pagesize < 1) {
       setPagesize(10);
     }
   }, [pagesize, setPagesize]);
