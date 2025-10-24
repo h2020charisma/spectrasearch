@@ -134,7 +134,6 @@ export default function SearchComp({ setDomain }) {
   return (
     <div className="main">
       <ToastDemo error={error} />
-
       {toast && !dialog ? <ToastDemo error={defaultSourceMessage} /> : null}
       <div>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
@@ -182,7 +181,6 @@ export default function SearchComp({ setDomain }) {
           )}
         </AnimatePresence>
       </div>
-
       <div className="content">
         <DisplaySearchFilters
           qQuery={q}
@@ -204,13 +202,17 @@ export default function SearchComp({ setDomain }) {
           setFreeSearch={setFreeSearch}
           methods={methods}
           setMethods={setMethods}
+          pagesize={pagesize}
+          pages={pages}
+          setPagesize={setPagesize}
+          setPages={setPages}
+          founds={data?.numFound}
         />
         {file && imageData && (
           <div className="imageUploded">
             <img src={imageData && imageData.imageLink} />
           </div>
         )}
-
         <Expander title="Search Results" status={true} data={data}>
           <ErrorBoundary
             fallback={
@@ -231,13 +233,7 @@ export default function SearchComp({ setDomain }) {
             />
           </ErrorBoundary>
         </Expander>
-        <Pagination
-          pagesize={pagesize}
-          pages={pages}
-          setPagesize={setPagesize}
-          setPages={setPages}
-          founds={data?.numFound}
-        />
+
         {imageSelected && auth.isAuthenticated ? (
           <Chart
             imageSelected={imageSelected}

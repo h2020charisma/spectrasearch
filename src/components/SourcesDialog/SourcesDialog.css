@@ -7,6 +7,7 @@
   background-color: #ecffd5;
   border-radius: 5px;
   border: 1px solid #366000;
+  min-width: fit-content;
 }
 .sourcesBtn:hover {
   background-color: #f8ffee;

@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import "../../App.css";
 import Close from "../Icons/Close";
 import SourcesDialog from "../SourcesDialog/SourcesDialog";
+import Pagination from "../Pagination/Pagination";
 
 export default function DisplaySearchFilters({
   qQuery,
@@ -25,6 +26,11 @@ export default function DisplaySearchFilters({
   setFreeSearch,
   methods,
   setMethods,
+  pagesize,
+  pages,
+  setPagesize,
+  setPages,
+  founds,
 }) {
   const filters = [
     // {
@@ -58,6 +64,13 @@ export default function DisplaySearchFilters({
 
   return (
     <div className="search-filters-wrap">
+      <Pagination
+        pagesize={pagesize}
+        pages={pages}
+        setPagesize={setPagesize}
+        setPages={setPages}
+        founds={founds}
+      />
       <div className="search-filters">
         <AnimatePresence>
           {filters

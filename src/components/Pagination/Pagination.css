@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  margin-right: 1rem;
 }
 
 .btns-wrap {
@@ -35,7 +36,7 @@
 }
 
 .pageNumberInput {
-  width: 120px;
+  width: 60px;
   height: 20px;
   border: 1px solid rgb(204, 204, 204);
   border-radius: 4px;
@@ -57,6 +58,7 @@
 
 .next-page-btn {
   font-size: 14px;
+  white-space: nowrap;
   background-color: light-dark(#fff, #202020);
   color: light-dark(#00ace1, #ccc);
   border: 1px solid #00ace1;

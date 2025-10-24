@@ -69,7 +69,7 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
           onKeyDown={handleKeyDown}
           className="pageNumberInput"
           type="text"
-          placeholder="Page Number"
+          placeholder="Page"
         />
         <button
           className="next-page-btn"
