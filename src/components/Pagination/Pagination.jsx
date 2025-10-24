@@ -19,6 +19,16 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
 
   const currentPage = pages + 1;
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      const pageNumber = parseInt(e.target.value, 10);
+      if (!isNaN(pageNumber) && pageNumber > 0 && pageNumber <= totalPages) {
+        setPages(pageNumber - 1);
+        e.target.value = "";
+      }
+    }
+  };
+
   return (
     <div className="pagination-wrap">
       <SelectNumber
@@ -56,13 +66,7 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
           )}
         </div>
         <input
-          //   value={currentPage}
-          onChange={(e) => {
-            if (+e.target.value > 0) {
-              setPages(+e.target.value - 1);
-            }
-          }}
-          // onKeyDown={handleKeyDown}
+          onKeyDown={handleKeyDown}
           className="pageNumberInput"
           type="text"
           placeholder="Page Number"
