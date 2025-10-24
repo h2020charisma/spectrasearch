@@ -11,13 +11,19 @@ export default function SelectNumber({
       <p>Shown</p>
       <input
         onChange={(e) => {
-          setValue(e.target.value);
-          setPages(0);
+          if (e.target.value.trim() === "") {
+            setValue(10);
+            setPages(0);
+          } else {
+            setValue(e.target.value);
+            setPages(0);
+          }
         }}
         name={label}
         data-cy={label + "-input"}
         type="number"
-        min={0}
+        max={99}
+        min={1}
         value={value}
         style={{
           width: "60px",
