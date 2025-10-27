@@ -13,7 +13,7 @@ COPY ./src /tmp/src
 
 RUN npm install
 
-ENV VITE_BaseURL="https://api-dev.ramanchada.ideaconsult.net/"
+ENV VITE_BaseURL="https://api.ramanchada.ideaconsult.net/"
 RUN npm run build-docker
 
 
