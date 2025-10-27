@@ -45,8 +45,7 @@ h1 {
   background-color: light-dark(#fff, #242424);
 }
 .expanderContent {
-  height: 760px;
-  overflow: scroll;
+  height: fit-content;
 }
 
 .expander {
@@ -62,7 +61,7 @@ h1 {
 .errorMessage {
   margin-top: 2rem;
   width: 100%;
-  height: 60px;
+  /* height: 60px; */
   text-align: center;
   color: #ea5252;
 }

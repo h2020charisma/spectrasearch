@@ -18,6 +18,7 @@ import Expander from "../UI/Expander";
 import ToastDemo from "../UI/Toast/Toast";
 
 import "../../App.css";
+import Pagination from "../Pagination/Pagination";
 
 const defaultSourceMessage =
   "Since you have not selected any data sources, the default one was automatically selected for you.";
@@ -36,7 +37,7 @@ export default function SearchComp({ setDomain }) {
 
   let [q_reference, setQReference] = useSessionStorage("reference", "*");
   let [provider, setProvider] = useSessionStorage("provider", "*");
-  let [pages, setPages] = useSessionStorage("pages", "0");
+  let [pages, setPages] = useState(0);
   let [pagesize, setPagesize] = useSessionStorage("pagesize", "10");
   let [q, setQ] = useSessionStorage("q", "*");
   let [instrument, setInstrument] = useSessionStorage("instrument", "*");
@@ -133,7 +134,6 @@ export default function SearchComp({ setDomain }) {
   return (
     <div className="main">
       <ToastDemo error={error} />
-
       {toast && !dialog ? <ToastDemo error={defaultSourceMessage} /> : null}
       <div>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
@@ -181,7 +181,6 @@ export default function SearchComp({ setDomain }) {
           )}
         </AnimatePresence>
       </div>
-
       <div className="content">
         <DisplaySearchFilters
           qQuery={q}
@@ -203,13 +202,17 @@ export default function SearchComp({ setDomain }) {
           setFreeSearch={setFreeSearch}
           methods={methods}
           setMethods={setMethods}
+          pagesize={pagesize}
+          pages={pages}
+          setPagesize={setPagesize}
+          setPages={setPages}
+          founds={data?.numFound}
         />
         {file && imageData && (
           <div className="imageUploded">
             <img src={imageData && imageData.imageLink} />
           </div>
         )}
-
         <Expander title="Search Results" status={true} data={data}>
           <ErrorBoundary
             fallback={
@@ -230,6 +233,7 @@ export default function SearchComp({ setDomain }) {
             />
           </ErrorBoundary>
         </Expander>
+
         {imageSelected && auth.isAuthenticated ? (
           <Chart
             imageSelected={imageSelected}

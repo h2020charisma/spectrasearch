@@ -1,0 +1,85 @@
+.pagination-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-right: 1rem;
+}
+
+.btns-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.current-page {
+  color: #2b2b2b !important;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  text-align: center;
+  background: aliceblue;
+  margin: 0 10px;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+}
+
+.pages-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+}
+
+.pageNumberInput {
+  width: 60px;
+  height: 20px;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 4px;
+  padding-left: 6px;
+}
+.lastPageNumber,
+.firstPageNumber {
+  cursor: pointer;
+  color: light-dark(#2b2b2b, #fff);
+  width: 40px;
+}
+.firstPageNumber {
+  width: 14px;
+}
+
+.lastPageNumber:hover {
+  color: #2b2b2b;
+}
+
+.next-page-btn {
+  font-size: 14px;
+  white-space: nowrap;
+  background-color: light-dark(#fff, #202020);
+  color: light-dark(#00ace1, #ccc);
+  border: 1px solid #00ace1;
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-weight: 500;
+  margin: 0.3rem 0;
+  display: inline-block;
+}
+
+.next-page-btn:hover {
+  background-color: #00ace1;
+  border: 1px solid #00ace1;
+  color: #fff;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.next-page-btn:disabled {
+  color: light-dark(#999, #555);
+  background-color: #fff;
+  border: 1px solid light-dark(#ccc, #555);
+  cursor: not-allowed;
+}
