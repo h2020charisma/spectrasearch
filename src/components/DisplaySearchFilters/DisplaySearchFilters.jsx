@@ -63,38 +63,40 @@ export default function DisplaySearchFilters({
   ];
 
   return (
-    <div className="search-filters-wrap">
+    <div>
+      <div className="search-filters-wrap">
+        <div className="search-filters">
+          <AnimatePresence>
+            {filters
+              .filter(
+                ({ value }) =>
+                  value !== "" && value !== "*" && value?.length !== 0
+              )
+              .map(({ label, value, onClick }) => (
+                <FilterBadge
+                  key={label}
+                  label={label}
+                  value={value}
+                  onClick={onClick}
+                />
+              ))}
+          </AnimatePresence>
+        </div>
+        {/* <span className="vdataSourcesCaption">Select Data Sources</span> */}
+        <SourcesDialog
+          sources={sources}
+          setSources={setSources}
+          allDataSources={allDataSources}
+          dialog={dialog}
+          setDialog={setDialog}
+        />
+      </div>
       <Pagination
         pagesize={pagesize}
         pages={pages}
         setPagesize={setPagesize}
         setPages={setPages}
         founds={founds}
-      />
-      <div className="search-filters">
-        <AnimatePresence>
-          {filters
-            .filter(
-              ({ value }) =>
-                value !== "" && value !== "*" && value?.length !== 0
-            )
-            .map(({ label, value, onClick }) => (
-              <FilterBadge
-                key={label}
-                label={label}
-                value={value}
-                onClick={onClick}
-              />
-            ))}
-        </AnimatePresence>
-      </div>
-      {/* <span className="vdataSourcesCaption">Select Data Sources</span> */}
-      <SourcesDialog
-        sources={sources}
-        setSources={setSources}
-        allDataSources={allDataSources}
-        dialog={dialog}
-        setDialog={setDialog}
       />
     </div>
   );
