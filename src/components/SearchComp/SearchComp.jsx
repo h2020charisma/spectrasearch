@@ -150,6 +150,7 @@ export default function SearchComp({ setDomain }) {
             >
               <Sidebar
                 data={data}
+                dataSources={allDataSources}
                 imageSelected={imageSelected}
                 setImageSelected={setImageSelected}
                 reference={q_reference}
