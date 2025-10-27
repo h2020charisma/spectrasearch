@@ -10,6 +10,7 @@ import Sample from "../Sample/Sample";
 import UploadFile from "../UploadFile/UploadFile";
 import Wavelengths from "../Wavelengths/Wavelengths";
 import CustomSearch from "../CustomSearch/CustomSearch";
+import Widget from "../Widget/Widget";
 
 const errorMsg = "Sorry, no data available";
 
@@ -18,10 +19,7 @@ export default function Sidebar({
   setReference,
   provider,
   setProvider,
-  pages,
-  setPages,
-  pagesize,
-  setPagesize,
+  dataSources,
   setqQuery,
   qQuery,
   instrument,
@@ -31,8 +29,6 @@ export default function Sidebar({
   imageData,
   methods,
   setMethods,
-  wavelengths,
-  setWavelengths,
   type,
   setType,
   file,
@@ -80,66 +76,18 @@ export default function Sidebar({
           setFileName={setFileName}
         />
       </Expander>
-      <Expander title="Search by Sample" status={false}>
-        <ErrorBoundary
-          fallback={<div className="errorMessage">{errorMsg}</div>}
-        >
-          <Sample
-            setqQuery={setqQuery}
-            qQuery={qQuery}
-            setImageSelected={setImageSelected}
+      {dataSources?.fields.map((item) => (
+        <Expander title={item.name} status={false} key={item.name}>
+          <Widget
+            key={item.name}
+            name={item.name}
+            field={item.field}
             queryStringSourcesParams={queryStringSourcesParams}
-          />
-        </ErrorBoundary>
-      </Expander>
-      <Expander title="Search by Data provider">
-        <ErrorBoundary
-          fallback={<div className="errorMessage">{errorMsg}</div>}
-        >
-          <DataProvider
-            provider={provider}
-            setProvider={setProvider}
             setImageSelected={setImageSelected}
-            queryStringSourcesParams={queryStringSourcesParams}
           />
-        </ErrorBoundary>
-      </Expander>
-      <Expander title="Search by Dataset" status={false}>
-        <ErrorBoundary
-          fallback={<div className="errorMessage">{errorMsg}</div>}
-        >
-          <Investigations
-            reference={reference}
-            setReference={setReference}
-            setImageSelected={setImageSelected}
-            queryStringSourcesParams={queryStringSourcesParams}
-          />
-        </ErrorBoundary>
-      </Expander>
-      <Expander title="Search by Instrument" status={false}>
-        <ErrorBoundary
-          fallback={<div className="errorMessage">{errorMsg}</div>}
-        >
-          <Instrument
-            instrument={instrument}
-            setInstrument={setInstrument}
-            setImageSelected={setImageSelected}
-            queryStringSourcesParams={queryStringSourcesParams}
-          />
-        </ErrorBoundary>
-      </Expander>
-      <Expander title="Search by Method" status={false}>
-        <ErrorBoundary
-          fallback={<div className="errorMessage">{errorMsg}</div>}
-        >
-          <Wavelengths
-            methods={methods}
-            setMethods={setMethods}
-            setImageSelected={setImageSelected}
-            queryStringSourcesParams={queryStringSourcesParams}
-          />
-        </ErrorBoundary>
-      </Expander>
+        </Expander>
+      ))}
+
       {/* <Expander title="Pages">
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <SelectNumber value={pages} setValue={setPages} label="Pages" />
