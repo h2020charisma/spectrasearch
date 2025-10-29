@@ -6,95 +6,53 @@ import SourcesDialog from "../SourcesDialog/SourcesDialog";
 import Pagination from "../Pagination/Pagination";
 
 export default function DisplaySearchFilters({
-  qQuery,
-  setqQuery,
-  provider,
-  setProvider,
-  instrument,
-  setInstrument,
-  wavelengths,
-  setWavelengths,
-  reference,
-  setReference,
+  params,
+  setParams,
   sources,
   dialog,
   setDialog,
   setSources,
   allDataSources,
-
-  freeSearch,
-  setFreeSearch,
-  methods,
-  setMethods,
   pagesize,
   pages,
   setPagesize,
   setPages,
   founds,
 }) {
-  const filters = [
-    // {
-    //   label: "File",
-    //   value: fileName,
-    //   onClick: () => setFileName(""),
-    // },
-    {
-      label: "Free Search",
-      value: freeSearch,
-      onClick: () => setFreeSearch(""),
-    },
-    { label: "Sample", value: qQuery, onClick: () => setqQuery("*") },
-    {
-      label: "Provider",
-      value: provider,
-      onClick: () => setProvider("*"),
-    },
-    {
-      label: "Instrument",
-      value: instrument,
-      onClick: () => setInstrument("*"),
-    },
-    {
-      label: "Methods",
-      value: methods,
-      onClick: () => setMethods("*"),
-    },
-    { label: "Dataset", value: reference, onClick: () => setReference("*") },
-  ];
-
   return (
-    <div className="search-filters-wrap">
+    <div>
+      <div className="search-filters-wrap">
+        <div className="search-filters">
+          <AnimatePresence>
+            {params?.map(({ name, value }) => (
+              <FilterBadge
+                key={name}
+                label={name}
+                value={value}
+                onClick={() =>
+                  setParams((prev) =>
+                    prev.filter((item) => item.value !== value)
+                  )
+                }
+              />
+            ))}
+          </AnimatePresence>
+        </div>
+
+        <SourcesDialog
+          sources={sources}
+          setSources={setSources}
+          allDataSources={allDataSources}
+          dialog={dialog}
+          setDialog={setDialog}
+        />
+      </div>
       <Pagination
         pagesize={pagesize}
         pages={pages}
         setPagesize={setPagesize}
         setPages={setPages}
         founds={founds}
-      />
-      <div className="search-filters">
-        <AnimatePresence>
-          {filters
-            .filter(
-              ({ value }) =>
-                value !== "" && value !== "*" && value?.length !== 0
-            )
-            .map(({ label, value, onClick }) => (
-              <FilterBadge
-                key={label}
-                label={label}
-                value={value}
-                onClick={onClick}
-              />
-            ))}
-        </AnimatePresence>
-      </div>
-      {/* <span className="vdataSourcesCaption">Select Data Sources</span> */}
-      <SourcesDialog
-        sources={sources}
-        setSources={setSources}
-        allDataSources={allDataSources}
-        dialog={dialog}
-        setDialog={setDialog}
       />
     </div>
   );

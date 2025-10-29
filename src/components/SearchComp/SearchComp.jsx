@@ -35,6 +35,8 @@ export default function SearchComp({ setDomain }) {
 
   let isNexusFile = false;
 
+  const [q_params, setQ_Params] = useState([]);
+
   let [q_reference, setQReference] = useSessionStorage("reference", "*");
   let [provider, setProvider] = useSessionStorage("provider", "*");
   let [pages, setPages] = useState(0);
@@ -151,6 +153,8 @@ export default function SearchComp({ setDomain }) {
               <Sidebar
                 data={data}
                 dataSources={allDataSources}
+                params={q_params}
+                setParams={setQ_Params}
                 imageSelected={imageSelected}
                 setImageSelected={setImageSelected}
                 reference={q_reference}
@@ -184,6 +188,8 @@ export default function SearchComp({ setDomain }) {
       </div>
       <div className="content">
         <DisplaySearchFilters
+          params={q_params}
+          setParams={setQ_Params}
           qQuery={q}
           setqQuery={setQ}
           provider={provider}
