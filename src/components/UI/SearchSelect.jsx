@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import SearchIcon from "../Icons/SearchIcon";
 import "./Select.css";
+import Close from "../Icons/Close";
 
 export default function SearchSelect({
   data,
@@ -14,63 +15,104 @@ export default function SearchSelect({
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState("");
+  // console.log(
+  //   "qQuery:",
+  //   qQuery,
+  //   "search:",
+  //   search,
+  //   "label:",
+  //   label,
+  //   "selected:",
+  //   selected
+  // );
 
   useEffect(() => {
-    if (qQuery === "*" || qQuery === "") {
+    const found = qQuery?.some((obj) => obj.name === label);
+    if (!found) {
+      setSelected("");
       setSearch("");
     }
-  }, [qQuery]);
+  }, [qQuery, label]);
 
   useEffect(
     () =>
       setFiltered(
-        data &&
-          data.filter((item) => {
-            return item.value
-              .toLocaleLowerCase()
-              .includes(search.toLocaleLowerCase());
-          })
+        data?.filter((item) => {
+          return item.value
+            .toLocaleLowerCase()
+            .includes(search.toLocaleLowerCase());
+        })
       ),
     [data, search]
   );
 
   return (
     <section>
-      <div onClick={() => setOpen(!open)} className="selectBtn">
+      <div
+        onClick={() => {
+          !search && setOpen(!open);
+        }}
+        className="selectBtn"
+        style={{ position: "relative" }}
+      >
         <SearchIcon />
         <input
           id={`Search for ${label}`}
           data-cy={label.replace(/\s+/g, "-").toLowerCase()}
-          className="searchSelectInput"
-          value={search}
+          className={
+            selected ? "searchSelectInput active" : "searchSelectInput"
+          }
+          value={selected || search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={`Search for ${label}`}
         />
+        <div
+          style={{ position: "absolute", right: "0.5rem", cursor: "pointer" }}
+          onClick={() => {
+            setqQuery((prev) => [
+              ...prev.filter((item) => item.value !== selected),
+            ]);
+            setSearch("");
+            setSelected("");
+            setImageSelected("");
+          }}
+        >
+          {selected && <Close />}
+        </div>
       </div>
 
       {open && (
         <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
-          <p
+          {/* <p
             className="selectItem"
             onClick={() => {
-              setqQuery("*");
+              setqQuery((prev) => [
+                ...prev.filter((item) => item !== selected),
+              ]);
               setSearch("");
               setImageSelected("");
             }}
           >
-            {`All ${label}`}
-          </p>
+            {selected === null ? "" : <strong>{selected}</strong>}
+          </p> */}
           <hr />
 
           {!search &&
             data &&
             data.map((item, i) => (
               <p
-                data-project={item}
+                data-project={item.value}
                 className="selectItem"
                 key={i}
                 onClick={() => {
-                  setqQuery(item.value);
+                  if (selected !== item.value) {
+                    setqQuery((prev) => [
+                      ...prev,
+                      { name: label, value: item.value },
+                    ]);
+                  }
+                  setSelected(item.value);
                   setOpen(false);
                   setSearch(item.value);
                   setImageSelected("");
@@ -83,13 +125,19 @@ export default function SearchSelect({
             filtered &&
             filtered.map((item, i) => (
               <p
-                data-project={item}
+                data-project={item.value}
                 className="selectItem"
                 key={i}
                 onClick={() => {
-                  setqQuery(item.value);
+                  if (selected !== item.value) {
+                    setqQuery((prev) => [
+                      ...prev,
+                      { name: label, value: item.value },
+                    ]);
+                  }
+                  setSearch(item.value);
+                  setSelected(item.value);
                   setOpen(false);
-                  setSearch("");
                   setImageSelected("");
                 }}
               >

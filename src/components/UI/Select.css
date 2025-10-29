@@ -19,6 +19,9 @@
   padding-left: 10px;
   width: 100%;
 }
+.active {
+  font-weight: 700;
+}
 
 .searchSelectInput:focus {
   border: 1px solid #0083ab;
@@ -56,10 +59,17 @@
   margin-left: 1rem;
 }
 .selectItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   color: #7a7a7a;
   font-size: 16px;
+  height: 30px;
+  padding-right: 1rem;
 }
 
 .selectItem:hover {
   color: #282828;
+  height: 30px;
+  padding-right: 1rem;
 }

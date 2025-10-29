@@ -1,20 +1,16 @@
 /* eslint-disable react/prop-types */
-import Expander from "../UI/Expander";
-import SelectNumber from "../UI/SelectNumber";
+import { useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-
-import DataProvider from "../DataProvider/DataProvider";
-import Instrument from "../Instrument/Instrument";
-import Investigations from "../Investigations/Investigations";
-import Sample from "../Sample/Sample";
-import UploadFile from "../UploadFile/UploadFile";
-import Wavelengths from "../Wavelengths/Wavelengths";
 import CustomSearch from "../CustomSearch/CustomSearch";
+import Expander from "../UI/Expander";
+import UploadFile from "../UploadFile/UploadFile";
 import Widget from "../Widget/Widget";
 
 const errorMsg = "Sorry, no data available";
 
 export default function Sidebar({
+  params,
+  setParams,
   reference,
   setReference,
   provider,
@@ -84,20 +80,11 @@ export default function Sidebar({
             field={item.field}
             queryStringSourcesParams={queryStringSourcesParams}
             setImageSelected={setImageSelected}
+            params={params}
+            setParams={setParams}
           />
         </Expander>
       ))}
-
-      {/* <Expander title="Pages">
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <SelectNumber value={pages} setValue={setPages} label="Pages" />
-          <SelectNumber
-            value={pagesize}
-            setValue={setPagesize}
-            label="Numbers of Hits"
-          />
-        </div>
-      </Expander> */}
     </div>
   );
 }
