@@ -35,7 +35,7 @@ jobs:
         run: echo 'VITE_BaseURL="http://localhost:8080/"' >.env
 
       - name: Run Cypress
-        uses: cypress-io/github-action@v6.10.2
+        uses: cypress-io/github-action@v6.10.3
         with:
           start: npm run build-serve
           wait-on: http://127.0.0.1:50722/search/
