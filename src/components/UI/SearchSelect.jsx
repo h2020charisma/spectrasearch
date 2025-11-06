@@ -10,6 +10,7 @@ export default function SearchSelect({
   setqQuery,
   setImageSelected,
   label,
+  field,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -109,7 +110,7 @@ export default function SearchSelect({
                   if (selected !== item.value) {
                     setqQuery((prev) => [
                       ...prev,
-                      { name: label, value: item.value },
+                      { name: label, value: item.value, field: field },
                     ]);
                   }
                   setSelected(item.value);
@@ -132,7 +133,7 @@ export default function SearchSelect({
                   if (selected !== item.value) {
                     setqQuery((prev) => [
                       ...prev,
-                      { name: label, value: item.value },
+                      { name: label, value: item.value, field: field },
                     ]);
                   }
                   setSearch(item.value);

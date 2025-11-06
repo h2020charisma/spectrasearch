@@ -27,6 +27,8 @@ export default function Expander({ children, title, status, data }) {
   const tableView = useStore((state) => state.tableView);
   const setTableView = useStore((state) => state.setTableView);
 
+  console.log(title, "title ");
+
   return (
     <div className="expander">
       <div
@@ -50,11 +52,11 @@ export default function Expander({ children, title, status, data }) {
           <IconContext.Provider value={{ size: "1.6rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               {title == "Search by Spectrum File" ? <MdFileUpload /> : null}
-              {title == "Search by Sample" ? <PiEyedropperFill /> : null}
-              {title == "Search by Data provider" ? <AiFillDatabase /> : null}
-              {title == "Search by Dataset" ? <TbZoomCodeFilled /> : null}
-              {title == "Search by Instrument" ? <AiFillTool /> : null}
-              {title == "Search by Method" ? <PiWaveSineBold /> : null}
+              {title == "Sample" ? <PiEyedropperFill /> : null}
+              {title == "Data provider" ? <AiFillDatabase /> : null}
+              {title == "Investigation" ? <TbZoomCodeFilled /> : null}
+              {title == "Instrument" ? <AiFillTool /> : null}
+              {title == "" ? <PiWaveSineBold /> : null}
               {title == "Pages" ? <FaSignsPost /> : null}
               {title == "Search Results" ? <FaChartBar /> : null}
               {title == "Free text search" ? <IoSearch /> : null}
