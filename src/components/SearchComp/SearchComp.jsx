@@ -85,6 +85,11 @@ export default function SearchComp({ setDomain }) {
   }, [allDataSources, defaultSource, setSources, sources]);
 
   const params = new URLSearchParams();
+
+  q_params.forEach(({ value, field }) => {
+    params.append(field, value);
+  });
+
   if (freeSearch !== "") {
     params.append("q", freeSearch);
   }

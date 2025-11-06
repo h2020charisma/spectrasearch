@@ -27,6 +27,7 @@ export default function Widget({
         data={data?.response}
         setImageSelected={setImageSelected}
         label={name}
+        field={field}
       />
     </div>
   );
