@@ -1,9 +1,19 @@
 /* eslint-disable react/prop-types */
+
 import { useMeasure } from "@uidotdev/usehooks";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import ArrowOpen from "../Icons/Arrow";
+
+import * as IconsMD from "react-icons/md";
+import * as IconsFA from "react-icons/fa";
+
+let iconName = "FaTools";
+
+const Icons = {
+  IconName: IconsFA[iconName],
+};
 
 import { AiFillDatabase, AiFillTool } from "react-icons/ai";
 import { FaChartBar } from "react-icons/fa";
@@ -27,8 +37,6 @@ export default function Expander({ children, title, status, data }) {
   const tableView = useStore((state) => state.tableView);
   const setTableView = useStore((state) => state.setTableView);
 
-  console.log(title, "title ");
-
   return (
     <div className="expander">
       <div
@@ -51,12 +59,12 @@ export default function Expander({ children, title, status, data }) {
         >
           <IconContext.Provider value={{ size: "1.6rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              {title == "Search by Spectrum File" ? <MdFileUpload /> : null}
+              {title == "Search by Similarity" ? <MdFileUpload /> : null}
               {title == "Sample" ? <PiEyedropperFill /> : null}
               {title == "Data provider" ? <AiFillDatabase /> : null}
               {title == "Investigation" ? <TbZoomCodeFilled /> : null}
-              {title == "Instrument" ? <AiFillTool /> : null}
-              {title == "" ? <PiWaveSineBold /> : null}
+              {title == "Instrument" ? <Icons.IconName /> : null}
+              {title == "Material" ? <IconsMD.MdMusicNote /> : null}
               {title == "Pages" ? <FaSignsPost /> : null}
               {title == "Search Results" ? <FaChartBar /> : null}
               {title == "Free text search" ? <IoSearch /> : null}

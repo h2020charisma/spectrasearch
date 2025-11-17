@@ -58,6 +58,7 @@ export default function SearchComp({ setDomain }) {
 
   const [file, setFile] = useSessionStorage("file", "");
   const [type, setType] = useState("knnquery");
+  const [similarity, setSimilarity] = useState({ name: "", vector: "" });
 
   const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
   const { data: allDataSources } = useFetch(sorcesUrl);
@@ -89,6 +90,10 @@ export default function SearchComp({ setDomain }) {
   q_params.forEach(({ value, field }) => {
     params.append(field, value);
   });
+
+  if (similarity.vector) {
+    params.append("vector_field", similarity.vector);
+  }
 
   if (freeSearch !== "") {
     params.append("q", freeSearch);
@@ -158,6 +163,8 @@ export default function SearchComp({ setDomain }) {
               <Sidebar
                 data={data}
                 dataSources={allDataSources}
+                setSimilarity={setSimilarity}
+                similarity={similarity}
                 params={q_params}
                 setParams={setQ_Params}
                 imageSelected={imageSelected}

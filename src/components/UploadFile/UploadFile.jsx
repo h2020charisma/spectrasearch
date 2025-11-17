@@ -3,9 +3,18 @@ import { useEffect, useState } from "react";
 import Close from "../Icons/Close";
 import Spinner from "../Icons/Spinner";
 import { useSessionStorage } from "../../utils/useSessionStorage";
+import { ModeSelect } from "../UI/Select";
 
 // eslint-disable-next-line react/prop-types
-export default function UploadFile({ setImageData, setType, file, setFile }) {
+export default function UploadFile({
+  setImageData,
+  setType,
+  file,
+  setFile,
+  dataSources,
+  similarity,
+  setSimilarity,
+}) {
   const fileQuery = `${import.meta.env.VITE_BaseURL}db/download?what=knnquery`;
 
   const [isNotRightFile, setIsNotRightFile] = useState(false);
@@ -46,102 +55,109 @@ export default function UploadFile({ setImageData, setType, file, setFile }) {
   }, [file, fileQuery, isLoading, setFile, setImageData, setType]);
 
   return (
-    <form>
-      <div className="fileNameWrap">
-        <div>
-          {fileName && (
-            <div>
-              <>
-                <span className="fileName">File Name</span>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <span className="fileNameStr">{fileName}</span>
-
+    <div>
+      <form>
+        <div className="fileNameWrap">
+          <div>
+            {fileName && (
+              <div>
+                <>
+                  <span className="fileName">File Name</span>
                   <div
-                    className="closeBtn"
-                    onClick={() => {
-                      setFile(null);
-                      setFileName("");
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <Close />
+                    <span className="fileNameStr">{fileName}</span>
+
+                    <div
+                      className="closeBtn"
+                      onClick={() => {
+                        setFile(null);
+                        setFileName("");
+                      }}
+                    >
+                      <Close />
+                    </div>
                   </div>
-                </div>
-              </>
-            </div>
+                </>
+              </div>
+            )}
+          </div>
+          {!fileName && (
+            <span className="uploadPlaceholder">No file selected</span>
           )}
+
+          {isLoading && <Spinner />}
         </div>
-        {!fileName && (
-          <span className="uploadPlaceholder">No file selected</span>
+        <div className="uploadBtnsWrap">
+          <label className="fileNameBtn">
+            Choose a File
+            <input
+              type="file"
+              id="file"
+              onChange={(e) => {
+                if (file) {
+                  setFile(null);
+                  setFileName("");
+                }
+                setFile(e.target.files[0]);
+                setIsLoading(true);
+                setIsNotRightFile(false);
+              }}
+            />
+          </label>
+        </div>
+        {file && !isNotRightFile && (
+          <div className="searchOptions">
+            <label
+              onClick={() => setType("text")}
+              htmlFor="tx"
+              style={{
+                fontSize: "16px",
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <input
+                id="tx"
+                type="radio"
+                name="searchType"
+                style={{ width: "16px", height: "16px", marginRight: "12px" }}
+              />
+              Text search
+            </label>
+
+            <label
+              onClick={() => setType("knnquery")}
+              htmlFor="sp"
+              style={{
+                fontSize: "16px",
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <input
+                id="sp"
+                type="radio"
+                name="searchType"
+                defaultChecked
+                style={{ width: "16px", height: "16px", marginRight: "12px" }}
+              />
+              Spectrum search
+            </label>
+          </div>
         )}
-
-        {isLoading && <Spinner />}
-      </div>
-      <div className="uploadBtnsWrap">
-        <label className="fileNameBtn">
-          Choose a File
-          <input
-            type="file"
-            id="file"
-            onChange={(e) => {
-              if (file) {
-                setFile(null);
-                setFileName("");
-              }
-              setFile(e.target.files[0]);
-              setIsLoading(true);
-              setIsNotRightFile(false);
-            }}
-          />
-        </label>
-      </div>
-      {file && !isNotRightFile && (
-        <div className="searchOptions">
-          <label
-            onClick={() => setType("text")}
-            htmlFor="tx"
-            style={{
-              fontSize: "16px",
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-          >
-            <input
-              id="tx"
-              type="radio"
-              name="searchType"
-              style={{ width: "16px", height: "16px", marginRight: "12px" }}
-            />
-            Text search
-          </label>
-
-          <label
-            onClick={() => setType("knnquery")}
-            htmlFor="sp"
-            style={{
-              fontSize: "16px",
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-          >
-            <input
-              id="sp"
-              type="radio"
-              name="searchType"
-              defaultChecked
-              style={{ width: "16px", height: "16px", marginRight: "12px" }}
-            />
-            Spectrum search
-          </label>
-        </div>
-      )}
-    </form>
+      </form>
+      <ModeSelect
+        dataSources={dataSources}
+        setSimilarity={setSimilarity}
+        similarity={similarity}
+      />
+    </div>
   );
 }

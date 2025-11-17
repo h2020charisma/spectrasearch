@@ -11,10 +11,8 @@ const errorMsg = "Sorry, no data available";
 export default function Sidebar({
   params,
   setParams,
-  reference,
-  setReference,
-  provider,
-  setProvider,
+  setSimilarity,
+  similarity,
   dataSources,
   setqQuery,
   qQuery,
@@ -57,7 +55,7 @@ export default function Sidebar({
         />
       </Expander>
       <Expander
-        title="Search by Spectrum File"
+        title="Search by Similarity"
         status={fileName === "" ? false : true}
       >
         <UploadFile
@@ -70,6 +68,9 @@ export default function Sidebar({
           queryStringSourcesParams={queryStringSourcesParams}
           fileName={fileName}
           setFileName={setFileName}
+          dataSources={dataSources}
+          setSimilarity={setSimilarity}
+          similarity={similarity}
         />
       </Expander>
       {dataSources?.fields.map((item) => (
