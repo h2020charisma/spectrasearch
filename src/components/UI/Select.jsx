@@ -5,7 +5,6 @@ import Close from "../Icons/Close";
 
 export const ModeSelect = ({ dataSources, similarity, setSimilarity }) => {
   const [selectedOption, setSelectedOption] = useState([]);
-  console.log(dataSources, selectedOption);
 
   useEffect(() => {
     if (dataSources?.similarity) {

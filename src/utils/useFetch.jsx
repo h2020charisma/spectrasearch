@@ -102,11 +102,12 @@ function useFetch(url) {
     return () => {
       controller.abort();
     };
-  }, [url, kc_token]);
+  }, [kc_token, url, auth.isAuthenticated]);
 
   useEffect(() => {
+    if (!url) return;
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, url]);
 
   return { data, loading, error };
 }

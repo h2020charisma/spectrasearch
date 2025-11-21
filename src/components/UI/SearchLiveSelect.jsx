@@ -1,14 +1,20 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
+import useFetch from "../../utils/useFetch";
+import useDebounce from "../../utils/useDebounce";
 import SearchIcon from "../Icons/SearchIcon";
 import "./Select.css";
 import Close from "../Icons/Close";
 
+import useSWR from "swr";
+
+const fetcher = (url) => fetch(url).then((r) => r.json());
+
 export default function SearchSelect({
-  data,
   qQuery,
   setqQuery,
   setImageSelected,
+  queryStringSourcesParams,
   label,
   field,
 }) {
@@ -18,6 +24,21 @@ export default function SearchSelect({
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState("");
 
+  // const baseURL = `${import.meta.env.VITE_BaseURL}`;
+  const baseURL = useDebounce(
+    search ? `http://127.0.0.1:8000/api/books/search/` : null,
+    2000
+  );
+
+  const providerURL = useDebounce(
+    search ? `http://127.0.0.1:8000/api/books/search/` : null,
+    2000
+  );
+
+  // const { data } = useFetch(search && providerURL);
+  const { data, error } = useSWR(`${baseURL}?search=${search}`, fetcher);
+  console.log(search, data);
+
   useEffect(() => {
     const found = qQuery?.some((obj) => obj.name === label);
     if (!found) {
@@ -26,17 +47,18 @@ export default function SearchSelect({
     }
   }, [qQuery, label]);
 
-  useEffect(
-    () =>
-      setFiltered(
-        data?.filter((item) => {
-          return item.value
-            .toLocaleLowerCase()
-            .includes(search.toLocaleLowerCase());
-        })
-      ),
-    [data, search]
-  );
+  // useEffect(
+  //   () =>
+  //     setFiltered(
+  //       data &&
+  //         data?.filter((item) => {
+  //           return item.value
+  //             .toLocaleLowerCase()
+  //             .includes(search.toLocaleLowerCase());
+  //         })
+  //     ),
+  //   [data, search]
+  // );
 
   return (
     <section>
@@ -87,29 +109,30 @@ export default function SearchSelect({
           >
             {selected === null ? "" : <strong>{selected}</strong>}
           </p> */}
-          <hr />
+          {/* <hr /> */}
 
-          {!search &&
+          {search !== "" &&
             data &&
-            data.map((item, i) => (
+            data?.map((item, i) => (
               <p
-                data-project={item.value}
+                data-project={item.title}
                 className="selectItem"
                 key={i}
-                onClick={() => {
-                  if (selected !== item.value) {
-                    setqQuery((prev) => [
-                      ...prev,
-                      { name: label, value: item.value, field: field },
-                    ]);
-                  }
-                  setSelected(item.value);
-                  setOpen(false);
-                  setSearch(item.value);
-                  setImageSelected("");
-                }}
+                //   onClick={() => {
+                //     if (selected !== item.value) {
+                //       setqQuery((prev) => [
+                //         ...prev,
+                //         { name: label, value: item.value, field: field },
+                //       ]);
+                //     }
+                //     setSelected(item.value);
+                //     setOpen(false);
+                //     setSearch(item.value);
+                //     setImageSelected("");
+                //   }
+                // }
               >
-                {item.value}
+                {item.title}
               </p>
             ))}
           {search &&

@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import CustomSearch from "../CustomSearch/CustomSearch";
 import Expander from "../UI/Expander";
 import UploadFile from "../UploadFile/UploadFile";
 import Widget from "../Widget/Widget";
+import WidgetLiveSearch from "../Widget/WidgetLiveSearch";
 
 const errorMsg = "Sorry, no data available";
 
@@ -71,6 +71,16 @@ export default function Sidebar({
           dataSources={dataSources}
           setSimilarity={setSimilarity}
           similarity={similarity}
+        />
+      </Expander>
+      <Expander title="Debouncing search" status={false}>
+        <WidgetLiveSearch
+          name="Debouncing search"
+          field="data_provider"
+          queryStringSourcesParams={queryStringSourcesParams}
+          setImageSelected={setImageSelected}
+          params={params}
+          setParams={setParams}
         />
       </Expander>
       {dataSources?.fields.map((item) => (
