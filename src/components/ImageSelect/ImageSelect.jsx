@@ -2,9 +2,11 @@
 import { Link } from "react-router-dom";
 import { useStore } from "../../store/store";
 import PreviewDialog from "../PreviewDialog/PreviewDialog";
+import { useState } from "react";
 // import TableView from "./TableView";
 import DataTable from "../DataTable/DataTable";
 import ErrorComp from "../UI/ErrorComp";
+import ImageItem from "./ImageItem";
 
 export default function ImageSelect({ data, error, loading }) {
   const tableView = useStore((state) => state.tableView);
@@ -13,50 +15,12 @@ export default function ImageSelect({ data, error, loading }) {
   const renderImageSelect =
     data &&
     data?.response?.map((img, i) => (
-      <div key={i}>
-        <div
-          onClick={() => {
-            setImageSelectedStore(img.value);
-          }}
-          className={`${
-            // imageSelected == img.value ? "imageSelected" : "imageNonSelected"
-            "imageNonSelected"
-          }`}
-        >
-          <Link to={`/h5web/${img.value}`}>
-            <img
-              className="imgSelected"
-              src={img.imageLink}
-              width={200}
-              height={"auto"}
-            />
-          </Link>
-        </div>
-        <p className="imgCaption">
-          {img?.score && (
-            <span
-              style={{
-                display: "inline-block",
-                color: "#D20003",
-                fontSize: "12px",
-                paddingBottom: "12px",
-              }}
-            >
-              {parseFloat(img.score).toFixed(3)}&nbsp;&nbsp;
-            </span>
-          )}
-        </p>
-        <div className="imgDiscription">
-          <span>{img.text}</span>
-          <div
-            onClick={() => {
-              setImageSelectedStore(img.value);
-            }}
-          >
-            <PreviewDialog img={img.value} />
-          </div>
-        </div>
-      </div>
+      <ImageItem
+        key={i}
+        img={img}
+        i={i}
+        setImageSelectedStore={setImageSelectedStore}
+      />
     ));
   return (
     <div className="imageSelectWrap">

@@ -53,7 +53,7 @@ h1 {
   padding: 0.8rem;
   border-radius: 6px;
   margin: 0 0 0.5rem 0;
-  overflow: hidden;
+  /* overflow: hidden; */
   background-color: light-dark(#fff, #202020);
   color: light-dark(#202020, #ccc);
 }
@@ -104,7 +104,7 @@ h1 {
   justify-content: center;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 20px;
+  gap: 6px;
   height: auto;
 }
 
@@ -132,16 +132,32 @@ h1 {
   transition: all 0.5s;
 }
 
-.imgDiscription {
+.imgDescription {
   display: flex;
   align-items: baseline;
   justify-content: center;
   gap: 10px;
 }
-.imgDiscription > span {
+.imgDescription > span {
   font-size: 14px;
   font-weight: 500;
   color: light-dark(#202020, #05ace1);
+}
+.descriptionHover {
+  position: absolute;
+  background-color: #00ace1;
+  left: 50%;
+  top: 2.5rem;
+  color: #fff;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 10;
+  margin-top: -40px;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s;
 }
 
 .selectItem {
