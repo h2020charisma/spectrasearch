@@ -43,9 +43,14 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
           </span>
         )}
       </p>
-      <div className="imgDescription">
+      <div
+        className="imgDescription"
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+      >
         <span>
-          {img.text.length > 10 ? img.text.substring(0, 9) + " ..." : img.text}
+          {/* {img.text} */}
+          {img.text.length > 10 ? img.text.substring(0, 16) + " ..." : img.text}
         </span>
         <div
           onClick={() => {

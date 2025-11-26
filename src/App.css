@@ -51,7 +51,7 @@ h1 {
 .expander {
   border: 1px solid light-dark(#a5a5a5, #3c3c3c);
   padding: 0.8rem;
-  border-radius: 6px;
+  border-radius: 5px;
   margin: 0 0 0.5rem 0;
   /* overflow: hidden; */
   background-color: light-dark(#fff, #202020);
@@ -133,8 +133,10 @@ h1 {
 }
 
 .imgDescription {
+  cursor: pointer;
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 10px;
 }
@@ -142,6 +144,7 @@ h1 {
   font-size: 14px;
   font-weight: 500;
   color: light-dark(#202020, #05ace1);
+  overflow-wrap: anywhere;
 }
 .descriptionHover {
   position: absolute;
