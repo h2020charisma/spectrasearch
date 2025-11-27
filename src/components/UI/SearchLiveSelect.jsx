@@ -32,11 +32,16 @@ export default function SearchSelect({
 
   const providerURL = useDebounce(
     search ? `http://127.0.0.1:8000/api/books/search/` : null,
-    2000
+    4000
   );
 
+  console.log("baseURL", baseURL);
+
   // const { data } = useFetch(search && providerURL);
-  const { data, error } = useSWR(`${baseURL}?search=${search}`, fetcher);
+  const { data, error } = useSWR(
+    baseURL && `${baseURL}?search=${search}`,
+    fetcher
+  );
   console.log(search, data);
 
   useEffect(() => {
@@ -91,7 +96,7 @@ export default function SearchSelect({
             setImageSelected("");
           }}
         >
-          {selected && <Close />}
+          {search && <Close />}
         </div>
       </div>
 
