@@ -6,8 +6,18 @@ import PreviewDialog from "../PreviewDialog/PreviewDialog";
 // eslint-disable-next-line react/prop-types
 export default function ImageItem({ img, i, setImageSelectedStore }) {
   const [show, setShow] = useState(false);
+
+  function breakLine(str) {
+    return str.length > 40 ? str.slice(0, 40) + "<br>" + str.slice(40) : str;
+  }
+
   return (
-    <div key={i} style={{ position: "relative", marginBottom: "1rem" }}>
+    <div
+      key={i}
+      style={{ position: "relative", marginBottom: "1rem" }}
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+    >
       <div
         onClick={() => {
           setImageSelectedStore(img.value);
@@ -24,8 +34,6 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
             width={170}
             height={"auto"}
             alt={img.text}
-            onMouseEnter={() => setShow(true)}
-            onMouseLeave={() => setShow(false)}
           />
         </Link>
       </div>
@@ -45,8 +53,8 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
       </p>
       <div
         className="imgDescription"
-        onMouseEnter={() => setShow(true)}
-        onMouseLeave={() => setShow(false)}
+        // onMouseEnter={() => setShow(true)}
+        // onMouseLeave={() => setShow(false)}
       >
         <span>
           {/* {img.text} */}
@@ -60,7 +68,12 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
           <PreviewDialog img={img.value} />
         </div>
       </div>
-      {show && <div className="descriptionHover">{img.text}</div>}
+      {show && (
+        <div
+          className="descriptionHover"
+          dangerouslySetInnerHTML={{ __html: breakLine(img.text) }}
+        />
+      )}
     </div>
   );
 }
