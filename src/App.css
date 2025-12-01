@@ -141,7 +141,7 @@ h1 {
   gap: 10px;
 }
 .imgDescription > span {
-  font-size: 14px;
+  font-size: 0.8rem;
   font-weight: 500;
   color: light-dark(#202020, #05ace1);
   overflow-wrap: anywhere;
@@ -150,16 +150,16 @@ h1 {
   position: absolute;
   background-color: #00ace1;
   left: 50%;
-  bottom: 1.6rem;
+  bottom: 2.3rem;
   color: #fff;
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 0.8rem;
   font-weight: 500;
   white-space: nowrap;
   z-index: 10;
-  margin-top: -40px;
-  transform: translate(-50%, -50%);
+  /* margin-top: -40px; */
+  transform: translateX(-50%);
   transition: all 0.3s;
 }
 

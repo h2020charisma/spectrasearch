@@ -14,7 +14,7 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
   return (
     <div
       key={i}
-      style={{ position: "relative", marginBottom: "1rem" }}
+      style={{ position: "relative" }}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
@@ -22,10 +22,7 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
         onClick={() => {
           setImageSelectedStore(img.value);
         }}
-        className={`${
-          // imageSelected == img.value ? "imageSelected" : "imageNonSelected"
-          "imageNonSelected"
-        }`}
+        className={`${"imageNonSelected"}`}
       >
         <Link to={`/h5web/${img.value}`}>
           <img
@@ -51,14 +48,9 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
           </span>
         )}
       </p>
-      <div
-        className="imgDescription"
-        // onMouseEnter={() => setShow(true)}
-        // onMouseLeave={() => setShow(false)}
-      >
+      <div className="imgDescription">
         <span>
-          {/* {img.text} */}
-          {img.text.length > 10 ? img.text.substring(0, 16) + " ..." : img.text}
+          {img.text.length > 22 ? img.text.slice(0, 21) + " ..." : img.text}
         </span>
         <div
           onClick={() => {

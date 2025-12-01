@@ -1,11 +1,6 @@
 /* eslint-disable react/prop-types */
-import { Link } from "react-router-dom";
 import { useStore } from "../../store/store";
-import PreviewDialog from "../PreviewDialog/PreviewDialog";
-import { useState } from "react";
-// import TableView from "./TableView";
 import DataTable from "../DataTable/DataTable";
-import ErrorComp from "../UI/ErrorComp";
 import ImageItem from "./ImageItem";
 
 export default function ImageSelect({ data, error, loading }) {
