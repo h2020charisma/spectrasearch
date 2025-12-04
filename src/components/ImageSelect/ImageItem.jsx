@@ -50,7 +50,8 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
       </p>
       <div className="imgDescription">
         <span>
-          {img.text.length > 22 ? img.text.slice(0, 21) + " ..." : img.text}
+          {/* {img.text.length > 22 ? img.text.slice(0, 21) + " ..." : img.text} */}
+          {img.text}
         </span>
         <div
           onClick={() => {

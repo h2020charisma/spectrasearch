@@ -139,12 +139,16 @@ h1 {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  text-align: center;
 }
 .imgDescription > span {
   font-size: 0.8rem;
   font-weight: 500;
   color: light-dark(#202020, #05ace1);
-  overflow-wrap: anywhere;
+  width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsi;
 }
 .descriptionHover {
   position: absolute;
