@@ -161,13 +161,14 @@ h1 {
   font-size: 0.8rem;
   font-weight: 500;
   width: 180px;
-  /* width: fit-content; */
   max-width: 260px;
   white-space: wrap;
   z-index: 10;
-  /* margin-top: -40px; */
   transform: translateX(-50%);
   transition: all 0.4s;
+  overflow-wrap: anywhere;
+  max-height: 180px;
+  overflow-y: hidden;
 }
 
 .selectItem {
