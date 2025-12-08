@@ -148,23 +148,26 @@ h1 {
   width: 180px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsi;
+  text-overflow: ellipsis;
 }
 .descriptionHover {
   position: absolute;
   background-color: #00ace1;
   left: 50%;
-  bottom: 2.3rem;
+  bottom: 2.4rem;
   color: #fff;
-  padding: 0.2rem 0.4rem;
+  padding: 0.5rem 0.6rem;
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 500;
-  white-space: nowrap;
+  width: 180px;
+  /* width: fit-content; */
+  max-width: 260px;
+  white-space: wrap;
   z-index: 10;
   /* margin-top: -40px; */
   transform: translateX(-50%);
-  transition: all 0.3s;
+  transition: all 0.4s;
 }
 
 .selectItem {

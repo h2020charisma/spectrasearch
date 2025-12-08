@@ -8,7 +8,9 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
   const [show, setShow] = useState(false);
 
   function breakLine(str) {
-    return str.length > 40 ? str.slice(0, 40) + "<br>" + str.slice(40) : str;
+    return str.length > 40
+      ? str.slice(0, 20) + "<br>" + str.slice(0, 20) + "<br>" + str.slice(40)
+      : str;
   }
 
   return (
@@ -64,7 +66,12 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
       {show && (
         <div
           className="descriptionHover"
-          dangerouslySetInnerHTML={{ __html: breakLine(img.text) }}
+          dangerouslySetInnerHTML={{ __html: img.text }}
+          style={
+            img.text.length > 27
+              ? { textAlign: "left" }
+              : { textAlign: "center" }
+          }
         />
       )}
     </div>
