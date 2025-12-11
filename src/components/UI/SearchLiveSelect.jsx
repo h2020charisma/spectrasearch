@@ -1,11 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import useFetch from "../../utils/useFetch";
 import useDebounce from "../../utils/useDebounce";
 import SearchIcon from "../Icons/SearchIcon";
-import "./Select.css";
 import Close from "../Icons/Close";
-
 import useSWR from "swr";
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
@@ -14,35 +11,30 @@ export default function SearchSelect({
   qQuery,
   setqQuery,
   setImageSelected,
-  queryStringSourcesParams,
+  queryStringSourcesParams, // new prop for data sources
   label,
   field,
 }) {
   const [open, setOpen] = useState(false);
-
-  const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState("");
 
-  // const baseURL = `${import.meta.env.VITE_BaseURL}`;
-  const baseURL = useDebounce(
-    search ? `http://127.0.0.1:8000/api/books/search/` : null,
-    2000
-  );
+  const baseURL = `${import.meta.env.VITE_BaseURL}`;
+  const debounced = useDebounce(search, 300);
 
-  const providerURL = useDebounce(
-    search ? `http://127.0.0.1:8000/api/books/search/` : null,
-    4000
-  );
+  // Build full endpoint including data sources
+  const apiURL =
+    debounced && debounced.length > 0
+      ? `${baseURL}db/query/field/terms?name=${field}&prefix=${encodeURIComponent(
+          debounced
+        )}&limit=25${
+          queryStringSourcesParams ? `&${queryStringSourcesParams}` : ""
+        }`
+      : null;
 
-  console.log("baseURL", baseURL);
 
-  // const { data } = useFetch(search && providerURL);
-  const { data, error } = useSWR(
-    baseURL && `${baseURL}?search=${search}`,
-    fetcher
-  );
-  console.log(search, data);
+  const { data, error } = useSWR(apiURL, fetcher);
+  const terms = data?.response || [];
 
   useEffect(() => {
     const found = qQuery?.some((obj) => obj.name === label);
@@ -52,24 +44,11 @@ export default function SearchSelect({
     }
   }, [qQuery, label]);
 
-  // useEffect(
-  //   () =>
-  //     setFiltered(
-  //       data &&
-  //         data?.filter((item) => {
-  //           return item.value
-  //             .toLocaleLowerCase()
-  //             .includes(search.toLocaleLowerCase());
-  //         })
-  //     ),
-  //   [data, search]
-  // );
-
   return (
     <section>
       <div
         onClick={() => {
-          !search && setOpen(!open);
+          if (!search) setOpen(!open);
         }}
         className="selectBtn"
         style={{ position: "relative" }}
@@ -82,7 +61,10 @@ export default function SearchSelect({
             selected ? "searchSelectInput active" : "searchSelectInput"
           }
           value={selected || search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setOpen(true);
+          }}
           placeholder={`Search for ${label}`}
         />
         <div
@@ -96,73 +78,40 @@ export default function SearchSelect({
             setImageSelected("");
           }}
         >
-          {search && <Close />}
+          {(search || selected) && <Close />}
         </div>
       </div>
 
       {open && (
         <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
-          {/* <p
-            className="selectItem"
-            onClick={() => {
-              setqQuery((prev) => [
-                ...prev.filter((item) => item !== selected),
-              ]);
-              setSearch("");
-              setImageSelected("");
-            }}
-          >
-            {selected === null ? "" : <strong>{selected}</strong>}
-          </p> */}
-          {/* <hr /> */}
-
-          {search !== "" &&
-            data &&
-            data?.map((item, i) => (
+          {debounced !== "" &&
+            terms.map((value, i) => (
               <p
-                data-project={item.title}
-                className="selectItem"
-                key={i}
-                //   onClick={() => {
-                //     if (selected !== item.value) {
-                //       setqQuery((prev) => [
-                //         ...prev,
-                //         { name: label, value: item.value, field: field },
-                //       ]);
-                //     }
-                //     setSelected(item.value);
-                //     setOpen(false);
-                //     setSearch(item.value);
-                //     setImageSelected("");
-                //   }
-                // }
-              >
-                {item.title}
-              </p>
-            ))}
-          {search &&
-            filtered &&
-            filtered.map((item, i) => (
-              <p
-                data-project={item.value}
+                data-project={value}
                 className="selectItem"
                 key={i}
                 onClick={() => {
-                  if (selected !== item.value) {
+                  if (selected !== value) {
                     setqQuery((prev) => [
                       ...prev,
-                      { name: label, value: item.value, field: field },
+                      { name: label, value, field },
                     ]);
                   }
-                  setSearch(item.value);
-                  setSelected(item.value);
+                  setSearch(value);
+                  setSelected(value);
                   setOpen(false);
                   setImageSelected("");
                 }}
               >
-                {item.value}
+                {value}
               </p>
             ))}
+
+          {debounced !== "" && terms.length === 0 && (
+            <p className="selectItem" style={{ opacity: 0.6 }}>
+              No matches
+            </p>
+          )}
         </div>
       )}
     </section>

@@ -76,7 +76,7 @@ export default function Sidebar({
       <Expander title="Debouncing search" status={false}>
         <WidgetLiveSearch
           name="Debouncing search"
-          field="data_provider"
+          field="qdynamic.name_s"
           queryStringSourcesParams={queryStringSourcesParams}
           setImageSelected={setImageSelected}
           params={params}
