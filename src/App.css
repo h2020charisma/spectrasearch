@@ -58,6 +58,9 @@ h1 {
   background-color: light-dark(#fff, #202020);
   color: light-dark(#202020, #ccc);
 }
+.expanderFreeSearch {
+  border: 1px solid #00ace1;
+}
 
 .errorMessage {
   margin-top: 2rem;
@@ -107,6 +110,17 @@ h1 {
   align-items: flex-start;
   gap: 6px;
   height: auto;
+}
+
+.searchTypeLabel {
+  font-size: 10px;
+  font-weight: 600;
+  background-color: #c3f2ff;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  color: #454545;
+  margin-top: -8px;
 }
 
 .imageSelected {
@@ -397,6 +411,10 @@ h1 {
   font-weight: 600;
   padding-right: 0.2rem;
   color: #292929;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .metadataInfoValuePreview {
   font-size: 14px;

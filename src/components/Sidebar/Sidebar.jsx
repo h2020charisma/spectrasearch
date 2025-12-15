@@ -73,7 +73,7 @@ export default function Sidebar({
           similarity={similarity}
         />
       </Expander>
-      <Expander title="Debouncing search" status={false}>
+      {/* <Expander title="Debouncing search" status={false}>
         <WidgetLiveSearch
           name="Debouncing search"
           field="qdynamic.name_s"
@@ -82,20 +82,46 @@ export default function Sidebar({
           params={params}
           setParams={setParams}
         />
-      </Expander>
-      {dataSources?.fields.map((item) => (
-        <Expander title={item.name} status={false} key={item.name}>
-          <Widget
+      </Expander> */}
+      {dataSources?.fields.map((item) => {
+        if (item.search === "/db/query/field/terms") {
+          return (
+            <Expander
+              title={item.name}
+              status={false}
+              key={item.name}
+              icon={item.icon}
+            >
+              <WidgetLiveSearch
+                name={item.name}
+                field={item.field}
+                queryStringSourcesParams={queryStringSourcesParams}
+                setImageSelected={setImageSelected}
+                params={params}
+                setParams={setParams}
+              />
+            </Expander>
+          );
+        }
+        return (
+          <Expander
+            title={item.name}
+            status={false}
             key={item.name}
-            name={item.name}
-            field={item.field}
-            queryStringSourcesParams={queryStringSourcesParams}
-            setImageSelected={setImageSelected}
-            params={params}
-            setParams={setParams}
-          />
-        </Expander>
-      ))}
+            icon={item.icon}
+          >
+            <Widget
+              key={item.name}
+              name={item.name}
+              field={item.field}
+              queryStringSourcesParams={queryStringSourcesParams}
+              setImageSelected={setImageSelected}
+              params={params}
+              setParams={setParams}
+            />
+          </Expander>
+        );
+      })}
     </div>
   );
 }

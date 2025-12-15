@@ -32,7 +32,6 @@ export default function SearchSelect({
         }`
       : null;
 
-
   const { data, error } = useSWR(apiURL, fetcher);
   const terms = data?.response || [];
 
@@ -107,10 +106,14 @@ export default function SearchSelect({
               </p>
             ))}
 
-          {debounced !== "" && terms.length === 0 && (
-            <p className="selectItem" style={{ opacity: 0.6 }}>
-              No matches
+          {!search && terms.length === 0 && (
+            <p style={{ opacity: 0.8, textAlign: "center" }}>
+              Start typing to display available values
             </p>
+          )}
+
+          {debounced !== "" && terms.length === 0 && (
+            <p style={{ opacity: 0.8, textAlign: "center" }}>No matches</p>
           )}
         </div>
       )}

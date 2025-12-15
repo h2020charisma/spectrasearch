@@ -4,24 +4,21 @@ import { useMeasure } from "@uidotdev/usehooks";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
+import DynamicIcon from "../../utils/DynamicIcon";
 import ArrowOpen from "../Icons/Arrow";
 
-import * as IconsMD from "react-icons/md";
 import * as IconsFA from "react-icons/fa";
 
-let iconName = "FaTools";
+let iconName = "FaCube";
 
 const Icons = {
   IconName: IconsFA[iconName],
 };
 
-import { AiFillDatabase, AiFillTool } from "react-icons/ai";
 import { FaChartBar } from "react-icons/fa";
+import { FaSignsPost } from "react-icons/fa6";
 import { IoSearch } from "react-icons/io5";
 import { MdFileUpload } from "react-icons/md";
-import { PiEyedropperFill, PiWaveSineBold } from "react-icons/pi";
-import { FaSignsPost } from "react-icons/fa6";
-import { TbZoomCodeFilled } from "react-icons/tb";
 
 import GridViewIcon from "../Icons/GridViewIcon";
 import TableViewIcon from "../Icons/TableViewIcon";
@@ -30,12 +27,23 @@ import { useStore } from "../../store/store";
 import Notification from "./Notification";
 
 // eslint-disable-next-line react/prop-types
-export default function Expander({ children, title, status, data }) {
+export default function Expander({ children, title, status, data, icon }) {
   const [open, setOpen] = useState(status);
   const [ref, { height }] = useMeasure();
 
   const tableView = useStore((state) => state.tableView);
   const setTableView = useStore((state) => state.setTableView);
+
+  const [iconName, setIconName] = useState("");
+  const [iconPack, setIconPack] = useState("");
+
+  useEffect(() => {
+    if (icon) {
+      const [pack, name] = icon.split("/");
+      setIconName(name);
+      setIconPack(pack);
+    }
+  }, [icon]);
 
   return (
     <div className="expander">
@@ -59,16 +67,20 @@ export default function Expander({ children, title, status, data }) {
         >
           <IconContext.Provider value={{ size: "1.6rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              {icon ? <DynamicIcon name={iconName} pack={iconPack} /> : null}
               {title == "Search by Similarity" ? <MdFileUpload /> : null}
-              {title == "Sample" ? <PiEyedropperFill /> : null}
-              {title == "Data provider" ? <AiFillDatabase /> : null}
-              {title == "Investigation" ? <TbZoomCodeFilled /> : null}
-              {title == "Instrument" ? <Icons.IconName /> : null}
-              {title == "Material" ? <IconsMD.MdMusicNote /> : null}
+              {/* {title == "Sample" ? <PiEyedropperFill /> : null} */}
+              {/* {title == "Data provider" ? <AiFillDatabase /> : null} */}
+              {/* {title == "Investigation" ? <TbZoomCodeFilled /> : null} */}
+              {/* {title == "Instrument" ? <Icons.IconName /> : null} */}
+              {/* {title == "Material" ? <IconsMD.MdMusicNote /> : null} */}
               {title == "Pages" ? <FaSignsPost /> : null}
               {title == "Search Results" ? <FaChartBar /> : null}
               {title == "Free text search" ? <IoSearch /> : null}
-              {title}
+              {title}{" "}
+              {/* {mood == "freeSearch" && (
+                <div className="searchTypeLabel">Free Search</div>
+              )} */}
               {title == "Search Results" && (
                 <p className="foundLabel">{data?.numFound} hits found</p>
               )}
