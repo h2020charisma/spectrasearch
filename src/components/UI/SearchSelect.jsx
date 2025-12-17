@@ -12,7 +12,7 @@ export default function SearchSelect({
   label,
   field,
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
@@ -41,9 +41,9 @@ export default function SearchSelect({
   return (
     <section>
       <div
-        onClick={() => {
-          !search && setOpen(!open);
-        }}
+        // onClick={() => {
+        //   !search && setOpen(!open);
+        // }}
         className="selectBtn"
         style={{ position: "relative" }}
       >
@@ -73,9 +73,8 @@ export default function SearchSelect({
         </div>
       </div>
 
-      {open && (
-        <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
-          {/* <p
+      <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
+        {/* <p
             className="selectItem"
             onClick={() => {
               setqQuery((prev) => [
@@ -87,56 +86,54 @@ export default function SearchSelect({
           >
             {selected === null ? "" : <strong>{selected}</strong>}
           </p> */}
-          <hr />
 
-          {!search &&
-            data &&
-            data.map((item, i) => (
-              <p
-                data-project={item.value}
-                className="selectItem"
-                key={i}
-                onClick={() => {
-                  if (selected !== item.value) {
-                    setqQuery((prev) => [
-                      ...prev,
-                      { name: label, value: item.value, field: field },
-                    ]);
-                  }
-                  setSelected(item.value);
-                  setOpen(false);
-                  setSearch(item.value);
-                  setImageSelected("");
-                }}
-              >
-                {item.value}
-              </p>
-            ))}
-          {search &&
-            filtered &&
-            filtered.map((item, i) => (
-              <p
-                data-project={item.value}
-                className="selectItem"
-                key={i}
-                onClick={() => {
-                  if (selected !== item.value) {
-                    setqQuery((prev) => [
-                      ...prev,
-                      { name: label, value: item.value, field: field },
-                    ]);
-                  }
-                  setSearch(item.value);
-                  setSelected(item.value);
-                  setOpen(false);
-                  setImageSelected("");
-                }}
-              >
-                {item.value}
-              </p>
-            ))}
-        </div>
-      )}
+        {!search &&
+          data &&
+          data.map((item, i) => (
+            <p
+              data-project={item.value}
+              className="selectItem"
+              key={i}
+              onClick={() => {
+                if (selected !== item.value) {
+                  setqQuery((prev) => [
+                    ...prev,
+                    { name: label, value: item.value, field: field },
+                  ]);
+                }
+                setSelected(item.value);
+                // setOpen(false);
+                setSearch(item.value);
+                setImageSelected("");
+              }}
+            >
+              {item.value}
+            </p>
+          ))}
+        {search &&
+          filtered &&
+          filtered.map((item, i) => (
+            <p
+              data-project={item.value}
+              className="selectItem"
+              key={i}
+              onClick={() => {
+                if (selected !== item.value) {
+                  setqQuery((prev) => [
+                    ...prev,
+                    { name: label, value: item.value, field: field },
+                  ]);
+                }
+                setSearch(item.value);
+                setSelected(item.value);
+                // setOpen(false);
+                setImageSelected("");
+              }}
+            >
+              {item.value}
+            </p>
+          ))}
+      </div>
     </section>
   );
 }

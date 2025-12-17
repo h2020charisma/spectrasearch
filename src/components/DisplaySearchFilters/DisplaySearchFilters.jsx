@@ -22,23 +22,27 @@ export default function DisplaySearchFilters({
   return (
     <div>
       <div className="search-filters-wrap">
-        <div className="search-filters">
-          <AnimatePresence>
-            {params?.map(({ name, value }) => (
-              <FilterBadge
-                key={name}
-                label={name}
-                value={value}
-                onClick={() =>
-                  setParams((prev) =>
-                    prev.filter((item) => item.value !== value)
-                  )
-                }
-              />
-            ))}
-          </AnimatePresence>
+        <div className="search-filters-container">
+          <div className="resetFilters" onClick={() => setParams([])}>
+            {params.length > 1 && <p className="resetLabel">Reset filters</p>}
+          </div>
+          <div className="search-filters">
+            <AnimatePresence>
+              {params?.map(({ name, value }) => (
+                <FilterBadge
+                  key={name}
+                  label={name}
+                  value={value}
+                  onClick={() =>
+                    setParams((prev) =>
+                      prev.filter((item) => item.value !== value)
+                    )
+                  }
+                />
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
-
         <SourcesDialog
           sources={sources}
           setSources={setSources}

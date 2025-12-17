@@ -46,9 +46,9 @@ export default function SearchSelect({
   return (
     <section>
       <div
-        onClick={() => {
-          if (!search) setOpen(!open);
-        }}
+        // onClick={() => {
+        //   if (!search) setOpen(!open);
+        // }}
         className="selectBtn"
         style={{ position: "relative" }}
       >
@@ -81,42 +81,37 @@ export default function SearchSelect({
         </div>
       </div>
 
-      {open && (
-        <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
-          {debounced !== "" &&
-            terms.map((value, i) => (
-              <p
-                data-project={value}
-                className="selectItem"
-                key={i}
-                onClick={() => {
-                  if (selected !== value) {
-                    setqQuery((prev) => [
-                      ...prev,
-                      { name: label, value, field },
-                    ]);
-                  }
-                  setSearch(value);
-                  setSelected(value);
-                  setOpen(false);
-                  setImageSelected("");
-                }}
-              >
-                {value}
-              </p>
-            ))}
-
-          {!search && terms.length === 0 && (
-            <p style={{ opacity: 0.8, textAlign: "center" }}>
-              Start typing to display available values
+      <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
+        {debounced !== "" &&
+          terms.map((value, i) => (
+            <p
+              data-project={value}
+              className="selectItem"
+              key={i}
+              onClick={() => {
+                if (selected !== value) {
+                  setqQuery((prev) => [...prev, { name: label, value, field }]);
+                }
+                setSearch(value);
+                setSelected(value);
+                setOpen(false);
+                setImageSelected("");
+              }}
+            >
+              {value}
             </p>
-          )}
+          ))}
 
-          {debounced !== "" && terms.length === 0 && (
-            <p style={{ opacity: 0.8, textAlign: "center" }}>No matches</p>
-          )}
-        </div>
-      )}
+        {!search && terms.length === 0 && (
+          <p style={{ opacity: 0.8, textAlign: "center" }}>
+            Start typing to display available values
+          </p>
+        )}
+
+        {debounced !== "" && terms.length === 0 && (
+          <p style={{ opacity: 0.8, textAlign: "center" }}>No matches</p>
+        )}
+      </div>
     </section>
   );
 }

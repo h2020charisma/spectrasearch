@@ -54,7 +54,7 @@ h1 {
   padding: 0.8rem;
   border-radius: 5px;
   margin: 0 0 0.5rem 0;
-  /* overflow: hidden; */
+  overflow: hidden;
   background-color: light-dark(#fff, #202020);
   color: light-dark(#202020, #ccc);
 }
@@ -429,6 +429,13 @@ h1 {
   gap: 12px;
 }
 
+.search-filters-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
 .metadataInfo {
   display: flex;
 
@@ -441,6 +448,22 @@ h1 {
   font-size: 11px;
   letter-spacing: 0.4px;
   background-color: #c3f2ff;
+  padding: 0.12rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin: 0.3rem 0;
+  display: inline-block;
+  color: #454545;
+}
+.resetFilters {
+  width: fit-content;
+  /* background-color: rgb(255, 89, 0); */
+}
+.resetLabel {
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  background-color: #f66200;
   padding: 0.12rem 0.6rem;
   border-radius: 4px;
   text-transform: uppercase;

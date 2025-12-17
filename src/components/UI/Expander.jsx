@@ -7,14 +7,6 @@ import { IconContext } from "react-icons";
 import DynamicIcon from "../../utils/DynamicIcon";
 import ArrowOpen from "../Icons/Arrow";
 
-import * as IconsFA from "react-icons/fa";
-
-let iconName = "FaCube";
-
-const Icons = {
-  IconName: IconsFA[iconName],
-};
-
 import { FaChartBar } from "react-icons/fa";
 import { FaSignsPost } from "react-icons/fa6";
 import { IoSearch } from "react-icons/io5";
@@ -38,11 +30,10 @@ export default function Expander({ children, title, status, data, icon }) {
   const [iconPack, setIconPack] = useState("");
 
   useEffect(() => {
-    if (icon) {
-      const [pack, name] = icon.split("/");
-      setIconName(name);
-      setIconPack(pack);
-    }
+    if (!icon) return;
+    const [pack, name] = icon.split("/");
+    setIconName(name);
+    setIconPack(pack);
   }, [icon]);
 
   return (
@@ -67,20 +58,15 @@ export default function Expander({ children, title, status, data, icon }) {
         >
           <IconContext.Provider value={{ size: "1.6rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              {icon ? <DynamicIcon name={iconName} pack={iconPack} /> : null}
-              {title == "Search by Similarity" ? <MdFileUpload /> : null}
-              {/* {title == "Sample" ? <PiEyedropperFill /> : null} */}
-              {/* {title == "Data provider" ? <AiFillDatabase /> : null} */}
-              {/* {title == "Investigation" ? <TbZoomCodeFilled /> : null} */}
-              {/* {title == "Instrument" ? <Icons.IconName /> : null} */}
-              {/* {title == "Material" ? <IconsMD.MdMusicNote /> : null} */}
-              {title == "Pages" ? <FaSignsPost /> : null}
-              {title == "Search Results" ? <FaChartBar /> : null}
-              {title == "Free text search" ? <IoSearch /> : null}
-              {title}{" "}
-              {/* {mood == "freeSearch" && (
-                <div className="searchTypeLabel">Free Search</div>
-              )} */}
+              <div style={{ height: "26px", width: "26px" }}>
+                <DynamicIcon name={iconName} pack={iconPack} />
+
+                {title == "Search by Similarity" ? <MdFileUpload /> : null}
+                {title == "Pages" ? <FaSignsPost /> : null}
+                {title == "Search Results" ? <FaChartBar /> : null}
+                {title == "Free text search" ? <IoSearch /> : null}
+              </div>
+              {title}
               {title == "Search Results" && (
                 <p className="foundLabel">{data?.numFound} hits found</p>
               )}
