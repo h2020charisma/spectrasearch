@@ -615,7 +615,7 @@ h1 {
 }
 
 .search-filters-wrap {
-  height: 60px;
+  height: fit-content;
   display: flex;
   align-items: center;
   justify-content: space-between;

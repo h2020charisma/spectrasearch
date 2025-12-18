@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Select, { components } from "react-select";
 import Close from "../Icons/Close";
+import { m } from "framer-motion";
 
 export const ModeSelect = ({ dataSources, similarity, setSimilarity }) => {
   const [selectedOption, setSelectedOption] = useState([]);
@@ -53,6 +54,7 @@ export const ModeSelect = ({ dataSources, similarity, setSimilarity }) => {
       fontWeight: "500",
       padding: "10px 15px",
       cursor: "pointer",
+      maxHeight: "250px",
     }),
   };
 

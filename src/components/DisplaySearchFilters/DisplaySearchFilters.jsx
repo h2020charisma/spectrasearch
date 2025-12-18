@@ -24,7 +24,7 @@ export default function DisplaySearchFilters({
       <div className="search-filters-wrap">
         <div className="search-filters-container">
           <div className="resetFilters" onClick={() => setParams([])}>
-            {params.length > 1 && <p className="resetLabel">Reset filters</p>}
+            {params.length > 1 && <p className="resetLabel">Reset</p>}
           </div>
           <div className="search-filters">
             <AnimatePresence>

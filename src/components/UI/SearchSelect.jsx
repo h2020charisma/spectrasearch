@@ -130,7 +130,7 @@ export default function SearchSelect({
                 setImageSelected("");
               }}
             >
-              {item.value}
+              {/* {item.value}! */}
             </p>
           ))}
       </div>

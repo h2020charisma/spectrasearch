@@ -20,7 +20,7 @@ export default function Widget({
   console.log(params);
 
   return (
-    <div style={{ height: "250px" }}>
+    <div style={{ maxHeight: "250px" }}>
       <SearchSelect
         qQuery={params}
         setqQuery={setParams}

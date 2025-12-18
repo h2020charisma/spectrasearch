@@ -37,7 +37,14 @@ export default function Expander({ children, title, status, data, icon }) {
   }, [icon]);
 
   return (
-    <div className="expander">
+    <div
+      className="expander"
+      style={
+        title == "Search by Similarity"
+          ? { overflow: "visible" }
+          : { overflow: "hidden" }
+      }
+    >
       <div
         onClick={() => title !== "Search Results" && setOpen(!open)}
         data-cy={title.replace(/\s+/g, "-").toLowerCase()}
