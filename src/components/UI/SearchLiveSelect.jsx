@@ -112,7 +112,7 @@ export default function SearchSelect({
           </p>
         )}
 
-        {debounced !== "" && terms.length === 0 && (
+        {debounced.length > 0 && terms.length === 0 && (
           <p style={{ opacity: 0.8, textAlign: "center" }}>No matches</p>
         )}
       </div>
