@@ -17,8 +17,8 @@
 
 .current-page {
   color: #2b2b2b !important;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   display: flex;
   text-align: center;
   background: aliceblue;
@@ -47,14 +47,13 @@
 .firstPageNumber {
   cursor: pointer;
   color: light-dark(#2b2b2b, #fff);
-  width: 80px;
 }
 .firstPageNumber {
   width: 14px;
 }
 
 .lastPageNumber:hover {
-  color: #2b2b2b;
+  color: light-dark(#2b2b2b, #cacaca);
 }
 
 .next-page-btn {

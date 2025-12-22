@@ -88,6 +88,10 @@
   outline: none;
 }
 
+.closeBtnSourcesDialog > svg {
+  stroke: #262626;
+}
+
 .dataSourcesCaption {
   color: #366000;
   font-weight: 600;

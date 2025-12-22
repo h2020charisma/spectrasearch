@@ -69,7 +69,11 @@ export default function SearchSelect({
             setImageSelected("");
           }}
         >
-          {selected && <Close />}
+          {selected && (
+            <span className="clearSelection">
+              <Close />
+            </span>
+          )}
         </div>
       </div>
 
@@ -86,7 +90,7 @@ export default function SearchSelect({
           >
             {selected === null ? "" : <strong>{selected}</strong>}
           </p> */}
-
+        {data?.length < 0 && <p className="selectItem">Loading</p>}
         {!search &&
           data &&
           data.map((item, i) => (

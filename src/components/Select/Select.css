@@ -60,6 +60,10 @@
   cursor: pointer;
   /* margin-left: 1rem; */
 }
+
+.closeSourceBtn > svg {
+  stroke: #262626;
+}
 .selectItem {
   color: #7a7a7a;
 }

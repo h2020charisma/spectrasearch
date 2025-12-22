@@ -147,7 +147,7 @@ export default function SearchComp({ setDomain }) {
     <div className="main">
       <ToastDemo error={error} />
       {toast && !dialog ? <ToastDemo error={defaultSourceMessage} /> : null}
-      <div>
+      <div style={{ position: "relative" }}>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
           <SideBarToggle />
         </div>

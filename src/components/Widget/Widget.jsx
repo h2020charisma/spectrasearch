@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import SearchSelect from "../UI/SearchSelect";
-import { useState } from "react";
+import ListPlaceholder from "../UI/ListPlaceholder";
 
 import useFetch from "../../utils/useFetch";
 
@@ -29,6 +29,7 @@ export default function Widget({
         label={name}
         field={field}
       />
+      {!data && <ListPlaceholder count={4} />}
     </div>
   );
 }

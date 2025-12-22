@@ -77,7 +77,11 @@ export default function SearchSelect({
             setImageSelected("");
           }}
         >
-          {(search || selected) && <Close />}
+          {(search || selected) && (
+            <span className="clearSelection">
+              <Close />
+            </span>
+          )}
         </div>
       </div>
 

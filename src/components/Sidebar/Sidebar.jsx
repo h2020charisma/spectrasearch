@@ -5,6 +5,7 @@ import Expander from "../UI/Expander";
 import UploadFile from "../UploadFile/UploadFile";
 import Widget from "../Widget/Widget";
 import WidgetLiveSearch from "../Widget/WidgetLiveSearch";
+import ListPlaceholder from "../UI/ListPlaceholder";
 
 const errorMsg = "Sorry, no data available";
 

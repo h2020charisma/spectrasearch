@@ -74,3 +74,24 @@
   width: 100%;
   /* padding-right: 1rem; */
 }
+.clearSelection > svg {
+  stroke: light-dark(#242424, #fff);
+}
+
+.listPlaceholderLines {
+  height: 10;
+  width: "70%";
+  background: "#e5e7eb";
+  margin-bottom: 6px;
+  border-radius: 4px;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
