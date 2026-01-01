@@ -33,7 +33,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
 
       - name: Set a fake .env file
         run: echo 'VITE_BaseURL="http://localhost:8080/"' >.env
