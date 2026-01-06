@@ -27,7 +27,7 @@ export default function Header() {
 
   return (
     <div className="logo">
-      <h1 onClick={() => navigate("/")}>Raman spectra search</h1>
+      <h1 onClick={() => navigate("/")}>{import.meta.env.VITE_AppTitle}</h1>
       <div className="helpUserMenu">
         {auth.isAuthenticated ? (
           <div className="userInfo">

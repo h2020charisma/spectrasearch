@@ -45,13 +45,7 @@ export default function SearchSelect({
 
   return (
     <section>
-      <div
-        // onClick={() => {
-        //   if (!search) setOpen(!open);
-        // }}
-        className="selectBtn"
-        style={{ position: "relative" }}
-      >
+      <div className="selectBtn" style={{ position: "relative" }}>
         <SearchIcon />
         <input
           id={`Search for ${label}`}
@@ -63,6 +57,18 @@ export default function SearchSelect({
           onChange={(e) => {
             setSearch(e.target.value);
             setOpen(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && search) {
+              e.preventDefault();
+              setqQuery((prev) => [
+                ...prev,
+                { name: label, value: search, field },
+              ]);
+              setSearch("");
+              setSelected("");
+              setImageSelected("");
+            }
           }}
           placeholder={`Search for ${label}`}
         />
