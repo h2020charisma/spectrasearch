@@ -173,7 +173,7 @@ const TableRowHover = ({ img }) => {
       <ChartIcon />
       <div className="tableImage">
         {hoveredRow && (
-          <Link to={`/h5web/${img.value}`} target="_blank">
+          <Link to={`h5web/${img.value}`} target="_blank">
             <img
               className="imgSelected"
               src={img.imageLink}
