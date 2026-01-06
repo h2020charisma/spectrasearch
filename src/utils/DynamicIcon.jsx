@@ -12,7 +12,7 @@ const iconPackLoaders = {
 import { lazy, Suspense } from "react";
 
 function DynamicIcon({ name, pack }) {
-  if (!pack) return;
+  if (!pack || !name) return;
 
   const Icon = lazy(() => {
     return iconPackLoaders[pack]().then((module) => {
