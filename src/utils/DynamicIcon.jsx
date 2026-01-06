@@ -9,6 +9,9 @@ const iconPackLoaders = {
   ai: () => import("react-icons/ai"),
 };
 
+// Icon "FaFileAlt" not found in pack "fa6"
+// Error: Icon "FaFileAlt" not found in pack "fa6"
+
 import { lazy, Suspense } from "react";
 
 function DynamicIcon({ name, pack }) {
