@@ -57,15 +57,22 @@ export default function SearchComp({ setDomain }) {
   const [imageData, setImageData] = useSessionStorage("imgData", null);
 
   const [file, setFile] = useSessionStorage("file", "");
+  const [appName, setAppName] = useSessionStorage("appName", null);
   const [type, setType] = useState("knnquery");
   const [similarity, setSimilarity] = useState({ name: "", vector: "" });
 
   const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
   const { data: allDataSources } = useFetch(sorcesUrl);
 
+  console.log(appName);
+
   const defaultSource = localStorage.getItem("defaultSource") || "";
 
   const defaultSourceLower = allDataSources?.default?.toLowerCase();
+
+  useEffect(() => {
+    setAppName(allDataSources?.application_name);
+  }, [allDataSources, setAppName]);
 
   useEffect(() => {
     if (allDataSources && sources?.length < 1 && !dialog) {

@@ -17,8 +17,6 @@ import { lazy, Suspense } from "react";
 function DynamicIcon({ name, pack }) {
   if (!pack || !name) return;
 
-  // console.log(iconPackLoaders[pack]);
-
   const Icon = lazy(() => {
     return iconPackLoaders[pack]().then((module) => {
       const Component = module[name];
