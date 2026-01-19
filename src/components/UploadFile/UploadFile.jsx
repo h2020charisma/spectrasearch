@@ -4,6 +4,7 @@ import Close from "../Icons/Close";
 import Spinner from "../Icons/Spinner";
 import { useSessionStorage } from "../../utils/useSessionStorage";
 import { ModeSelect } from "../UI/Select";
+import EditorDialog from "../EditorDialog/EditorDialog";
 
 // eslint-disable-next-line react/prop-types
 export default function UploadFile({
@@ -109,6 +110,7 @@ export default function UploadFile({
               }}
             />
           </label>
+          <EditorDialog />
         </div>
         {file && !isNotRightFile && (
           <div className="searchOptions">
