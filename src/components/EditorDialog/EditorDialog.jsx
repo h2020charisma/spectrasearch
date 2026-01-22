@@ -52,8 +52,10 @@ export default function EditorDialog({ onSmilesExport, onMolExport }) {
           <div
             style={{
               display: "flex",
-              marginTop: 25,
-              justifyContent: "flex-start",
+              flexDirection: "column",
+              flex: 1,
+              height: "100%",
+              marginTop: "10px",
             }}
           >
             <ComposerAndViewer onSmilesExport={onSmilesExport} onMolExport={onMolExport} />

@@ -103,7 +103,7 @@ class ComposerAndViewer extends React.Component {
       smiles: this.getSmilesFromComposer(),
     });
 
-    this.viewer.current.getWidget().requestRepaint();
+    // this.viewer.current.getWidget().requestRepaint();
   }
 
   onComposerSelectionChange() {
@@ -157,80 +157,28 @@ class ComposerAndViewer extends React.Component {
    * Render
    * ----------------------------- */
   render() {
-    let selectionInfoElem;
-
-    if (this.state.selectedObjs.length) {
-      const selDetails = this.getComposerSelectedAtomsAndBonds(
-        this.state.selectedObjs,
-      );
-
-      selectionInfoElem = (
-        <span>
-          Selected {this.state.selectedObjs.length} object(s), including{" "}
-          {selDetails.atoms.length} atom(s) and {selDetails.bonds.length}{" "}
-          bond(s).
-        </span>
-      );
-    } else {
-      selectionInfoElem = (
-        <span>Please edit and select objects in the composer.</span>
-      );
-    }
-
-    console.log(this.state.smilesString);
-
     return (
-      <div className="ComposerAndViewerDemo">
-        <div className="InfoPanel">
-          <label>{selectionInfoElem}</label>
-        </div>
-
-        <div className="ControlPanel">
-          <label>
-            Composer Predefined Setting:&nbsp;
-            <select
-              value={this.state.composerPredefinedSetting}
-              onChange={this.onPredefineSettingChange}
-            >
-              <option value="fullFunc">fullFunc</option>
-              <option value="molOnly">molOnly</option>
-              <option value="compact">compact</option>
-            </select>
-          </label>
-          <div className="Spacer">
-            <button className="shareBtn" onClick={() => this.exportMol()}>
-              Export Mol
-            </button>
-            <button
-              className="shareBtn"
-              onClick={() => this.loadSmilesToComposer(this.state.smilesString)}
-            >
-              Load SMILES
-            </button>
-          </div>
-        </div>
-        {this.state.smiles && (
-          <div className="SmilesPanel">
-            <strong>SMILES:</strong>
-            {/* {this.state.smiles} */}
-          </div>
-        )}
-
+      <div className="ComposerAndViewerDemo" >
         <div className="ComposerViewerPair">
           <Composer
             className="SubWidget"
             ref={this.composer}
-            predefinedSetting={this.state.composerPredefinedSetting}
+            predefinedSetting="fullFunc"
             onUserModificationDone={this.onComposerUserModificationDone}
             onSelectionChange={this.onComposerSelectionChange}
           />
+        </div>
 
-          {/* <Viewer
-            className="SubWidget"
-            ref={this.viewer}
-            predefinedSetting={this.state.viewerPredefinedSetting}
-            chemObj={this.state.chemObj}
-          /> */}
+        <div className="ControlPanel">
+          <button className="shareBtn" onClick={() => this.exportMol()}>
+            Export Mol
+          </button>
+          <button
+            className="shareBtn secondary"
+            onClick={() => this.loadSmilesToComposer(this.state.smilesString)}
+          >
+            Load SMILES
+          </button>
         </div>
       </div>
     );
