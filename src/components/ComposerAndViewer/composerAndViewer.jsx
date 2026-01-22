@@ -52,6 +52,22 @@ class ComposerAndViewer extends React.Component {
     return Kekule.IO.saveFormatData(molecules[0], format);
   }
 
+  getMolFromComposer() {
+    const composerWidget = this.composer.current?.getWidget();
+    if (!composerWidget) return "";
+
+    const chemSpace = composerWidget.getChemObj();
+    if (!chemSpace) return "";
+
+    const molecules = chemSpace
+      .getChildren()
+      .filter((obj) => obj instanceof Kekule.StructureFragment);
+
+    if (!molecules.length) return "";
+
+    return Kekule.IO.saveFormatData(molecules[0], "mol");
+  }
+
   loadSmilesToComposer(smilesString) {
     if (!smilesString) return;
     let cmlData =
@@ -126,6 +142,17 @@ class ComposerAndViewer extends React.Component {
     }
   }
 
+  exportMol() {
+    const molContent = this.getMolFromComposer();
+    if (!molContent) return;
+
+    const file = new File([molContent], "structure.mol", { type: "chemical/x-mdl-molfile" });
+
+    if (this.props.onMolExport) {
+      this.props.onMolExport(file);
+    }
+  }
+
   /* -----------------------------
    * Render
    * ----------------------------- */
@@ -171,8 +198,8 @@ class ComposerAndViewer extends React.Component {
             </select>
           </label>
           <div className="Spacer">
-            <button className="shareBtn" onClick={this.exportSmiles}>
-              Export SMILES
+            <button className="shareBtn" onClick={() => this.exportMol()}>
+              Export Mol
             </button>
             <button
               className="shareBtn"

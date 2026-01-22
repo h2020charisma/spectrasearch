@@ -6,7 +6,7 @@ import "./EditorDialog.css";
 import ComposerAndViewer from "../ComposerAndViewer/composerAndViewer";
 import { MdEdit } from "react-icons/md";
 
-export default function EditorDialog({ onSmilesExport }) {
+export default function EditorDialog({ onSmilesExport, onMolExport }) {
   const [dialog, setDialog] = useState(false);
 
   const handleDialogClose = (open) => {
@@ -56,7 +56,7 @@ export default function EditorDialog({ onSmilesExport }) {
               justifyContent: "flex-start",
             }}
           >
-            <ComposerAndViewer onSmilesExport={onSmilesExport} />
+            <ComposerAndViewer onSmilesExport={onSmilesExport} onMolExport={onMolExport} />
           </div>
         </Dialog.Content>
       </Dialog.Portal>
