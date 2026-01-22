@@ -3,6 +3,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 import Close from "../Icons/Close";
 import { useState } from "react";
 import "./EditorDialog.css";
+import ComposerAndViewer from "../ComposerAndViewer/composerAndViewer";
+import { MdEdit } from "react-icons/md";
 
 export default function EditorDialog() {
   const [dialog, setDialog] = useState(false);
@@ -10,8 +12,8 @@ export default function EditorDialog() {
   return (
     <Dialog.Root open={dialog} onOpenChange={setDialog}>
       <Dialog.Trigger asChild>
-        <button data-cy="sources-btn" id="sources" className="fileNameBtn">
-          Editor
+        <button data-cy="" id="sources" className="fileNameBtn">
+          Edit
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -31,19 +33,19 @@ export default function EditorDialog() {
               </div>
             </Dialog.Close>
           </div>
-          <Dialog.Description className="DialogDescription">
+          {/* <Dialog.Description className="DialogDescription">
             Editor
             <br />
-          </Dialog.Description>
+          </Dialog.Description> */}
 
           <div
             style={{
               display: "flex",
               marginTop: 25,
-              justifyContent: "flex-end",
+              justifyContent: "flex-start",
             }}
           >
-            content
+            <ComposerAndViewer />
           </div>
         </Dialog.Content>
       </Dialog.Portal>

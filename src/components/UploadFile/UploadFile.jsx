@@ -22,6 +22,9 @@ export default function UploadFile({
   const [isLoading, setIsLoading] = useState(false);
 
   const [fileName, setFileName] = useSessionStorage("fileName", "");
+  const [smiles, setSmiles] = useState(() => {
+    return sessionStorage.getItem("SMILES") || "";
+  });
 
   useEffect(() => {
     if (file && fileName === "") {
@@ -110,6 +113,21 @@ export default function UploadFile({
               }}
             />
           </label>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            justifyContent: "space-between",
+          }}
+        >
+          <input
+            type="text"
+            name="smiles"
+            id="smilesInput"
+            placeholder={smiles || "SMILES will appear here"}
+          />
           <EditorDialog />
         </div>
         {file && !isNotRightFile && (
