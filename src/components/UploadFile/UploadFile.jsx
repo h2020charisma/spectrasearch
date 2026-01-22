@@ -46,6 +46,7 @@ export default function UploadFile({
 
       if (file && !response.ok) {
         setIsNotRightFile(true);
+        setImageData(null);
       }
 
       if (response.ok) {
@@ -79,6 +80,7 @@ export default function UploadFile({
 
         if (!response.ok) {
           setIsNotRightFile(true);
+          setImageData(null);
           return;
         }
 
@@ -88,6 +90,7 @@ export default function UploadFile({
       } catch (error) {
         setIsLoading(false);
         setIsNotRightFile(true);
+        setImageData(null);
         console.error("Error fetching molecule vector:", error);
       }
     }
@@ -187,6 +190,7 @@ export default function UploadFile({
                 setFile(e.target.files[0]);
                 setIsLoading(true);
                 setIsNotRightFile(false);
+                setImageData(null);
                 // Clear molecule when file is uploaded
                 if (smiles) {
                   handleClearMolecule();
@@ -196,7 +200,7 @@ export default function UploadFile({
           </label>
           <EditorDialog onSmilesExport={handleSmilesExport} />
         </div>
-        {file && !isNotRightFile && (
+        {(file || smiles) && !isNotRightFile && (
           <div className="searchOptions">
             <label
               onClick={() => setType("text")}
@@ -234,7 +238,7 @@ export default function UploadFile({
                 defaultChecked
                 style={{ width: "16px", height: "16px", marginRight: "12px" }}
               />
-              Spectrum search
+              Similarity search
             </label>
           </div>
         )}

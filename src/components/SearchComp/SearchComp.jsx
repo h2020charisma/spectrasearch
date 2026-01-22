@@ -114,7 +114,7 @@ export default function SearchComp({ setDomain }) {
   if (methods !== "*" && methods !== "") {
     params.append("q_method", methods);
   }
-  if (imageData && file && type !== "text") {
+  if (imageData && (file || smiles) && type !== "text") {
     params.append("query_type", type);
     params.append("ann", imageData.cdf || imageData.vector);
   }
