@@ -1,0 +1,50 @@
+.ComposerAndViewerDemo {
+  width: 100%;
+}
+.Spacer {
+  display: flex;
+  gap: 1em;
+}
+
+.ControlPanel,
+.InfoPanel {
+  padding: 0.5em 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ControlPanel select {
+  margin: 0 1em;
+}
+
+.ComposerViewerPair {
+  display: flex;
+  flex-direction: column !important;
+  height: 600px;
+  min-height: 400px;
+  min-width: 400px;
+}
+
+.ComposerViewerPair .SubWidget {
+  flex: 1 1 auto;
+  margin: 0.5em;
+  min-width: 300px;
+  min-height: 200px;
+}
+
+/* .K-Widget {
+  height: 100% !important ;
+} */
+
+.ComposerViewerPair .SubWidget .K-Chem-Viewer {
+  border: 1px solid #ccc;
+  border-radius: 0.2em;
+}
+
+@media (min-width: 1024px) {
+  .ComposerViewerPair {
+    flex-direction: row;
+    height: auto;
+  }
+}
