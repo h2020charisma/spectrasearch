@@ -20,7 +20,7 @@ export default function UploadFile({
   setSmiles,
 }) {
   const fileQuery = `${import.meta.env.VITE_BaseURL}db/download?what=knnquery`;
-  const moleculeQuery = `${import.meta.env.VITE_BaseURL}db/download?what=molecule_vector`;
+  const moleculeQuery = `${import.meta.env.VITE_BaseURL}db/download?what=knnquery`;
 
   const [isNotRightFile, setIsNotRightFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -113,6 +113,18 @@ export default function UploadFile({
     setImageData(null);
   };
 
+  const handleMolExport = (exportedFile) => {
+    // Clear any SMILES since we are switching to file mode
+    handleClearMolecule();
+
+    setFile(exportedFile);
+    setFileName(exportedFile.name);
+    // The useEffect listening to 'file' will trigger upload automatically
+    setIsLoading(true);
+    setIsNotRightFile(false);
+    setImageData(null);
+  };
+
   return (
     <div>
       <form>
@@ -198,7 +210,7 @@ export default function UploadFile({
               }}
             />
           </label>
-          <EditorDialog onSmilesExport={handleSmilesExport} />
+          <EditorDialog onSmilesExport={handleSmilesExport} onMolExport={handleMolExport} />
         </div>
         {(file || smiles) && !isNotRightFile && (
           <div className="searchOptions">

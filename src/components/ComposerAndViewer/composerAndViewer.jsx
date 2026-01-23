@@ -19,7 +19,7 @@ class ComposerAndViewer extends React.Component {
       chemObj: null,
       selectedObjs: [],
       smiles: "",
-      smilesString: sessionStorage.getItem("SMILES") || "",
+      molString: sessionStorage.getItem("MOL") || "",
     };
 
     this.composer = React.createRef();
@@ -30,6 +30,27 @@ class ComposerAndViewer extends React.Component {
       this.onComposerUserModificationDone.bind(this);
     this.onComposerSelectionChange = this.onComposerSelectionChange.bind(this);
     this.exportSmiles = this.exportSmiles.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.state.molString) {
+      this.loadMol(this.state.molString);
+    }
+  }
+
+  loadMol(mol) {
+    if (!mol) return;
+    try {
+      const molecule = Kekule.IO.loadFormatData(mol, "mol");
+      this.setState({ chemObj: molecule }, () => {
+        const composerWidget = this.composer.current?.getWidget();
+        if (composerWidget) {
+          composerWidget.setChemObj(molecule);
+        }
+      });
+    } catch (e) {
+      console.error("Failed to load molecule from storage", e);
+    }
   }
 
   /* -----------------------------
@@ -50,6 +71,22 @@ class ComposerAndViewer extends React.Component {
     if (!molecules.length) return "";
 
     return Kekule.IO.saveFormatData(molecules[0], format);
+  }
+
+  getMolFromComposer() {
+    const composerWidget = this.composer.current?.getWidget();
+    if (!composerWidget) return "";
+
+    const chemSpace = composerWidget.getChemObj();
+    if (!chemSpace) return "";
+
+    const molecules = chemSpace
+      .getChildren()
+      .filter((obj) => obj instanceof Kekule.StructureFragment);
+
+    if (!molecules.length) return "";
+
+    return Kekule.IO.saveFormatData(molecules[0], "mol");
   }
 
   loadSmilesToComposer(smilesString) {
@@ -87,7 +124,11 @@ class ComposerAndViewer extends React.Component {
       smiles: this.getSmilesFromComposer(),
     });
 
-    this.viewer.current.getWidget().requestRepaint();
+    // Auto-save to sessionStorage
+    const mol = this.getMolFromComposer();
+    if (mol) sessionStorage.setItem("MOL", mol);
+
+    // this.viewer.current.getWidget().requestRepaint();
   }
 
   onComposerSelectionChange() {
@@ -118,7 +159,6 @@ class ComposerAndViewer extends React.Component {
     const smiles = this.getSmilesFromComposer();
     console.log("SMILES:", smiles);
     this.setState({ smiles });
-    sessionStorage.setItem("SMILES", smiles);
 
     // Call parent callback if provided
     if (this.props.onSmilesExport && smiles) {
@@ -126,84 +166,43 @@ class ComposerAndViewer extends React.Component {
     }
   }
 
+  exportMol() {
+    const molContent = this.getMolFromComposer();
+    if (!molContent) return;
+
+    const file = new File([molContent], "structure.mol", { type: "chemical/x-mdl-molfile" });
+
+    if (this.props.onMolExport) {
+      this.props.onMolExport(file);
+    }
+  }
+
   /* -----------------------------
    * Render
    * ----------------------------- */
   render() {
-    let selectionInfoElem;
-
-    if (this.state.selectedObjs.length) {
-      const selDetails = this.getComposerSelectedAtomsAndBonds(
-        this.state.selectedObjs,
-      );
-
-      selectionInfoElem = (
-        <span>
-          Selected {this.state.selectedObjs.length} object(s), including{" "}
-          {selDetails.atoms.length} atom(s) and {selDetails.bonds.length}{" "}
-          bond(s).
-        </span>
-      );
-    } else {
-      selectionInfoElem = (
-        <span>Please edit and select objects in the composer.</span>
-      );
-    }
-
-    console.log(this.state.smilesString);
-
     return (
-      <div className="ComposerAndViewerDemo">
-        <div className="InfoPanel">
-          <label>{selectionInfoElem}</label>
-        </div>
-
-        <div className="ControlPanel">
-          <label>
-            Composer Predefined Setting:&nbsp;
-            <select
-              value={this.state.composerPredefinedSetting}
-              onChange={this.onPredefineSettingChange}
-            >
-              <option value="fullFunc">fullFunc</option>
-              <option value="molOnly">molOnly</option>
-              <option value="compact">compact</option>
-            </select>
-          </label>
-          <div className="Spacer">
-            <button className="shareBtn" onClick={this.exportSmiles}>
-              Export SMILES
-            </button>
-            <button
-              className="shareBtn"
-              onClick={() => this.loadSmilesToComposer(this.state.smilesString)}
-            >
-              Load SMILES
-            </button>
-          </div>
-        </div>
-        {this.state.smiles && (
-          <div className="SmilesPanel">
-            <strong>SMILES:</strong>
-            {/* {this.state.smiles} */}
-          </div>
-        )}
-
+      <div className="ComposerAndViewerDemo" >
         <div className="ComposerViewerPair">
           <Composer
             className="SubWidget"
             ref={this.composer}
-            predefinedSetting={this.state.composerPredefinedSetting}
+            predefinedSetting="fullFunc"
             onUserModificationDone={this.onComposerUserModificationDone}
             onSelectionChange={this.onComposerSelectionChange}
           />
+        </div>
 
-          {/* <Viewer
-            className="SubWidget"
-            ref={this.viewer}
-            predefinedSetting={this.state.viewerPredefinedSetting}
-            chemObj={this.state.chemObj}
-          /> */}
+        <div className="ControlPanel">
+          <button className="shareBtn" onClick={() => this.exportMol()}>
+            Export Mol
+          </button>
+          <button
+            className="shareBtn secondary"
+            onClick={() => this.loadSmilesToComposer(this.state.smilesString)}
+          >
+            Load SMILES
+          </button>
         </div>
       </div>
     );

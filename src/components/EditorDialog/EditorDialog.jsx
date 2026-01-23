@@ -6,30 +6,28 @@ import "./EditorDialog.css";
 import ComposerAndViewer from "../ComposerAndViewer/composerAndViewer";
 import { MdEdit } from "react-icons/md";
 
-export default function EditorDialog({ onSmilesExport }) {
+export default function EditorDialog({ onSmilesExport, onMolExport }) {
   const [dialog, setDialog] = useState(false);
 
   const handleDialogClose = (open) => {
-    if (!open && onSmilesExport) {
-      // Dialog is closing, get SMILES from sessionStorage and pass to parent
-      const smiles = sessionStorage.getItem("SMILES") || "";
-      if (smiles) {
-        onSmilesExport(smiles);
-      }
-    }
     setDialog(open);
   };
 
   return (
-    <Dialog.Root open={dialog} onOpenChange={handleDialogClose}>
+    <Dialog.Root open={dialog} onOpenChange={handleDialogClose} modal={false}>
       <Dialog.Trigger asChild>
         <button data-cy="" id="sources" className="fileNameBtn">
           Molecule
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="DialogOverlay" />
-        <Dialog.Content className="SourcesDialogContent">
+        {/* <Dialog.Overlay className="DialogOverlay" /> */}
+        <Dialog.Content
+          className="SourcesDialogContent"
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}
+        >
           <div className="DialogHeader">
             <Dialog.Title className="DialogTitle">
               Drawing Molecule
@@ -52,11 +50,13 @@ export default function EditorDialog({ onSmilesExport }) {
           <div
             style={{
               display: "flex",
-              marginTop: 25,
-              justifyContent: "flex-start",
+              flexDirection: "column",
+              flex: 1,
+              height: "100%",
+              marginTop: "10px",
             }}
           >
-            <ComposerAndViewer onSmilesExport={onSmilesExport} />
+            <ComposerAndViewer onSmilesExport={onSmilesExport} onMolExport={onMolExport} />
           </div>
         </Dialog.Content>
       </Dialog.Portal>
