@@ -53,6 +53,14 @@ export default function UploadFile({
         setIsNotRightFile(false);
         const img = await response.json();
         setImageData(img);
+
+        // Auto-select similarity based on vector_field
+        if (img.vector_field && dataSources?.similarity) {
+          const match = dataSources.similarity.find(s => s.vector === img.vector_field);
+          if (match) {
+            setSimilarity({ name: match.name, vector: match.vector });
+          }
+        }
       }
     }
     if (file) {
@@ -87,6 +95,14 @@ export default function UploadFile({
         setIsNotRightFile(false);
         const data = await response.json();
         setImageData(data);
+
+        // Auto-select similarity based on vector_field
+        if (data.vector_field && dataSources?.similarity) {
+          const match = dataSources.similarity.find(s => s.vector === data.vector_field);
+          if (match) {
+            setSimilarity({ name: match.name, vector: match.vector });
+          }
+        }
       } catch (error) {
         setIsLoading(false);
         setIsNotRightFile(true);
@@ -207,59 +223,65 @@ export default function UploadFile({
                 if (smiles) {
                   handleClearMolecule();
                 }
+
               }}
             />
           </label>
-          <EditorDialog onSmilesExport={handleSmilesExport} onMolExport={handleMolExport} />
+          {/* Hide EditorDialog if the selected search type is explicitly "Spectrum" */}
+          {(!similarity?.name || !similarity.name.toLowerCase().includes("spectrum")) && (
+            <EditorDialog onSmilesExport={handleSmilesExport} onMolExport={handleMolExport} />
+          )}
         </div>
-        {(file || smiles) && !isNotRightFile && (
-          <div className="searchOptions">
-            <label
-              onClick={() => setType("text")}
-              htmlFor="tx"
-              style={{
-                fontSize: "16px",
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
-            >
-              <input
-                id="tx"
-                type="radio"
-                name="searchType"
-                style={{ width: "16px", height: "16px", marginRight: "12px" }}
-              />
-              Text search
-            </label>
+        {
+          (file || smiles) && !isNotRightFile && (
+            <div className="searchOptions">
+              <label
+                onClick={() => setType("text")}
+                htmlFor="tx"
+                style={{
+                  fontSize: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  id="tx"
+                  type="radio"
+                  name="searchType"
+                  style={{ width: "16px", height: "16px", marginRight: "12px" }}
+                />
+                Text search
+              </label>
 
-            <label
-              onClick={() => setType("knnquery")}
-              htmlFor="sp"
-              style={{
-                fontSize: "16px",
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
-            >
-              <input
-                id="sp"
-                type="radio"
-                name="searchType"
-                defaultChecked
-                style={{ width: "16px", height: "16px", marginRight: "12px" }}
-              />
-              Similarity search
-            </label>
-          </div>
-        )}
-      </form>
+              <label
+                onClick={() => setType("knnquery")}
+                htmlFor="sp"
+                style={{
+                  fontSize: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  id="sp"
+                  type="radio"
+                  name="searchType"
+                  defaultChecked
+                  style={{ width: "16px", height: "16px", marginRight: "12px" }}
+                />
+                Similarity search
+              </label>
+            </div>
+          )
+        }
+      </form >
       <ModeSelect
         dataSources={dataSources}
         setSimilarity={setSimilarity}
         similarity={similarity}
       />
-    </div>
+    </div >
   );
 }
