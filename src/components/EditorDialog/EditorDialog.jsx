@@ -10,13 +10,6 @@ export default function EditorDialog({ onSmilesExport, onMolExport }) {
   const [dialog, setDialog] = useState(false);
 
   const handleDialogClose = (open) => {
-    if (!open && onSmilesExport) {
-      // Dialog is closing, get SMILES from sessionStorage and pass to parent
-      const smiles = sessionStorage.getItem("SMILES") || "";
-      if (smiles) {
-        onSmilesExport(smiles);
-      }
-    }
     setDialog(open);
   };
 

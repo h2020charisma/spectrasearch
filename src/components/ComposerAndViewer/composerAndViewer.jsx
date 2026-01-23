@@ -19,7 +19,6 @@ class ComposerAndViewer extends React.Component {
       chemObj: null,
       selectedObjs: [],
       smiles: "",
-      smilesString: sessionStorage.getItem("SMILES") || "",
       molString: sessionStorage.getItem("MOL") || "",
     };
 
@@ -126,7 +125,6 @@ class ComposerAndViewer extends React.Component {
     });
 
     // Auto-save to sessionStorage
-    sessionStorage.setItem("SMILES", this.getSmilesFromComposer());
     const mol = this.getMolFromComposer();
     if (mol) sessionStorage.setItem("MOL", mol);
 
@@ -161,7 +159,6 @@ class ComposerAndViewer extends React.Component {
     const smiles = this.getSmilesFromComposer();
     console.log("SMILES:", smiles);
     this.setState({ smiles });
-    sessionStorage.setItem("SMILES", smiles);
 
     // Call parent callback if provided
     if (this.props.onSmilesExport && smiles) {
