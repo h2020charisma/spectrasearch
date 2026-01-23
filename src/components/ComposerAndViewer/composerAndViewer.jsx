@@ -20,6 +20,7 @@ class ComposerAndViewer extends React.Component {
       selectedObjs: [],
       smiles: "",
       smilesString: sessionStorage.getItem("SMILES") || "",
+      molString: sessionStorage.getItem("MOL") || "",
     };
 
     this.composer = React.createRef();
@@ -30,6 +31,27 @@ class ComposerAndViewer extends React.Component {
       this.onComposerUserModificationDone.bind(this);
     this.onComposerSelectionChange = this.onComposerSelectionChange.bind(this);
     this.exportSmiles = this.exportSmiles.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.state.molString) {
+      this.loadMol(this.state.molString);
+    }
+  }
+
+  loadMol(mol) {
+    if (!mol) return;
+    try {
+      const molecule = Kekule.IO.loadFormatData(mol, "mol");
+      this.setState({ chemObj: molecule }, () => {
+        const composerWidget = this.composer.current?.getWidget();
+        if (composerWidget) {
+          composerWidget.setChemObj(molecule);
+        }
+      });
+    } catch (e) {
+      console.error("Failed to load molecule from storage", e);
+    }
   }
 
   /* -----------------------------
@@ -102,6 +124,11 @@ class ComposerAndViewer extends React.Component {
       chemObj: composerWidget.getChemObj(),
       smiles: this.getSmilesFromComposer(),
     });
+
+    // Auto-save to sessionStorage
+    sessionStorage.setItem("SMILES", this.getSmilesFromComposer());
+    const mol = this.getMolFromComposer();
+    if (mol) sessionStorage.setItem("MOL", mol);
 
     // this.viewer.current.getWidget().requestRepaint();
   }

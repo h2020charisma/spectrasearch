@@ -21,15 +21,20 @@ export default function EditorDialog({ onSmilesExport, onMolExport }) {
   };
 
   return (
-    <Dialog.Root open={dialog} onOpenChange={handleDialogClose}>
+    <Dialog.Root open={dialog} onOpenChange={handleDialogClose} modal={false}>
       <Dialog.Trigger asChild>
         <button data-cy="" id="sources" className="fileNameBtn">
           Molecule
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="DialogOverlay" />
-        <Dialog.Content className="SourcesDialogContent">
+        {/* <Dialog.Overlay className="DialogOverlay" /> */}
+        <Dialog.Content
+          className="SourcesDialogContent"
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}
+        >
           <div className="DialogHeader">
             <Dialog.Title className="DialogTitle">
               Drawing Molecule
