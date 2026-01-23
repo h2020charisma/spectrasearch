@@ -192,18 +192,13 @@ class ComposerAndViewer extends React.Component {
             onSelectionChange={this.onComposerSelectionChange}
           />
         </div>
-
+    
         <div className="ControlPanel">
           <button className="shareBtn" onClick={() => this.exportMol()}>
-            Export Mol
-          </button>
-          <button
-            className="shareBtn secondary"
-            onClick={() => this.loadSmilesToComposer(this.state.smilesString)}
-          >
-            Load SMILES
+            Export Molecule
           </button>
         </div>
+        
       </div>
     );
   }
