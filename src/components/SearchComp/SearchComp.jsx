@@ -60,6 +60,7 @@ export default function SearchComp({ setDomain }) {
   const [appName, setAppName] = useSessionStorage("appName", null);
   const [type, setType] = useState("knnquery");
   const [similarity, setSimilarity] = useState({ name: "", vector: "" });
+  const [smiles, setSmiles] = useSessionStorage("SMILES", "");
 
   const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
   const { data: allDataSources } = useFetch(sorcesUrl);
@@ -120,12 +121,9 @@ export default function SearchComp({ setDomain }) {
   if (methods !== "*" && methods !== "") {
     params.append("q_method", methods);
   }
-  if (imageData && file && type === "text") {
+  if (imageData && (file || smiles) && type !== "text") {
     params.append("query_type", type);
-  }
-  if (imageData && file && type !== "text") {
-    params.append("query_type", type);
-    params.append("ann", imageData.cdf);
+    params.append("ann", imageData.cdf || imageData.vector);
   }
   params.append("page", pages);
   params.append("pagesize", pagesize);
@@ -200,6 +198,8 @@ export default function SearchComp({ setDomain }) {
                 queryStringSourcesParams={queryStringSourcesParams}
                 freeSearch={freeSearch}
                 setFreeSearch={setFreeSearch}
+                smiles={smiles}
+                setSmiles={setSmiles}
               />
             </motion.div>
           )}
@@ -236,7 +236,12 @@ export default function SearchComp({ setDomain }) {
         />
         {file && imageData && (
           <div className="imageUploded">
-            <img src={imageData && imageData.imageLink} />
+            <img src={imageData && imageData.imageLink} alt="Spectrum or molecule" />
+          </div>
+        )}
+        {smiles && imageData && !file && (
+          <div className="imageUploded">
+            <img src={imageData && imageData.imageLink} alt="Molecule structure" />
           </div>
         )}
         <Expander title="Search Results" status={true} data={data}>

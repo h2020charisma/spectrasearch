@@ -34,6 +34,8 @@ export default function Sidebar({
   freeSearch,
   fileName,
   setFileName,
+  smiles,
+  setSmiles,
 }) {
   return (
     <div
@@ -57,7 +59,7 @@ export default function Sidebar({
       </Expander>
       <Expander
         title="Search by Similarity"
-        status={fileName === "" ? false : true}
+        status={fileName === "" && !smiles ? false : true}
       >
         <UploadFile
           setImageData={setImageData}
@@ -72,12 +74,14 @@ export default function Sidebar({
           dataSources={dataSources}
           setSimilarity={setSimilarity}
           similarity={similarity}
+          smiles={smiles}
+          setSmiles={setSmiles}
         />
       </Expander>
       {/* <Expander title="Debouncing search" status={false}>
         <WidgetLiveSearch
           name="Debouncing search"
-          field="qdynamic.name_s"
+          field="qdynamic.CASRN_s"
           queryStringSourcesParams={queryStringSourcesParams}
           setImageSelected={setImageSelected}
           params={params}
