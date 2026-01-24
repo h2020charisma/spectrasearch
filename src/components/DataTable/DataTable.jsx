@@ -3,14 +3,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import {
-  getCoreRowModel,
-  useReactTable,
   flexRender,
+  getCoreRowModel,
   getFilteredRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
-import Box from "./Box";
-import PreviewDialog from "../PreviewDialog/PreviewDialog";
 import ChartIcon from "../Icons/ChartIcon";
+import PreviewDialog from "../PreviewDialog/PreviewDialog";
+import "./tableStyles.css";
 
 const columns = [
   {
@@ -33,7 +33,6 @@ const columns = [
     cell: (props) => props.getValue().trim(),
     size: 100,
   },
-  // {
 
   {
     header: "Domain",
