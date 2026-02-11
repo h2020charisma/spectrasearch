@@ -10,21 +10,11 @@ on:  # yamllint disable-line rule:truthy
       - main
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
 
-  build:
+  test:
 
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
 
     steps:
 
@@ -39,6 +29,33 @@ jobs:
         with:
           start: npm run build-serve
           wait-on: http://127.0.0.1:50722/search/
+
+  build:
+
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+    env:
+      DEFAULT_TARGET: spectra
+      IMAGE_NAME: ${{ github.repository }}
+      REGISTRY: ghcr.io
+    strategy:
+      matrix:
+        target:
+          - tag: spectra
+            url: https://api.ramanchada.ideaconsult.net/
+          - tag: nambit
+            url: https://api.nambit.adma.ai/
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.0
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -72,10 +89,10 @@ jobs:
             org.opencontainers.image.url=https://github.com/h2020charisma/spectrasearch/blob/main/README.md
             org.opencontainers.image.vendor=IDEAconsult
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
+            type=raw,value=latest,enable=${{ matrix.target.tag == env.DEFAULT_TAG && github.ref == 'refs/heads/main' }}
+            type=ref,event=branch,suffix=-${{ matrix.target.tag }}
+            type=ref,event=tag,suffix=-${{ matrix.target.tag }}
+            type=ref,event=pr,suffix=-${{ matrix.target.tag }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -83,6 +100,8 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v6.18.0
         with:
+          build-args: |
+            VITE_BaseURL=${{ matrix.target.url }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: .
