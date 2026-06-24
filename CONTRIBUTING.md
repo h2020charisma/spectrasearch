@@ -1,6 +1,10 @@
 ## Introduction
 
-TBA
+Spectra Search is a React/Vite web app for searching spectral and chemical datasets through the `ramanchada-api` backend.
+
+The frontend should stay backend-driven where possible. Data sources come from `GET /db/query/sources`, and new source, field, application-name, or similarity behavior should use backend discovery rather than hard-coded frontend lists.
+
+Backend reference: https://github.com/h2020charisma/ramanchada-api
 
 ## Best practices
 
@@ -22,20 +26,126 @@ git config --global pull.rebase true
 
 ## Tool requirements
 
-TBA
+- Node.js and npm are required.
+- Use the committed `package-lock.json` for reproducible installs.
+- Use `npm ci` for normal setup and CI-like verification.
+- Use `npm install` only when intentionally updating dependencies and the lockfile.
+- Docker is optional for local app development, but useful for testing the production container.
 
 ## Start developing
 
-TBA
+Clone the repository and install dependencies:
+
+```sh
+npm ci
+```
+
+Create a local environment file:
+
+```sh
+cp .env.example .env
+```
+
+Edit `.env` if you need a non-default backend:
+
+```sh
+VITE_BaseURL="https://api.ramanchada.ideaconsult.net/"
+```
+
+Start the development server:
+
+```sh
+npm run dev
+```
+
+Build production assets:
+
+```sh
+npm run build
+```
+
+Build and serve the app locally under `/search/`, matching the Cypress setup:
+
+```sh
+npm run build-serve
+```
+
+Clean generated build output:
+
+```sh
+npm run clean
+```
 
 ## Running the formatters & linters
 
-TBA
+Run ESLint:
+
+```sh
+npm run lint
+```
+
+Fix lint issues in code you touch. If unrelated existing lint debt blocks a change, mention the exact command and failure in the pull request.
 
 ## Running the tests
 
-TBA
+There is currently no `npm test` script. Cypress is the configured browser test runner.
+
+Run the production-like local server in one terminal:
+
+```sh
+npm run build-serve
+```
+
+Run Cypress E2E tests in another terminal:
+
+```sh
+npx cypress run
+```
+
+For interactive Cypress work, use:
+
+```sh
+npx cypress open
+```
+
+Cypress uses `cypress-dotenv`, so `.env` should contain the backend URL expected by the tests.
 
 ## Using specific Node.js versions
 
-TBA
+No Node.js version file is currently committed. Use a current LTS Node.js version unless the project adds a pinned version later.
+
+If a Node.js version pin is added in the future, update this file, `AGENTS.md`, Docker, and CI together.
+
+## Backend API expectations
+
+- `VITE_BaseURL` must point to a `ramanchada-api` deployment and should end with `/`.
+- The app discovers data sources from `GET /db/query/sources`; newer backend configurations may also expose fields, app name, and similarity modes there.
+- Search requests use `GET /db/query` with repeated `data_source` parameters where needed.
+- New dynamic filters should follow backend field names returned by discovery; qdynamic filters are sent as `qdynamic.<field>=value`.
+- Similarity uploads use `POST /db/download?what=knnquery` with multipart form field `files`.
+- Chart previews use `GET /db/dataset?domain=<domain>&values=True`.
+
+## Dependency updates
+
+Routine dependency updates should go through a pull request and pass CI.
+
+When updating dependencies:
+
+1. Use `npm install <package>@<version>` or another intentional npm update command.
+2. Review both `package.json` and `package-lock.json`.
+3. Run `npm run lint` and the relevant Cypress checks.
+4. Mention any breaking changes or skipped checks in the pull request.
+
+For urgent security fixes, review the advisory, changelog, package diff, and transitive dependency changes before merging.
+
+## Docker and deployment
+
+The app is served under `/search/`. Current deployment uses Traefik with `PathPrefix('/search')` and prefix stripping before requests reach nginx.
+
+Docker builds pass `VITE_BaseURL` as a build argument. This allows images for different backend deployments while keeping the frontend code backend-discovery driven.
+
+Keep Vite base path, Docker/nginx behavior, and Traefik routing assumptions synchronized when changing deployment behavior.
+
+## Documentation maintenance
+
+Update `AGENTS.md` and this file whenever install commands, scripts, test tooling, deployment assumptions, or backend API expectations change.
