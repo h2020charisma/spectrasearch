@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "../../App.css";
 import Close from "../Icons/Close";
 import SourcesDialog from "../SourcesDialog/SourcesDialog";
 import Pagination from "../Pagination/Pagination";
+import { useCollection } from "../../store/collection";
 
 export default function DisplaySearchFilters({
   params,
@@ -20,8 +22,16 @@ export default function DisplaySearchFilters({
   setPages,
   founds,
 }) {
+  const collectionCount = useCollection((s) => s.items.length);
   return (
     <div style={{ textAlign: "right", paddingTop: "0.4rem" }}>
+      <Link
+        to="/collection"
+        className="sourcesBtn"
+        style={{ marginRight: 8, textDecoration: "none", display: "inline-block" }}
+      >
+        My collection{collectionCount ? ` (${collectionCount})` : ""}
+      </Link>
       <SourcesDialog
         sources={sources}
         setSources={setSources}
