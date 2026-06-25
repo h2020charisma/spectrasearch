@@ -2,7 +2,7 @@
 
 Spectra Search is a React/Vite web app for searching spectral and chemical datasets through the `ramanchada-api` backend.
 
-The frontend should stay backend-driven where possible. Data sources come from `GET /db/query/sources`, and new source, field, application-name, or similarity behavior should use backend discovery rather than hard-coded frontend lists.
+The frontend is intentionally backend-driven. Data sources, sidebar fields, application name, and similarity modes come from `GET /db/query/sources` rather than hard-coded frontend lists.
 
 Backend reference: https://github.com/h2020charisma/ramanchada-api
 
@@ -110,6 +110,8 @@ npx cypress open
 
 Cypress uses `cypress-dotenv`, so `.env` should contain the backend URL expected by the tests.
 
+Cypress fixtures for `/db/query/sources` should mirror the backend discovery response, including `application_name`, `fields`, and `similarity` when tests exercise dynamic sidebar or similarity behavior.
+
 ## Using specific Node.js versions
 
 No Node.js version file is currently committed. Use a current LTS Node.js version unless the project adds a pinned version later.
@@ -119,9 +121,9 @@ If a Node.js version pin is added in the future, update this file, `AGENTS.md`, 
 ## Backend API expectations
 
 - `VITE_BaseURL` must point to a `ramanchada-api` deployment and should end with `/`.
-- The app discovers data sources from `GET /db/query/sources`; newer backend configurations may also expose fields, app name, and similarity modes there.
+- The app discovers data sources, fields, app name, and similarity modes from `GET /db/query/sources`.
 - Search requests use `GET /db/query` with repeated `data_source` parameters where needed.
-- New dynamic filters should follow backend field names returned by discovery; qdynamic filters are sent as `qdynamic.<field>=value`.
+- Dynamic filters should follow backend field names returned by discovery; qdynamic filters are sent as `qdynamic.<field>=value`.
 - Similarity uploads use `POST /db/download?what=knnquery` with multipart form field `files`.
 - Chart previews use `GET /db/dataset?domain=<domain>&values=True`.
 
