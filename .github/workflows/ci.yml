@@ -10,25 +10,11 @@ on:  # yamllint disable-line rule:truthy
       - main
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
 
-  build:
+  test:
 
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
 
     steps:
 
@@ -43,6 +29,33 @@ jobs:
         with:
           start: npm run build-serve
           wait-on: http://127.0.0.1:50722/search/
+
+  build:
+
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+    env:
+      DEFAULT_TARGET: spectra
+      IMAGE_NAME: ${{ github.repository }}
+      REGISTRY: ghcr.io
+    strategy:
+      matrix:
+        target:
+          - tag: spectra
+            url: https://api.ramanchada.ideaconsult.net/
+          - tag: nambit
+            url: https://api.nambit.adma.ai/
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.0
 
       - name: Install cosign
         uses: sigstore/cosign-installer@v4.1.2
@@ -69,15 +82,18 @@ jobs:
             org.opencontainers.image.url=https://github.com/h2020charisma/spectrasearch/blob/main/README.md
             org.opencontainers.image.vendor=IDEAconsult
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
+            type=raw,value=latest,enable=${{ matrix.target.tag == env.DEFAULT_TARGET && github.ref == 'refs/heads/main' }}
+            type=raw,value=${{ matrix.target.tag }},enable=${{ github.ref == 'refs/heads/main' }}
+            type=ref,event=branch,suffix=-${{ matrix.target.tag }}
+            type=ref,event=tag,suffix=-${{ matrix.target.tag }}
+            type=ref,event=pr,suffix=-${{ matrix.target.tag }}
 
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v7.2.0
         with:
+          build-args: |
+            VITE_BaseURL=${{ matrix.target.url }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: .
@@ -85,8 +101,16 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
 
+      # Sign the resulting Docker image digest except on PRs.
+      # This will only write to the public Rekor transparency log when the Docker
+      # repository is public to avoid leaking data.  If you would like to publish
+      # transparency data even for private images, pass --force to cosign below.
+      # https://github.com/sigstore/cosign
       - name: Sign the published Docker image
         env:
+          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
+        # This step uses the identity token to provision an ephemeral certificate
+        # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}

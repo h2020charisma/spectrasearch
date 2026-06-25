@@ -35,6 +35,8 @@ export default function SearchComp({ setDomain }) {
 
   let isNexusFile = false;
 
+  const [q_params, setQ_Params] = useState([]);
+
   let [q_reference, setQReference] = useSessionStorage("reference", "*");
   let [provider, setProvider] = useSessionStorage("provider", "*");
   let [pages, setPages] = useState(0);
@@ -55,14 +57,23 @@ export default function SearchComp({ setDomain }) {
   const [imageData, setImageData] = useSessionStorage("imgData", null);
 
   const [file, setFile] = useSessionStorage("file", "");
+  const [appName, setAppName] = useSessionStorage("appName", null);
   const [type, setType] = useState("knnquery");
+  const [similarity, setSimilarity] = useState({ name: "", vector: "" });
+  const [smiles, setSmiles] = useSessionStorage("SMILES", "");
 
   const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
   const { data: allDataSources } = useFetch(sorcesUrl);
 
+  console.log(appName);
+
   const defaultSource = localStorage.getItem("defaultSource") || "";
 
   const defaultSourceLower = allDataSources?.default?.toLowerCase();
+
+  useEffect(() => {
+    setAppName(allDataSources?.application_name);
+  }, [allDataSources, setAppName]);
 
   useEffect(() => {
     if (allDataSources && sources?.length < 1 && !dialog) {
@@ -83,6 +94,15 @@ export default function SearchComp({ setDomain }) {
   }, [allDataSources, defaultSource, setSources, sources]);
 
   const params = new URLSearchParams();
+
+  q_params.forEach(({ value, field }) => {
+    params.append(field, value);
+  });
+
+  if (similarity.vector) {
+    params.append("vector_field", similarity.vector);
+  }
+
   if (freeSearch !== "") {
     params.append("q", freeSearch);
   }
@@ -101,12 +121,9 @@ export default function SearchComp({ setDomain }) {
   if (methods !== "*" && methods !== "") {
     params.append("q_method", methods);
   }
-  if (imageData && file && type === "text") {
+  if (imageData && (file || smiles) && type !== "text") {
     params.append("query_type", type);
-  }
-  if (imageData && file && type !== "text") {
-    params.append("query_type", type);
-    params.append("ann", imageData.cdf);
+    params.append("ann", imageData.cdf || imageData.vector);
   }
   params.append("page", pages);
   params.append("pagesize", pagesize);
@@ -135,7 +152,7 @@ export default function SearchComp({ setDomain }) {
     <div className="main">
       <ToastDemo error={error} />
       {toast && !dialog ? <ToastDemo error={defaultSourceMessage} /> : null}
-      <div>
+      <div style={{ position: "relative" }}>
         <div className="toggleSidebar" onClick={() => setOpen(!open)}>
           <SideBarToggle />
         </div>
@@ -150,6 +167,11 @@ export default function SearchComp({ setDomain }) {
             >
               <Sidebar
                 data={data}
+                dataSources={allDataSources}
+                setSimilarity={setSimilarity}
+                similarity={similarity}
+                params={q_params}
+                setParams={setQ_Params}
                 imageSelected={imageSelected}
                 setImageSelected={setImageSelected}
                 reference={q_reference}
@@ -176,6 +198,8 @@ export default function SearchComp({ setDomain }) {
                 queryStringSourcesParams={queryStringSourcesParams}
                 freeSearch={freeSearch}
                 setFreeSearch={setFreeSearch}
+                smiles={smiles}
+                setSmiles={setSmiles}
               />
             </motion.div>
           )}
@@ -183,6 +207,8 @@ export default function SearchComp({ setDomain }) {
       </div>
       <div className="content">
         <DisplaySearchFilters
+          params={q_params}
+          setParams={setQ_Params}
           qQuery={q}
           setqQuery={setQ}
           provider={provider}
@@ -210,7 +236,12 @@ export default function SearchComp({ setDomain }) {
         />
         {file && imageData && (
           <div className="imageUploded">
-            <img src={imageData && imageData.imageLink} />
+            <img src={imageData && imageData.imageLink} alt="Spectrum or molecule" />
+          </div>
+        )}
+        {smiles && imageData && !file && (
+          <div className="imageUploded">
+            <img src={imageData && imageData.imageLink} alt="Molecule structure" />
           </div>
         )}
         <Expander title="Search Results" status={true} data={data}>

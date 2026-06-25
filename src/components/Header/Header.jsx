@@ -1,12 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const auth = useAuth();
   const navigate = useNavigate();
+  const [appName, setAppName] = useState(
+    () => sessionStorage.getItem("appName") || "Spectra Search"
+  );
 
   useEffect(() => {
+    // setAppName(sessionStorage.getItem("appName"));
     const interval = setInterval(() => {
       const token = auth.user?.access_token;
       const exp = auth.user?.expires_at;
@@ -27,7 +31,7 @@ export default function Header() {
 
   return (
     <div className="logo">
-      <h1 onClick={() => navigate("/")}>Raman spectra search</h1>
+      <h1 onClick={() => navigate("/")}>{appName?.replace(/"/g, "")}</h1>
       <div className="helpUserMenu">
         {auth.isAuthenticated ? (
           <div className="userInfo">

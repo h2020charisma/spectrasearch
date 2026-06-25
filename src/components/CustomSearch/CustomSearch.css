@@ -40,9 +40,13 @@
   height: 20px;
   border-radius: 50%;
   padding: 0;
-
+  background-color: light-dark(#fff, #6d6d6d);
   position: absolute;
   right: 66px;
+}
+
+.clearBtn > svg {
+  stroke: #262626;
 }
 
 .clearBtn:hover {

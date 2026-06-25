@@ -3,20 +3,29 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import {
-  getCoreRowModel,
-  useReactTable,
   flexRender,
+  getCoreRowModel,
   getFilteredRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
-import Box from "./Box";
-import PreviewDialog from "../PreviewDialog/PreviewDialog";
 import ChartIcon from "../Icons/ChartIcon";
+import PreviewDialog from "../PreviewDialog/PreviewDialog";
+import "./tableStyles.css";
 
 const columns = [
   {
-    header: "No",
-    accessorKey: "",
-    cell: (props) => <span>{props.row.index + 1}</span>,
+    header: "Id",
+    accessorKey: "id",
+    cell: (props) => (
+      <span style={{ fontSize: "12px", lineHeight: "7px" }}>
+        {props.getValue().trim()}
+      </span>
+    ),
+  },
+  {
+    header: "Type",
+    accessorKey: "type",
+    cell: (props) => <span>{props.getValue().trim()}</span>,
   },
   {
     header: "Text",
@@ -24,26 +33,15 @@ const columns = [
     cell: (props) => props.getValue().trim(),
     size: 100,
   },
+
   {
-    header: "Score",
-    accessorKey: "score",
-    cell: (props) =>
-      props.getValue() ? (
-        <span style={{ color: "#D20003", fontSize: "12px" }}>
-          {props.getValue().toFixed(3).trim()}
-        </span>
-      ) : (
-        <span>&mdash;</span>
-      ),
-  },
-  {
-    header: "Value",
+    header: "Domain",
     accessorKey: "value",
     cell: (props) => (
       <Link
         to={`/h5web/${props.getValue()}`}
         target="_blank"
-        style={{ color: "#5b5b5b" }}
+        style={{ color: "#5b5b5b", fontSize: "12px" }}
       >
         {props.getValue()}
       </Link>
@@ -123,7 +121,7 @@ export default function DataTable({ data }) {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </th>
               ))}
@@ -150,7 +148,7 @@ export default function DataTable({ data }) {
                     ? null
                     : flexRender(
                         header.column.columnDef.footer,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </th>
               ))}
@@ -173,7 +171,7 @@ const TableRowHover = ({ img }) => {
       <ChartIcon />
       <div className="tableImage">
         {hoveredRow && (
-          <Link to={`/h5web/${img.value}`} target="_blank">
+          <Link to={`h5web/${img.value}`} target="_blank">
             <img
               className="imgSelected"
               src={img.imageLink}

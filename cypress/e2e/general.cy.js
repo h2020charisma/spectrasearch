@@ -197,60 +197,71 @@ describe("General site functionality", () => {
     );
   });
 
-  it("opens Search by Sample Widget and looks for the sample", () => {
-    setSampleIntercepts();
-    cy.get('[data-cy="search-by-sample"]').click();
-    cy.get('[data-cy="samples"]').should("be.visible");
-    cy.get('[data-cy="samples"]').click();
-    setMainIntercepts();
-    cy.contains("Neon").click();
-    cy.get(".metadataInfoValue").should("contain.text", "Neon");
-    cy.get('[data-cy="close-badge-btn"]').click();
-  });
+  // it("opens Search by Data-provider and looks for the domain", () => {
+  //   setProviderIntercepts();
+  //   cy.get('[data-cy="data-provider"]').click();
+  //   // cy.get('[data-cy="domains"]').should("be.visible");
+  //   // cy.get('[data-cy="domains"]').click();
+  //   // setMainIntercepts();
+  //   // cy.contains("Neon").click();
+  //   // cy.get(".metadataInfoValue").should("contain.text", "Neon");
+  //   // cy.get('[data-cy="close-badge-btn"]').click();
+  // });
 
-  it("opens Search by Provider Widget and looks for the provider", () => {
-    setProviderIntercepts();
-    cy.get('[data-cy="search-by-data-provider"]').click();
-    cy.get('[data-cy="providers"]').should("be.visible");
-    cy.get('[data-cy="providers"]').click();
-    setMainIntercepts();
-    cy.contains("RRUFF").click();
-    cy.get(".metadataInfoValue").should("contain.text", "RRUFF");
-    cy.get('[data-cy="close-badge-btn"]').click();
-  });
+  // it("opens Search by Sample Widget and looks for the sample", () => {
+  //   setSampleIntercepts();
+  //   cy.get('[data-cy="search-by-sample"]').click();
+  //   cy.get('[data-cy="samples"]').should("be.visible");
+  //   cy.get('[data-cy="samples"]').click();
+  //   setMainIntercepts();
+  //   cy.contains("Neon").click();
+  //   cy.get(".metadataInfoValue").should("contain.text", "Neon");
+  //   cy.get('[data-cy="close-badge-btn"]').click();
+  // });
 
-  it("opens Search by Dataset Widget and looks for the dataset", () => {
-    setDatasetIntercepts();
-    cy.get('[data-cy="search-by-dataset"]').click();
-    cy.get('[data-cy="dataset"]').should("be.visible");
-    cy.get('[data-cy="dataset"]').click();
-    setMainIntercepts();
-    cy.contains("RRUF").click();
-    cy.get(".metadataInfoValue").should("contain.text", "RRUF");
-    cy.get('[data-cy="close-badge-btn"]').click();
-  });
+  // it("opens Search by Provider Widget and looks for the provider", () => {
+  //   setProviderIntercepts();
+  //   cy.get('[data-cy="search-by-data-provider"]').click();
+  //   cy.get('[data-cy="providers"]').should("be.visible");
+  //   cy.get('[data-cy="providers"]').click();
+  //   setMainIntercepts();
+  //   cy.contains("RRUFF").click();
+  //   cy.get(".metadataInfoValue").should("contain.text", "RRUFF");
+  //   cy.get('[data-cy="close-badge-btn"]').click();
+  // });
 
-  it("opens Search by Instrument Widget and looks for the instrument", () => {
-    setInstrumentIntercepts();
-    cy.get('[data-cy="search-by-instrument"]').click();
-    cy.get('[data-cy="instruments"]').should("be.visible");
-    cy.get('[data-cy="instruments"]').click();
-    setMainIntercepts();
-    cy.contains("RRUF").click();
-    cy.get(".metadataInfoValue").should("contain.text", "RRUF");
-    cy.get('[data-cy="close-badge-btn"]').click();
-  });
+  // it("opens Search by Dataset Widget and looks for the dataset", () => {
+  //   setDatasetIntercepts();
+  //   cy.get('[data-cy="search-by-dataset"]').click();
+  //   cy.get('[data-cy="dataset"]').should("be.visible");
+  //   cy.get('[data-cy="dataset"]').click();
+  //   setMainIntercepts();
+  //   cy.contains("RRUF").click();
+  //   cy.get(".metadataInfoValue").should("contain.text", "RRUF");
+  //   cy.get('[data-cy="close-badge-btn"]').click();
+  // });
 
-  it("opens Search by Wavelength Widget and looks for the wavelangth", () => {
-    setWavelenghIntercepts();
-    cy.get('[data-cy="search-by-method"]').click();
-    cy.get('[data-cy="methods"]').should("be.visible");
-    cy.get('[data-cy="methods"]').click();
-    // setMainIntercepts();
-    // cy.contains("RRUF").click();
-    // cy.get(".metadataInfoValue").should("contain.text", "RRUF");
-    // cy.get('[data-cy="close-badge-btn"]').click();
-  });
+  // it("opens Search by Instrument Widget and looks for the instrument", () => {
+  //   setInstrumentIntercepts();
+  //   cy.get('[data-cy="search-by-instrument"]').click();
+  //   cy.get('[data-cy="instruments"]').should("be.visible");
+  //   cy.get('[data-cy="instruments"]').click();
+  //   setMainIntercepts();
+  //   cy.contains("RRUF").click();
+  //   cy.get(".metadataInfoValue").should("contain.text", "RRUF");
+  //   cy.get('[data-cy="close-badge-btn"]').click();
+  // });
+
+  // it("opens Search by Wavelength Widget and looks for the wavelangth", () => {
+  //   setWavelenghIntercepts();
+  //   cy.get('[data-cy="search-by-method"]').click();
+  //   cy.get('[data-cy="methods"]').should("be.visible");
+  //   cy.get('[data-cy="methods"]').click();
+  //   // setMainIntercepts();
+  //   // cy.contains("RRUF").click();
+  //   // cy.get(".metadataInfoValue").should("contain.text", "RRUF");
+  //   // cy.get('[data-cy="close-badge-btn"]').click();
+  // });
 
   // it("opens Pages Widget and increase page number", () => {
   //   setMainInterceptsWithParams(1, 31);

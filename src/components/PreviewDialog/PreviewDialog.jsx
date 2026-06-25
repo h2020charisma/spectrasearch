@@ -23,7 +23,7 @@ export default function PreviewDialog({ img }) {
           </button>
         ) : (
           <button data-cy="preview-btn" id="preview" className="exploreH5web">
-            Preview
+            <PreviewIcon />
           </button>
         )}
       </Dialog.Trigger>

@@ -16,32 +16,64 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
   return (
     <div
       key={i}
-      style={{ position: "relative" }}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
-      <div
-        onClick={() => {
-          setImageSelectedStore(img.value);
-        }}
-        className={`${"imageNonSelected"}`}
-      >
-        <Link to={`/h5web/${img.value}`}>
-          <img
-            className="imgSelected"
-            src={img.imageLink}
-            width={170}
-            height={"auto"}
-            alt={img.text}
-          />
-        </Link>
+      <div style={{ position: "relative" }}>
+        <div
+          onClick={() => {
+            setImageSelectedStore(img.value);
+          }}
+          className={`${show ? "imageNonSelectedHover" : "imageNonSelected"}`}
+        >
+          <Link to={`h5web/${img.value}`}>
+            <img
+              className="imgSelected"
+              src={img.imageLink}
+              width={170}
+              height={"auto"}
+              alt={img.text}
+            />
+          </Link>
+        </div>
+
+        <div className="imgDescription">
+          <span>
+            {/* {img.text.length > 22 ? img.text.slice(0, 21) + " ..." : img.text} */}
+            {img.text}
+          </span>
+          <div
+            onClick={() => {
+              setImageSelectedStore(img.value);
+            }}
+          >
+            {show && (
+              <div className="previewBtnIcon">
+                <PreviewDialog img={img.value} />
+              </div>
+            )}
+          </div>
+        </div>
+        {show && (
+          <Link to={`h5web/${img.value}`}>
+            <div
+              className="descriptionHover"
+              dangerouslySetInnerHTML={{ __html: img.text }}
+              style={
+                img.text.length > 27
+                  ? { textAlign: "left" }
+                  : { textAlign: "center" }
+              }
+            />
+          </Link>
+        )}
       </div>
       <p className="imgCaption">
         {img?.score && (
           <span
             style={{
               display: "inline-block",
-              color: "#D20003",
+
               fontSize: "12px",
               paddingBottom: "12px",
             }}
@@ -50,30 +82,6 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
           </span>
         )}
       </p>
-      <div className="imgDescription">
-        <span>
-          {/* {img.text.length > 22 ? img.text.slice(0, 21) + " ..." : img.text} */}
-          {img.text}
-        </span>
-        <div
-          onClick={() => {
-            setImageSelectedStore(img.value);
-          }}
-        >
-          <PreviewDialog img={img.value} />
-        </div>
-      </div>
-      {show && (
-        <div
-          className="descriptionHover"
-          dangerouslySetInnerHTML={{ __html: img.text }}
-          style={
-            img.text.length > 27
-              ? { textAlign: "left" }
-              : { textAlign: "center" }
-          }
-        />
-      )}
     </div>
   );
 }

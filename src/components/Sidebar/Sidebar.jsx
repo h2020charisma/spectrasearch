@@ -1,27 +1,20 @@
 /* eslint-disable react/prop-types */
-import Expander from "../UI/Expander";
-import SelectNumber from "../UI/SelectNumber";
 import { ErrorBoundary } from "react-error-boundary";
-
-import DataProvider from "../DataProvider/DataProvider";
-import Instrument from "../Instrument/Instrument";
-import Investigations from "../Investigations/Investigations";
-import Sample from "../Sample/Sample";
-import UploadFile from "../UploadFile/UploadFile";
-import Wavelengths from "../Wavelengths/Wavelengths";
 import CustomSearch from "../CustomSearch/CustomSearch";
+import Expander from "../UI/Expander";
+import UploadFile from "../UploadFile/UploadFile";
+import Widget from "../Widget/Widget";
+import WidgetLiveSearch from "../Widget/WidgetLiveSearch";
+import ListPlaceholder from "../UI/ListPlaceholder";
 
 const errorMsg = "Sorry, no data available";
 
 export default function Sidebar({
-  reference,
-  setReference,
-  provider,
-  setProvider,
-  pages,
-  setPages,
-  pagesize,
-  setPagesize,
+  params,
+  setParams,
+  setSimilarity,
+  similarity,
+  dataSources,
   setqQuery,
   qQuery,
   instrument,
@@ -31,8 +24,6 @@ export default function Sidebar({
   imageData,
   methods,
   setMethods,
-  wavelengths,
-  setWavelengths,
   type,
   setType,
   file,
@@ -43,6 +34,8 @@ export default function Sidebar({
   freeSearch,
   fileName,
   setFileName,
+  smiles,
+  setSmiles,
 }) {
   return (
     <div
@@ -65,8 +58,8 @@ export default function Sidebar({
         />
       </Expander>
       <Expander
-        title="Search by Spectrum File"
-        status={fileName === "" ? false : true}
+        title="Search by Similarity"
+        status={fileName === "" && !smiles ? false : true}
       >
         <UploadFile
           setImageData={setImageData}
@@ -78,78 +71,62 @@ export default function Sidebar({
           queryStringSourcesParams={queryStringSourcesParams}
           fileName={fileName}
           setFileName={setFileName}
+          dataSources={dataSources}
+          setSimilarity={setSimilarity}
+          similarity={similarity}
+          smiles={smiles}
+          setSmiles={setSmiles}
         />
       </Expander>
-      <Expander title="Search by Sample" status={false}>
-        <ErrorBoundary
-          fallback={<div className="errorMessage">{errorMsg}</div>}
-        >
-          <Sample
-            setqQuery={setqQuery}
-            qQuery={qQuery}
-            setImageSelected={setImageSelected}
-            queryStringSourcesParams={queryStringSourcesParams}
-          />
-        </ErrorBoundary>
-      </Expander>
-      <Expander title="Search by Data provider">
-        <ErrorBoundary
-          fallback={<div className="errorMessage">{errorMsg}</div>}
-        >
-          <DataProvider
-            provider={provider}
-            setProvider={setProvider}
-            setImageSelected={setImageSelected}
-            queryStringSourcesParams={queryStringSourcesParams}
-          />
-        </ErrorBoundary>
-      </Expander>
-      <Expander title="Search by Dataset" status={false}>
-        <ErrorBoundary
-          fallback={<div className="errorMessage">{errorMsg}</div>}
-        >
-          <Investigations
-            reference={reference}
-            setReference={setReference}
-            setImageSelected={setImageSelected}
-            queryStringSourcesParams={queryStringSourcesParams}
-          />
-        </ErrorBoundary>
-      </Expander>
-      <Expander title="Search by Instrument" status={false}>
-        <ErrorBoundary
-          fallback={<div className="errorMessage">{errorMsg}</div>}
-        >
-          <Instrument
-            instrument={instrument}
-            setInstrument={setInstrument}
-            setImageSelected={setImageSelected}
-            queryStringSourcesParams={queryStringSourcesParams}
-          />
-        </ErrorBoundary>
-      </Expander>
-      <Expander title="Search by Method" status={false}>
-        <ErrorBoundary
-          fallback={<div className="errorMessage">{errorMsg}</div>}
-        >
-          <Wavelengths
-            methods={methods}
-            setMethods={setMethods}
-            setImageSelected={setImageSelected}
-            queryStringSourcesParams={queryStringSourcesParams}
-          />
-        </ErrorBoundary>
-      </Expander>
-      {/* <Expander title="Pages">
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <SelectNumber value={pages} setValue={setPages} label="Pages" />
-          <SelectNumber
-            value={pagesize}
-            setValue={setPagesize}
-            label="Numbers of Hits"
-          />
-        </div>
+      {/* <Expander title="Debouncing search" status={false}>
+        <WidgetLiveSearch
+          name="Debouncing search"
+          field="qdynamic.CASRN_s"
+          queryStringSourcesParams={queryStringSourcesParams}
+          setImageSelected={setImageSelected}
+          params={params}
+          setParams={setParams}
+        />
       </Expander> */}
+      {dataSources?.fields.map((item) => {
+        if (item.search === "/db/query/field/terms") {
+          return (
+            <Expander
+              title={item.name}
+              status={false}
+              key={item.name}
+              icon={item.icon}
+            >
+              <WidgetLiveSearch
+                name={item.name}
+                field={item.field}
+                queryStringSourcesParams={queryStringSourcesParams}
+                setImageSelected={setImageSelected}
+                params={params}
+                setParams={setParams}
+              />
+            </Expander>
+          );
+        }
+        return (
+          <Expander
+            title={item.name}
+            status={false}
+            key={item.name}
+            icon={item.icon}
+          >
+            <Widget
+              key={item.name}
+              name={item.name}
+              field={item.field}
+              queryStringSourcesParams={queryStringSourcesParams}
+              setImageSelected={setImageSelected}
+              params={params}
+              setParams={setParams}
+            />
+          </Expander>
+        );
+      })}
     </div>
   );
 }

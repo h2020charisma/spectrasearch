@@ -9,7 +9,6 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 1rem;
 }
 
 .searchSelectInput {
@@ -19,6 +18,9 @@
   padding-left: 10px;
   width: 100%;
 }
+.active {
+  font-weight: 700;
+}
 
 .searchSelectInput:focus {
   border: 1px solid #0083ab;
@@ -27,11 +29,11 @@
 
 .selectOptions {
   border-radius: 6px;
-  padding: 0.6rem 1.2rem;
+  padding: 0.6rem 1rem 0 1.8rem;
   font-size: 0.8rem;
   cursor: pointer;
   user-select: none;
-  height: 260px;
+  max-height: 260px;
   overflow-y: auto;
 }
 
@@ -56,10 +58,40 @@
   margin-left: 1rem;
 }
 .selectItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   color: #7a7a7a;
-  font-size: 16px;
+  font-size: 15px;
+  padding-right: 1rem;
+  height: fit-content;
+  width: 100%;
 }
 
 .selectItem:hover {
   color: #282828;
+  height: fit-content;
+  width: 100%;
+  /* padding-right: 1rem; */
+}
+.clearSelection > svg {
+  stroke: light-dark(#242424, #fff);
+}
+
+.listPlaceholderLines {
+  height: 10;
+  width: "70%";
+  background: "#e5e7eb";
+  margin-bottom: 6px;
+  border-radius: 4px;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pulse {
+  animation: pulse 1.5s ease-in-out infinite;
 }

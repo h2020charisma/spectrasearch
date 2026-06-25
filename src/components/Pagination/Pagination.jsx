@@ -52,7 +52,7 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
               1
             </div>
           )}
-          {currentPage < 3 ? null : <p>...</p>}
+          {currentPage < 3 ? null : <p>&nbsp;...</p>}
           <div className="pages-info">
             <span className="current-page">{currentPage}</span>
           </div>

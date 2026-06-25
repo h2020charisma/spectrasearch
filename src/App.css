@@ -28,7 +28,8 @@ h1 {
 /* Main Layout */
 .main {
   display: flex;
-  margin: 0.4rem 1rem 0 1rem;
+  margin: 0.4rem 1rem 1rem 1rem;
+  overflow: scroll;
 }
 
 .sidebar {
@@ -37,7 +38,7 @@ h1 {
   max-height: max-content;
   position: relative;
   padding: 0.5rem 1rem 0 0;
-  margin-top: -17px;
+  margin-top: 43px;
 }
 
 .content {
@@ -53,9 +54,12 @@ h1 {
   padding: 0.8rem;
   border-radius: 5px;
   margin: 0 0 0.5rem 0;
-  /* overflow: hidden; */
+  overflow: hidden;
   background-color: light-dark(#fff, #202020);
   color: light-dark(#202020, #ccc);
+}
+.expanderFreeSearch {
+  border: 1px solid #00ace1;
 }
 
 .errorMessage {
@@ -78,6 +82,9 @@ h1 {
 /* Sidebar */
 
 .toggleSidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
   padding: 10px 30px 16px 0;
   width: fit-content;
   /* z-index: 999;
@@ -108,6 +115,17 @@ h1 {
   height: auto;
 }
 
+.searchTypeLabel {
+  font-size: 10px;
+  font-weight: 600;
+  background-color: #c3f2ff;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  color: #454545;
+  margin-top: -8px;
+}
+
 .imageSelected {
   border: 4px solid #74deff;
   padding: 0.8rem;
@@ -125,9 +143,10 @@ h1 {
   align-items: center;
 }
 
-.imageNonSelected:hover {
+.imageNonSelectedHover {
   border: 2px solid #74deff;
-  border-radius: 6px;
+  padding: 0.8rem;
+  border-radius: 4px 4px 0 0;
   background-color: #fff;
   transition: all 0.5s;
 }
@@ -140,6 +159,7 @@ h1 {
   justify-content: center;
   gap: 10px;
   text-align: center;
+  margin-top: 0.2rem;
 }
 .imgDescription > span {
   font-size: 0.8rem;
@@ -153,11 +173,13 @@ h1 {
 .descriptionHover {
   position: absolute;
   background-color: #00ace1;
+  cursor: pointer;
   left: 50%;
-  bottom: 2.4rem;
+  bottom: 0.2rem;
   color: #fff;
-  padding: 0.5rem 0.6rem;
-  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0 0 4px 4px;
+  border: 1px solid #00ace1;
   font-size: 0.8rem;
   font-weight: 500;
   width: 180px;
@@ -165,7 +187,7 @@ h1 {
   white-space: wrap;
   z-index: 10;
   transform: translateX(-50%);
-  transition: all 0.4s;
+  transition: all 0.5s;
   overflow-wrap: anywhere;
   max-height: 180px;
   overflow-y: hidden;
@@ -195,12 +217,10 @@ h1 {
 
 .imgCaption {
   text-align: center;
-  /* background-color: #f0f8ff; */
-  color: #0b5990;
-  /* padding: 0.4rem 0.2rem; */
-  margin: 5px 0 0 0;
+  color: light-dark(#a70000, #fff);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 700;
+  margin-top: 0;
 }
 
 .fileNameWrap {
@@ -248,7 +268,7 @@ h1 {
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
   font-weight: 500;
-  margin: 0.3rem 0;
+  margin: 0.8rem 0;
   display: inline-block;
 }
 
@@ -269,7 +289,9 @@ h1 {
   cursor: pointer;
   background-color: light-dark(#fff, #6d6d6d);
 }
-
+.closeBtn > svg {
+  stroke: #262626;
+}
 .downloadBtn {
   display: flex;
   align-items: flex-start;
@@ -396,6 +418,10 @@ h1 {
   font-weight: 600;
   padding-right: 0.2rem;
   color: #292929;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .metadataInfoValuePreview {
   font-size: 14px;
@@ -407,6 +433,13 @@ h1 {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
+  gap: 12px;
+}
+
+.search-filters-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   gap: 12px;
 }
 
@@ -422,6 +455,22 @@ h1 {
   font-size: 11px;
   letter-spacing: 0.4px;
   background-color: #c3f2ff;
+  padding: 0.12rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin: 0.3rem 0;
+  display: inline-block;
+  color: #454545;
+}
+.resetFilters {
+  width: fit-content;
+  /* background-color: rgb(255, 89, 0); */
+}
+.resetLabel {
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  background-color: #f66200;
   padding: 0.12rem 0.6rem;
   border-radius: 4px;
   text-transform: uppercase;
@@ -540,6 +589,12 @@ h1 {
   margin-bottom: 0.5rem;
 }
 
+.previewBtnIcon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
 .contactsLink {
   color: light-dark(#202020, #fff) !important;
 }
@@ -573,7 +628,8 @@ h1 {
 }
 
 .search-filters-wrap {
-  height: 60px;
+  margin: 0.6rem 0;
+  height: fit-content;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -610,7 +666,24 @@ h1 {
   background-color: #effcff;
   transition-duration: 300ms;
 }
+.search-filters-item > div > svg {
+  stroke: #242424;
+  cursor: pointer;
+}
 
+.badgeHover {
+  position: absolute;
+  top: -150%;
+  left: 0;
+  font-size: 14px;
+  font-weight: 600;
+  padding-right: 0.2rem;
+  color: #fff;
+  border: #353535 1px solid;
+  background-color: light-dark(#5f5f5f, #161616);
+  border-radius: 6px;
+  padding: 2px 10px;
+}
 .backArrow {
   border: 1px solid #00ace1;
   color: #00ace1;
@@ -649,7 +722,7 @@ h1 {
 .exploreH5web {
   background-color: light-dark(#ecffd5, #d8ffb3);
   color: #454545;
-  height: 14px;
+  height: 8px;
   font-size: smaller;
   font-weight: 600;
 

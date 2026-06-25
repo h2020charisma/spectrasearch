@@ -1,17 +1,16 @@
 /* eslint-disable react/prop-types */
+
 import { useMeasure } from "@uidotdev/usehooks";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
+import DynamicIcon from "../../utils/DynamicIcon";
 import ArrowOpen from "../Icons/Arrow";
 
-import { AiFillDatabase, AiFillTool } from "react-icons/ai";
 import { FaChartBar } from "react-icons/fa";
+import { FaSignsPost } from "react-icons/fa6";
 import { IoSearch } from "react-icons/io5";
 import { MdFileUpload } from "react-icons/md";
-import { PiEyedropperFill, PiWaveSineBold } from "react-icons/pi";
-import { FaSignsPost } from "react-icons/fa6";
-import { TbZoomCodeFilled } from "react-icons/tb";
 
 import GridViewIcon from "../Icons/GridViewIcon";
 import TableViewIcon from "../Icons/TableViewIcon";
@@ -20,15 +19,32 @@ import { useStore } from "../../store/store";
 import Notification from "./Notification";
 
 // eslint-disable-next-line react/prop-types
-export default function Expander({ children, title, status, data }) {
+export default function Expander({ children, title, status, data, icon }) {
   const [open, setOpen] = useState(status);
   const [ref, { height }] = useMeasure();
 
   const tableView = useStore((state) => state.tableView);
   const setTableView = useStore((state) => state.setTableView);
 
+  const [iconName, setIconName] = useState("");
+  const [iconPack, setIconPack] = useState("");
+
+  useEffect(() => {
+    if (!icon) return;
+    const [pack, name] = icon.split("/");
+    setIconName(name);
+    setIconPack(pack);
+  }, [icon]);
+
   return (
-    <div className="expander">
+    <div
+      className="expander"
+      style={
+        title == "Search by Similarity"
+          ? { overflow: "visible" }
+          : { overflow: "hidden" }
+      }
+    >
       <div
         onClick={() => title !== "Search Results" && setOpen(!open)}
         data-cy={title.replace(/\s+/g, "-").toLowerCase()}
@@ -49,15 +65,14 @@ export default function Expander({ children, title, status, data }) {
         >
           <IconContext.Provider value={{ size: "1.6rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              {title == "Search by Spectrum File" ? <MdFileUpload /> : null}
-              {title == "Search by Sample" ? <PiEyedropperFill /> : null}
-              {title == "Search by Data provider" ? <AiFillDatabase /> : null}
-              {title == "Search by Dataset" ? <TbZoomCodeFilled /> : null}
-              {title == "Search by Instrument" ? <AiFillTool /> : null}
-              {title == "Search by Method" ? <PiWaveSineBold /> : null}
-              {title == "Pages" ? <FaSignsPost /> : null}
-              {title == "Search Results" ? <FaChartBar /> : null}
-              {title == "Free text search" ? <IoSearch /> : null}
+              <div style={{ height: "26px", width: "26px" }}>
+                <DynamicIcon name={iconName} pack={iconPack} />
+
+                {title == "Search by Similarity" ? <MdFileUpload /> : null}
+                {title == "Pages" ? <FaSignsPost /> : null}
+                {title == "Search Results" ? <FaChartBar /> : null}
+                {title == "Free text search" ? <IoSearch /> : null}
+              </div>
               {title}
               {title == "Search Results" && (
                 <p className="foundLabel">{data?.numFound} hits found</p>

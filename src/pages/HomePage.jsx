@@ -7,6 +7,7 @@ import Footer from "../components/Footer/Footer";
 import H5web from "../components/h5web/h5web";
 import Header from "../components/Header/Header";
 import ToastComp from "../components/UI/Toast/Toast";
+import GoToTop from "../components/UI/GoToTop";
 
 export default function HomePage() {
   const location = useLocation();
@@ -25,6 +26,7 @@ export default function HomePage() {
         ) : (
           <div>
             <SearchComp setDomain={setDomain} />
+            <GoToTop />
             <Footer />
           </div>
         )}

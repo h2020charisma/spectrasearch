@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import SearchIcon from "../Icons/SearchIcon";
 import "./Select.css";
+import Close from "../Icons/Close";
 
 export default function SearchSelect({
   data,
@@ -9,95 +10,134 @@ export default function SearchSelect({
   setqQuery,
   setImageSelected,
   label,
+  field,
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState("");
 
   useEffect(() => {
-    if (qQuery === "*" || qQuery === "") {
+    const found = qQuery?.some((obj) => obj.name === label);
+    if (!found) {
+      setSelected("");
       setSearch("");
     }
-  }, [qQuery]);
+  }, [qQuery, label]);
 
   useEffect(
     () =>
       setFiltered(
-        data &&
-          data.filter((item) => {
-            return item.value
-              .toLocaleLowerCase()
-              .includes(search.toLocaleLowerCase());
-          })
+        data?.filter((item) => {
+          return item.value
+            .toLocaleLowerCase()
+            .includes(search.toLocaleLowerCase());
+        })
       ),
     [data, search]
   );
 
   return (
     <section>
-      <div onClick={() => setOpen(!open)} className="selectBtn">
+      <div
+        // onClick={() => {
+        //   !search && setOpen(!open);
+        // }}
+        className="selectBtn"
+        style={{ position: "relative" }}
+      >
         <SearchIcon />
         <input
           id={`Search for ${label}`}
           data-cy={label.replace(/\s+/g, "-").toLowerCase()}
-          className="searchSelectInput"
-          value={search}
+          className={
+            selected ? "searchSelectInput active" : "searchSelectInput"
+          }
+          value={selected || search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={`Search for ${label}`}
         />
+        <div
+          style={{ position: "absolute", right: "0.5rem", cursor: "pointer" }}
+          onClick={() => {
+            setqQuery((prev) => [
+              ...prev.filter((item) => item.value !== selected),
+            ]);
+            setSearch("");
+            setSelected("");
+            setImageSelected("");
+          }}
+        >
+          {selected && (
+            <span className="clearSelection">
+              <Close />
+            </span>
+          )}
+        </div>
       </div>
 
-      {open && (
-        <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
-          <p
+      <div className="selectOptions" style={{ scrollbarWidth: "thin" }}>
+        {/* <p
             className="selectItem"
             onClick={() => {
-              setqQuery("*");
+              setqQuery((prev) => [
+                ...prev.filter((item) => item !== selected),
+              ]);
               setSearch("");
               setImageSelected("");
             }}
           >
-            {`All ${label}`}
-          </p>
-          <hr />
-
-          {!search &&
-            data &&
-            data.map((item, i) => (
-              <p
-                data-project={item}
-                className="selectItem"
-                key={i}
-                onClick={() => {
-                  setqQuery(item.value);
-                  setOpen(false);
-                  setSearch(item.value);
-                  setImageSelected("");
-                }}
-              >
-                {item.value}
-              </p>
-            ))}
-          {search &&
-            filtered &&
-            filtered.map((item, i) => (
-              <p
-                data-project={item}
-                className="selectItem"
-                key={i}
-                onClick={() => {
-                  setqQuery(item.value);
-                  setOpen(false);
-                  setSearch("");
-                  setImageSelected("");
-                }}
-              >
-                {item.value}
-              </p>
-            ))}
-        </div>
-      )}
+            {selected === null ? "" : <strong>{selected}</strong>}
+          </p> */}
+        {data?.length < 0 && <p className="selectItem">Loading</p>}
+        {!search &&
+          data &&
+          data.map((item, i) => (
+            <p
+              data-project={item.value}
+              className="selectItem"
+              key={i}
+              onClick={() => {
+                if (selected !== item.value) {
+                  setqQuery((prev) => [
+                    ...prev,
+                    { name: label, value: item.value, field: field },
+                  ]);
+                }
+                setSelected(item.value);
+                // setOpen(false);
+                setSearch(item.value);
+                setImageSelected("");
+              }}
+            >
+              {item.value}
+            </p>
+          ))}
+        {search &&
+          filtered &&
+          filtered.map((item, i) => (
+            <p
+              data-project={item.value}
+              className="selectItem"
+              key={i}
+              onClick={() => {
+                if (selected !== item.value) {
+                  setqQuery((prev) => [
+                    ...prev,
+                    { name: label, value: item.value, field: field },
+                  ]);
+                }
+                setSearch(item.value);
+                setSelected(item.value);
+                // setOpen(false);
+                setImageSelected("");
+              }}
+            >
+              {/* {item.value}! */}
+            </p>
+          ))}
+      </div>
     </section>
   );
 }
