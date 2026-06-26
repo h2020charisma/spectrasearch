@@ -1,123 +1,142 @@
-# Viewer dispatch — embedding React viewers per result type
+# Viewer dispatch: embedding React viewers per result type
 
 ## Why
 
-Search results (`/db/query`) each carry a `type` (`type_s`: `study`, `substance`, `prediction`, …).
-Historically **every** result linked to the embedded **h5web** viewer, hardcoded in four places. Now each
-result type opens **its assigned viewer**, embedded **as a React component on an internal route** — the
-same way h5web (`@h5web/app`) is mounted at `/h5web/:domain`. h5web stays the **default**; `prediction` →
-the qu-bounds viewer; new types are additive.
+Search results (`/db/query`) each carry a result type (`type`). Viewer dispatch maps each result to one or more actions without hard-coding viewer links in result components.
 
-## How a viewer is integrated (like h5web)
+The default route viewer is h5web. Prediction and chemical results can also open the qu-bounds prediction viewer. External website actions, such as AOP mapper or AOP-Wiki, use the same registry but render as normal external links.
 
-A viewer = **a React component + an internal route**:
+## Viewer Kinds
+
+A viewer entry in `src/viewers.js` is one of two kinds:
+
+- `kind: "route"`: an embedded React component mounted on an internal React Router route.
+- `kind: "external"`: a declarative external link built from result fields.
+
+Current route viewers:
 
 | Viewer | Package | Route | Page |
 |---|---|---|---|
-| h5web (default) | `@h5web/app` | `/h5web/:domain` | `pages/H5webPage.jsx` |
-| predictions | `@adma/qubounds-viewer` | `/predictions/:id` | `pages/PredictionsPage.jsx` |
+| h5web default | `@h5web/app` | `/h5web/:domain/*` | `src/pages/H5webPage.jsx` |
+| predictions | `@adma/qubounds-viewer` | `/predictions`, `/predictions/:id/*` | `src/pages/PredictionsPage.jsx` |
 
-The viewer package exports a props-driven component; the page reads the route param + the Keycloak token
-and renders it. Auth is **native**: same `/search/` origin and service-worker scope, so the token (passed
-as a prop) and the SW image-auth cover the embedded viewer — no `?token=` in URLs.
+`@adma/qubounds-viewer` is the current temporary/local package name for the qu-bounds viewer. When the package is renamed or published, update `package.json`, imports, `vite.config.js` dependency optimization, and this document together.
+
+## Qu-bounds Embedding
+
+`PredictionsPage` embeds the viewer as a React component and passes the existing OIDC access token as a prop. Do not put tokens in prediction viewer URLs.
 
 ```jsx
-// pages/PredictionsPage.jsx (abridged)
 import PredictionViewer from "@adma/qubounds-viewer";
 import "@adma/qubounds-viewer/style.css";
 
-const token = useAuth().user?.access_token;          // native auth
-<PredictionViewer items={[id]} type="prediction"
-  dataSource={dataSource} token={token}
-  apiBase={import.meta.env.VITE_BaseURL} />
+<PredictionViewer
+  items={[id]}
+  type="prediction"
+  dataSource={dataSource}
+  token={token}
+  apiBase={apiBase}
+  showHeader={false}
+/>
 ```
 
-The viewer package scopes all its CSS under `.qubounds-root`, so importing `style.css` never leaks
-globals into the search app.
+The viewer package scopes its CSS under `.qubounds-root`, so importing its CSS should not leak globals into the search app.
 
-## The registry and dispatch
+`PredictionsPage` accepts either a path id or repeatable query parameters:
 
-`src/viewers.js` maps `type` → `{ route, idField, icon, label }`:
+- `/predictions/:id/*` opens the path id as an item by default, or as a compound when `?mode=compound` is present.
+- `/predictions?item=...&item=...` opens one or more prediction item ids.
+- `/predictions?compound=...&compound=...` opens one or more subject compound ids.
+
+If `data_source` is not present in the URL, `PredictionsPage` uses `VITE_PredictionsCore` and then falls back to `vega`.
+
+## Registry And Dispatch
+
+`src/viewers.js` exports an ordered array of viewer definitions. Higher `priority` entries are shown first.
 
 ```js
-const VIEWERS = {
-  prediction: { route: "/predictions/{itemId}", idField: "id",    icon: "fa6/FaChartLine",  label: "Predictions" },
-  _default:   { route: "/h5web/{itemId}",       idField: "value", icon: "fa6/FaWaveSquare", label: "h5web" },
-};
+const VIEWERS = [
+  {
+    id: "predictions",
+    kind: "route",
+    label: "Predictions",
+    icon: "fa6/FaChartLine",
+    types: ["prediction", "chemical"],
+    route: "/predictions",
+    idField: "id",
+    mode: { prediction: "item", chemical: "compound" },
+    multi: true,
+    priority: 10,
+  },
+  {
+    id: "h5web",
+    kind: "route",
+    label: "h5web",
+    icon: "fa6/FaWaveSquare",
+    types: ["*"],
+    route: "/h5web/{itemId}",
+    idField: "value",
+    multi: false,
+    priority: 0,
+  },
+];
 ```
 
-- **`idField`** — which result field identifies the item for that viewer: h5web links on `value` (the HSDS
-  domain), qu-bounds on `id` (the prediction primary id). Predictions have a null `value` but a real `id`.
-- `resolveViewer(type)` returns the entry (or `_default`); `buildRoute(item, { source })` fills `{itemId}`
-  and appends `?data_source=` for predictions.
+Important fields:
 
-`src/components/ViewerLink/ViewerLink.jsx` is the **single dispatch point**: it renders a react-router
-`<Link to={buildRoute(item)}>` (new tab, mirroring the old h5web link) with an optional per-type icon
-(`DynamicIcon`). It replaced the four hardcoded `/h5web/{value}` links in `DataTable.jsx` and
-`ImageItem.jsx`.
+- `types`: result types served by the viewer; `"*"` is the default only when no direct viewer matches.
+- `idField`: result field used to build the route or query parameter.
+- `mode`: for route viewers, maps result type to `item` or `compound` query parameter names.
+- `multi`: enables collection-level links that open many stored results in one viewer.
+- `priority`: controls primary action ordering when several viewers apply.
 
-## Adding a viewer
+Dispatch helpers:
 
-1. Publish/build the viewer as a component package exporting a props-driven component (CSS scoped under a
-   root class), like `@adma/qubounds-viewer`.
-2. Add it as a dependency; create a `pages/<X>Page.jsx` that renders it with the route param + token; add
-   the route in `main.jsx`.
-3. Add one entry to `VIEWERS` in `src/viewers.js`.
+- `viewersForType(type)` returns enabled viewers for a result type, sorted by priority.
+- `viewerHref(viewer, item)` builds one concrete route or external URL for a result.
+- `viewerMultiHref(viewer, items)` builds a multi-item route for collection links.
+- `resolveViewersForItem(item)` returns applicable viewer actions and drops external links that cannot be built.
+- `multiViewersForItems(items)` returns route viewers that can open at least one item type in a collection.
 
-No changes to `DataTable`, `ImageItem`, or any result component. Removing the specific entries makes the
-app behave exactly as before (everything → h5web).
+Rendering entrypoints:
 
-## External-link viewers (`kind: "external"`)
+- `src/components/ResultActions/ResultActions.jsx` renders the primary action, overflow viewer actions, and collection toggle.
+- `src/components/ViewerLink/ViewerLink.jsx` renders a simpler primary viewer link for secondary link locations.
+- `src/pages/CollectionPage.jsx` renders multi-item viewer actions from stored collection items.
 
-Besides embedded `kind: "route"` viewers, the registry supports **external** viewers — a configurable
-link to a website with a query (e.g. the deployed aopmapper at `aop.adma.ai`, AOP-Wiki). The site URL and
-the query are **declared in the entry** (no env, no code): `url` is the site, `link` is the path/query per
-result type with `{placeholder}` fields taken from the result item.
+## External-link Viewers
+
+External viewers use `url` plus `link` templates. Placeholders in `{braces}` are read from result fields and `encodeURIComponent`-escaped.
 
 ```js
 {
-  id: "aopmapper", kind: "external", label: "AOP mapper", icon: "fa6/FaProjectDiagram",
+  id: "aopmapper",
+  kind: "external",
+  label: "AOP mapper",
+  icon: "fa6/FaProjectDiagram",
   types: ["aop", "key_event", "assay", "stressor", "chemical"],
   url: "https://aop.adma.ai",
   link: {
-    chemical: "/?q={text}",                 // per result type …
+    chemical: "/?q={text}",
     _default: "/?fieldId={id}&graph=AOP",
   },
-},
-{
-  id: "aopwiki", kind: "external", label: "AOP-Wiki", types: ["aop", "key_event"],
-  url: "https://aopwiki.org",
-  link: { aop: "/aops/{idnum}", key_event: "/events/{idnum}" },
-  transform: { idnum: { from: "id", extract: "\\d+" } },  // derive a placeholder from a field
-},
-{
-  id: "comptox", kind: "external", label: "CompTox", types: ["chemical"],
-  url: "https://comptox.epa.gov/dashboard",
-  link: { _default: "/chemical/details/{id}" },
-  requires: { field: "id", match: "^DTXSID" },  // only when the id is a DTXSID
-  enabled: false,                                // toggle a viewer on/off
-},
+}
 ```
 
-- **`url`** = the site; **`link`** = path/query appended to it (per result `type`, with `_default`).
-  `{placeholders}` are filled from the item and `encodeURIComponent`-escaped.
-- **`requires`** hides the action unless `item[field]` matches the regex (CompTox only on DTXSIDs).
-- **`transform`** derives a placeholder from a field (e.g. the numeric AOP id for AOP-Wiki). If a needed
-  placeholder is missing, the action is hidden — so AOP-Wiki never appears on assays/stressors.
-- **`enabled: false`** keeps the config but hides the viewer (e.g. CompTox while it's down).
-- Dispatch (`viewers.js::resolveViewersForItem`) returns each applicable viewer with a concrete `href`,
-  dropping external ones whose href resolves to `null`. `ResultActions`/`ViewerLink` render `external` as
-  `<a target="_blank">` and `route` as a react-router `<Link>`.
+Optional external fields:
 
-**Adding an external viewer = one registry entry** — set `url` + `link` (+ optional `requires`/`transform`).
-No component, packaging, route, or backend change.
+- `requires`: hides the action unless a field matches a regex.
+- `transform`: derives a placeholder value from another field, for example extracting digits from an id.
+- `enabled: false`: keeps a configured viewer hidden without deleting it.
 
-## The qu-bounds viewer package (`@adma/qubounds-viewer`)
+Adding an external viewer usually requires only one registry entry in `src/viewers.js`; no route, component, package, or backend change is needed.
 
-Lives in the qu-bounds repo (`qubounds_clean/ui`), published/built as a library
-(`npm run build:lib` → `dist/qubounds-viewer.js` + `dist/style.css`). The same `<PredictionViewer>`
-component powers both the standalone `/qubounds/` app (`src/App.jsx` reads URL params → renders it) and
-this embedding, so there is one source of truth.
+## Adding A Route Viewer
 
-Props: `items` / `subjects` (+ `ssbd`/`endpoint`/`model` filters), `type`, `dataSource`, `token`,
-`apiBase`, `chemicalsCore`, `predictionsCore`, `subjectField`, `hsds`, `showHeader`.
+1. Add the viewer package or component.
+2. Create a page under `src/pages/` that passes route/query params, auth token, and backend config to the viewer.
+3. Register the route in `src/main.jsx`.
+4. Add a `kind: "route"` entry in `src/viewers.js`.
+5. Update this document and the relevant agent/contributor instructions.
+
+Route viewers should be props-driven and keep their CSS scoped under a package-specific root class.
