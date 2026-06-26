@@ -67,6 +67,51 @@ const VIEWERS = {
 No changes to `DataTable`, `ImageItem`, or any result component. Removing the specific entries makes the
 app behave exactly as before (everything → h5web).
 
+## External-link viewers (`kind: "external"`)
+
+Besides embedded `kind: "route"` viewers, the registry supports **external** viewers — a configurable
+link to a website with a query (e.g. the deployed aopmapper at `aop.adma.ai`, AOP-Wiki). The site URL and
+the query are **declared in the entry** (no env, no code): `url` is the site, `link` is the path/query per
+result type with `{placeholder}` fields taken from the result item.
+
+```js
+{
+  id: "aopmapper", kind: "external", label: "AOP mapper", icon: "fa6/FaProjectDiagram",
+  types: ["aop", "key_event", "assay", "stressor", "chemical"],
+  url: "https://aop.adma.ai",
+  link: {
+    chemical: "/?q={text}",                 // per result type …
+    _default: "/?fieldId={id}&graph=AOP",
+  },
+},
+{
+  id: "aopwiki", kind: "external", label: "AOP-Wiki", types: ["aop", "key_event"],
+  url: "https://aopwiki.org",
+  link: { aop: "/aops/{idnum}", key_event: "/events/{idnum}" },
+  transform: { idnum: { from: "id", extract: "\\d+" } },  // derive a placeholder from a field
+},
+{
+  id: "comptox", kind: "external", label: "CompTox", types: ["chemical"],
+  url: "https://comptox.epa.gov/dashboard",
+  link: { _default: "/chemical/details/{id}" },
+  requires: { field: "id", match: "^DTXSID" },  // only when the id is a DTXSID
+  enabled: false,                                // toggle a viewer on/off
+},
+```
+
+- **`url`** = the site; **`link`** = path/query appended to it (per result `type`, with `_default`).
+  `{placeholders}` are filled from the item and `encodeURIComponent`-escaped.
+- **`requires`** hides the action unless `item[field]` matches the regex (CompTox only on DTXSIDs).
+- **`transform`** derives a placeholder from a field (e.g. the numeric AOP id for AOP-Wiki). If a needed
+  placeholder is missing, the action is hidden — so AOP-Wiki never appears on assays/stressors.
+- **`enabled: false`** keeps the config but hides the viewer (e.g. CompTox while it's down).
+- Dispatch (`viewers.js::resolveViewersForItem`) returns each applicable viewer with a concrete `href`,
+  dropping external ones whose href resolves to `null`. `ResultActions`/`ViewerLink` render `external` as
+  `<a target="_blank">` and `route` as a react-router `<Link>`.
+
+**Adding an external viewer = one registry entry** — set `url` + `link` (+ optional `requires`/`transform`).
+No component, packaging, route, or backend change.
+
 ## The qu-bounds viewer package (`@adma/qubounds-viewer`)
 
 Lives in the qu-bounds repo (`qubounds_clean/ui`), published/built as a library

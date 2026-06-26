@@ -1,18 +1,45 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { viewersForType, viewerHref } from "../../viewers";
+import { resolveViewersForItem } from "../../viewers";
 import { useCollection, itemKey } from "../../store/collection";
 import "./resultActions.css";
 
+// Renders an internal route as a react-router <Link>, or an external site as a
+// plain <a target="_blank"> — the only difference between the two viewer kinds.
+function ViewerAnchor({ external, href, className, title, onClick, children }) {
+  if (external) {
+    return (
+      <a
+        className={className}
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        title={title}
+        onClick={onClick}
+      >
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link className={className} to={href} target="_blank" title={title} onClick={onClick}>
+      {children}
+    </Link>
+  );
+}
+
 // Per-result dispatch: the primary viewer is a direct click on `children`; a ⋮
-// overflow menu exposes the other viewers (1:n registry) plus "Add to collection".
+// overflow menu exposes the other applicable viewers (1:n registry, route +
+// external) plus "Add to collection".
 export default function ResultActions({ item, children }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
-  const viewers = viewersForType(item?.type);
-  const primary = viewers[0];
+  // Resolved per item: external viewers that don't apply (CompTox w/o DTXSID,
+  // AOP-Wiki on an assay) are already filtered out.
+  const resolved = resolveViewersForItem(item);
+  const primary = resolved[0];
 
   const inCollection = useCollection((s) =>
     s.items.some((i) => itemKey(i) === itemKey(item))
@@ -31,14 +58,14 @@ export default function ResultActions({ item, children }) {
 
   return (
     <span className="resultActions" ref={ref}>
-      <Link
+      <ViewerAnchor
+        external={primary.external}
+        href={primary.href}
         className="ra-primary"
-        to={viewerHref(primary, item)}
-        target="_blank"
-        title={`Open in ${primary.label}`}
+        title={`Open in ${primary.viewer.label}`}
       >
-        {children ?? primary.label}
-      </Link>
+        {children ?? primary.viewer.label}
+      </ViewerAnchor>
       <button
         className="ra-more"
         onClick={() => setOpen((o) => !o)}
@@ -49,16 +76,16 @@ export default function ResultActions({ item, children }) {
       </button>
       {open && (
         <div className="ra-menu">
-          {viewers.map((v) => (
-            <Link
-              key={v.id}
+          {resolved.map(({ viewer, href, external }) => (
+            <ViewerAnchor
+              key={viewer.id}
+              external={external}
+              href={href}
               className="ra-menu-item"
-              to={viewerHref(v, item)}
-              target="_blank"
               onClick={() => setOpen(false)}
             >
-              Open in {v.label}
-            </Link>
+              Open in {viewer.label}
+            </ViewerAnchor>
           ))}
           <div className="ra-menu-sep" />
           <button
