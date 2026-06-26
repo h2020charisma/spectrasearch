@@ -1,31 +1,29 @@
-FROM node:lts-alpine AS requirements-stage
+FROM node:24.17.0-slim AS build-stage
 
-WORKDIR /tmp
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV CYPRESS_INSTALL_BINARY=0
 
-COPY \
-      ./.eslintrc.cjs \
-      ./index.html \
-      ./package*.json \
-      ./vite.config.js \
-      /tmp
-COPY ./public /tmp/public
-COPY ./src /tmp/src
+WORKDIR /app
 
-RUN npm install
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN CI=true pnpm install --frozen-lockfile
 
 ARG VITE_BaseURL="https://api.ramanchada.ideaconsult.net/"
 ENV VITE_BaseURL=$VITE_BaseURL
-RUN npm run build-docker
+
+COPY index.html vite.config.js ./
+COPY public ./public
+COPY src ./src
+
+RUN pnpm build-docker
 
 
-FROM nginx:mainline
+FROM nginxinc/nginx-unprivileged:1.31
 
-# Allow React routing. Fail if the configuration file is not modified.
-RUN configfile="/etc/nginx/conf.d/default.conf"; \
-    confighash="$(md5sum "${configfile}")"; \
-    sed -Ei \
-      '/\s*location\s+\/\s+\{\s*$/a \        try_files $uri /index.html;' \
-      "${configfile}" && \
-    printf "${confighash}" | md5sum --check --status - && exit 1 || true
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-COPY --from=requirements-stage /tmp/dist /usr/share/nginx/html
+EXPOSE 8080
