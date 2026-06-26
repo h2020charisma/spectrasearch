@@ -129,6 +129,18 @@ Use a compatible local Node.js version for development. When changing the Docker
 - Similarity uploads use `POST /db/download?what=knnquery` with multipart form field `files`.
 - Chart previews use `GET /db/dataset?domain=<domain>&values=True`.
 
+## Embedded viewers
+
+Result viewer dispatch is configured in `src/viewers.js` and documented in `docs/VIEWERS.md`.
+
+Use `kind: "external"` for viewers that can be represented as links built from result fields. External viewers usually require only one registry entry.
+
+Use `kind: "route"` for embedded React viewers. A route viewer should have a props-driven component, a page under `src/pages/`, a route in `src/main.jsx`, and a registry entry in `src/viewers.js`.
+
+The qu-bounds viewer is currently imported as `@adma/qubounds-viewer` while its package naming and publication flow are finalized. Treat local `file:` dependencies as development-only; when the viewer package is renamed or published, update package metadata, imports, Vite dependency optimization, lockfile, and docs together.
+
+When changing viewer registry behavior, routes, viewer package names, or embedding props, update `docs/VIEWERS.md` in the same pull request.
+
 ## Dependency updates
 
 Routine dependency updates should go through a pull request and pass CI.
@@ -178,4 +190,4 @@ Keep Vite base path, Docker/nginx behavior, and Traefik routing assumptions sync
 
 ## Documentation maintenance
 
-Update `AGENTS.md` and this file whenever install commands, scripts, test tooling, deployment assumptions, or backend API expectations change.
+Update `AGENTS.md` and this file whenever install commands, scripts, test tooling, deployment assumptions, or backend API expectations change. Update `docs/VIEWERS.md` whenever viewer dispatch, routes, package names, or embedding assumptions change.
