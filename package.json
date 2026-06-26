@@ -2,6 +2,7 @@
   "name": "spectra-search",
   "private": true,
   "version": "0.0.0",
+  "packageManager": "pnpm@11.4.0",
   "type": "module",
   "scripts": {
     "build": "rimraf dist && vite build",

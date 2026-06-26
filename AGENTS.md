@@ -2,7 +2,7 @@
 
 ## Sources
 
-- Prefer `package.json`, `vite.config.js`, `cypress.config.js`, `.eslintrc.cjs`, `Dockerfile`, `.github/workflows/ci.yml`, and `.github/dependabot.yml` for current tooling behavior.
+- Prefer `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `vite.config.js`, `cypress.config.js`, `.eslintrc.cjs`, `Dockerfile`, `.dockerignore`, `docker/nginx/default.conf`, `.github/workflows/ci.yml`, and `.github/dependabot.yml` for current tooling behavior.
 - `README.md` is intentionally short and is not enough to understand development, testing, or deployment.
 - The backend is `ramanchada-api`: https://github.com/h2020charisma/ramanchada-api. Treat its API and `/db/query/sources` response as the source of truth for data sources, fields, app name, and similarity modes.
 - Keep this file and `CONTRIBUTING.md` updated whenever commands, tooling, deployment behavior, or backend API assumptions change.
@@ -36,18 +36,19 @@
 
 ## Commands
 
-- Install reproducibly: `npm ci`.
+- Use pnpm, not npm or yarn; the pnpm version is pinned by `packageManager` in `package.json`.
+- Install reproducibly: `pnpm install --frozen-lockfile`.
 - Create local environment: `cp .env.example .env`, then edit `VITE_BaseURL` when needed.
-- Start Vite dev server: `npm run dev`.
-- Lint: `npm run lint`.
-- Build production assets: `npm run build`.
-- Build a local `/search/` tree and serve it for Cypress: `npm run build-serve`.
-- Run Cypress E2E tests against the local build server: `npx cypress run`.
-- Clean generated build output: `npm run clean`.
+- Start Vite dev server: `pnpm dev`.
+- Lint: `pnpm lint`.
+- Build production assets: `pnpm build`.
+- Build a local `/search/` tree and serve it for Cypress: `pnpm build-serve`.
+- Run Cypress E2E tests against the local build server: `pnpm exec cypress run`.
+- Clean generated build output: `pnpm clean`.
 
 ## Testing And Quality
 
-- There is currently no `npm test` script; Cypress is the configured browser test runner.
+- There is currently no `pnpm test` script; Cypress is the configured browser test runner.
 - Cypress E2E tests live in `cypress/e2e/`; fixtures live in `cypress/fixtures/`.
 - Cypress loads `.env` through `cypress-dotenv`, so keep test backend values aligned with `.env` or CI setup.
 - Cypress fixtures for `/db/query/sources` should mirror the backend discovery response, including `application_name`, `fields`, and `similarity` when tests exercise dynamic sidebar or similarity behavior.
@@ -57,9 +58,17 @@
 ## CI And Container
 
 - GitHub Actions are under `.github/workflows/`; Dependabot configuration is `.github/dependabot.yml`.
-- Docker builds use `VITE_BaseURL` as a build argument so one frontend image can be built for different backend deployments.
+- CI runs `pnpm install --frozen-lockfile` before Cypress validation. Existing ESLint debt is not yet a required CI gate.
+- The Dockerfile `FROM node:x.y.z-slim AS build-stage` line is the source of truth for the Node.js version used by CI; update `.github/workflows/ci.yml` if that line format changes.
+- Docker builds use `VITE_BaseURL` as a build argument so separate frontend images can be built for different backend deployments.
+- Same-repo PRs publish mutable and immutable preview images for all configured targets; fork PRs run validation only and do not build or publish Docker images.
+- Only `push` events to `main` publish production tags and sign images with cosign.
+- Docker uses Corepack with pnpm in the Node build stage and `nginxinc/nginx-unprivileged` at runtime.
+- `.dockerignore` intentionally keeps Docker context narrow; update it if new build inputs are added.
+- Checked-in nginx config lives in `docker/nginx/default.conf`; the runtime container listens on port `8080`.
 - The app expects browser URLs under `/search/`. Current deployment uses Traefik `PathPrefix('/search')` plus prefix stripping before requests reach nginx.
 - The production container serves static Vite output with nginx. Keep Docker, nginx, Vite base path, and Traefik assumptions in sync.
+- Dependabot covers GitHub Actions, pnpm-managed npm dependencies, and Docker base images. Docker updates intentionally ignore Node versions `>=25` while the project is pinned to Node 24.
 - Do not add secrets to the image build context or checked-in environment files. `.env` is local-only.
 
 ## Maintenance Rules

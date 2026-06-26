@@ -6,6 +6,28 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     assignees:
       - "kerberizer"
+
+  # Maintain JavaScript dependencies managed by pnpm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 3
+    assignees:
+      - "kerberizer"
+
+  # Maintain Docker base images
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "kerberizer"
+    ignore:
+      - dependency-name: "node"
+        versions:
+          - ">=25"
