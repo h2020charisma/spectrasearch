@@ -1,5 +1,10 @@
 packages: []
 
+minimumReleaseAge: 1440
+minimumReleaseAgeStrict: true
+minimumReleaseAgeIgnoreMissingTime: true
+sideEffectsCache: false
+
 allowBuilds:
   cypress: true
   esbuild: true
