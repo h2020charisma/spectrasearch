@@ -38,6 +38,7 @@
 
 - Use pnpm, not npm or yarn; the pnpm version is pinned by `packageManager` in `package.json`.
 - Install reproducibly: `pnpm install --frozen-lockfile`.
+- `pnpm-workspace.yaml` enforces a 24-hour strict minimum release age, ignores missing publish-time metadata, disables side-effects cache, and allowlists build scripts for Cypress and esbuild.
 - Create local environment: `cp .env.example .env`, then edit `VITE_BaseURL` when needed.
 - Start Vite dev server: `pnpm dev`.
 - Lint: `pnpm lint`.

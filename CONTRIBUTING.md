@@ -31,6 +31,7 @@ git config --global pull.rebase true
 - Use `pnpm install --frozen-lockfile` for CI-like verification.
 - Use `pnpm install` only when intentionally updating dependencies and the lockfile.
 - The pnpm version is pinned by `packageManager` in `package.json`.
+- pnpm enforces a 24-hour strict minimum package release age and disables side-effects cache.
 - Docker is optional for local app development, but useful for testing the production container.
 
 ## Start developing
@@ -139,7 +140,23 @@ When updating dependencies:
 3. Run `pnpm lint` and the relevant Cypress checks.
 4. Mention any breaking changes or skipped checks in the pull request.
 
-For urgent security fixes, review the advisory, changelog, package diff, and transitive dependency changes before merging.
+pnpm enforces a minimum package release age before accepting dependencies from the lockfile. This reduces exposure to newly published malicious packages and compromised releases that are often detected and removed shortly after publication.
+
+Routine dependency updates should wait for Dependabot and CI to pass normally. Do not bypass the release-age policy only to make a routine update merge sooner.
+
+For urgent security fixes that cannot wait for the configured release-age window:
+
+1. Confirm that the project is affected and that waiting would create unacceptable risk.
+2. Review the release manually, including the advisory, changelog, package diff, publisher/provenance information where available, install scripts, and new transitive dependencies.
+3. Add a temporary, version-specific exception in `pnpm-workspace.yaml`, for example:
+
+```yaml
+minimumReleaseAgeExclude:
+  - vulnerable-package@1.2.3
+```
+
+4. Reference the advisory and the manual review in the pull request.
+5. Remove the exception after the package version is older than the configured release-age window.
 
 ## Docker and deployment
 
