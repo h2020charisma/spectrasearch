@@ -63,7 +63,7 @@ const VIEWERS = [
     url: "https://comptox.epa.gov/dashboard",
     link: { _default: "/chemical/details/{id}" },
     requires: { field: "id", match: "^DTXSID" }, // only when the id is a DTXSID
-    enabled: false, // EPA CompTox currently down — flip to true to re-enable
+    enabled: true, 
     priority: 4,
   },
   {

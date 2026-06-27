@@ -114,10 +114,9 @@ External viewers use `url` plus `link` templates. Placeholders in `{braces}` are
   kind: "external",
   label: "AOP mapper",
   icon: "fa6/FaProjectDiagram",
-  types: ["aop", "key_event", "assay", "stressor", "chemical"],
+  types: ["aop", "key_event", "assay", "stressor", "biological_object", "biological_action"],
   url: "https://aop.adma.ai",
   link: {
-    chemical: "/?q={text}",
     _default: "/?fieldId={id}&graph=AOP",
   },
 }
