@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 import {
   flexRender,
@@ -10,6 +9,8 @@ import {
 } from "@tanstack/react-table";
 import ChartIcon from "../Icons/ChartIcon";
 import PreviewDialog from "../PreviewDialog/PreviewDialog";
+import ViewerLink from "../ViewerLink/ViewerLink";
+import ResultActions from "../ResultActions/ResultActions";
 import "./tableStyles.css";
 
 const columns = [
@@ -37,15 +38,14 @@ const columns = [
   {
     header: "Domain",
     accessorKey: "value",
-    cell: (props) => (
-      <Link
-        to={`/h5web/${props.getValue()}`}
-        target="_blank"
-        style={{ color: "#5b5b5b", fontSize: "12px" }}
-      >
-        {props.getValue()}
-      </Link>
-    ),
+    cell: (props) => {
+      const item = props.row.original;
+      return (
+        <span style={{ color: "#5b5b5b", fontSize: "12px" }}>
+          <ResultActions item={item}>{props.getValue() || item.id}</ResultActions>
+        </span>
+      );
+    },
   },
   {
     header: "Preview",
@@ -171,7 +171,7 @@ const TableRowHover = ({ img }) => {
       <ChartIcon />
       <div className="tableImage">
         {hoveredRow && (
-          <Link to={`h5web/${img.value}`} target="_blank">
+          <ViewerLink item={img}>
             <img
               className="imgSelected"
               src={img.imageLink}
@@ -179,7 +179,7 @@ const TableRowHover = ({ img }) => {
               height={"auto"}
               alt={img.text}
             />
-          </Link>
+          </ViewerLink>
         )}
       </div>
     </div>

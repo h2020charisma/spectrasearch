@@ -3,6 +3,7 @@
 ## Sources
 
 - Prefer `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `vite.config.js`, `cypress.config.js`, `.eslintrc.cjs`, `Dockerfile`, `.dockerignore`, `docker/nginx/default.conf`, `.github/workflows/ci.yml`, and `.github/dependabot.yml` for current tooling behavior.
+- `docs/VIEWERS.md` documents result viewer dispatch; keep it aligned with `src/viewers.js`, route pages, and viewer package imports.
 - `README.md` is intentionally short and is not enough to understand development, testing, or deployment.
 - The backend is `ramanchada-api`: https://github.com/h2020charisma/ramanchada-api. Treat its API and `/db/query/sources` response as the source of truth for data sources, fields, app name, and similarity modes.
 - Keep this file and `CONTRIBUTING.md` updated whenever commands, tooling, deployment behavior, or backend API assumptions change.
@@ -17,6 +18,8 @@
 - Search results are rendered by `src/components/ImageSelect/` and table view code in `src/components/DataTable/`.
 - Spectrum previews are rendered by `src/components/Chart/Chart.jsx` from `/db/dataset` responses.
 - HDF5/HSDS browsing is handled by `src/components/h5web/h5web.jsx` and the `/h5web/:domain/*` route.
+- Result viewer dispatch is centralized in `src/viewers.js`; route viewers include h5web and predictions, and external viewers are declarative URL templates.
+- Prediction viewer embedding is handled by `src/pages/PredictionsPage.jsx`; result actions use `src/components/ResultActions/ResultActions.jsx`, simpler primary links use `src/components/ViewerLink/ViewerLink.jsx`, and multi-item viewer links are rendered by `src/pages/CollectionPage.jsx`.
 - Authentication uses `react-oidc-context`; bearer tokens are attached in `src/utils/useFetch.jsx` and passed to image requests through `public/serviceWorker.js`.
 - Shared client state is a mix of React state, session/local storage hooks, and a small Zustand store in `src/store/store.js`.
 
@@ -39,6 +42,7 @@
 - Use pnpm, not npm or yarn; the pnpm version is pinned by `packageManager` in `package.json`.
 - Install reproducibly: `pnpm install --frozen-lockfile`.
 - `pnpm-workspace.yaml` enforces a 24-hour strict minimum release age, ignores missing publish-time metadata, disables side-effects cache, and allowlists build scripts for Cypress and esbuild.
+- `@adma/qubounds-viewer` is currently a temporary/local qu-bounds viewer package name; when it is renamed or published, update `package.json`, imports, `vite.config.js` dependency optimization, lockfile, and docs together.
 - Create local environment: `cp .env.example .env`, then edit `VITE_BaseURL` when needed.
 - Start Vite dev server: `pnpm dev`.
 - Lint: `pnpm lint`.
@@ -76,5 +80,6 @@
 
 - Prefer small, direct changes that preserve the backend-driven UI model.
 - Do not introduce hard-coded backend-specific fields, sources, or labels when they can come from `/db/query/sources`.
+- When changing viewer registry behavior, routes, viewer package names, or embedding props, update `docs/VIEWERS.md` in the same change.
 - Keep generated output such as `dist/` out of commits unless a future project decision explicitly changes this.
 - Update `AGENTS.md` and `CONTRIBUTING.md` in the same PR when changing install commands, scripts, test tooling, deployment assumptions, or backend API expectations.
