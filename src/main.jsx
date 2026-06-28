@@ -9,6 +9,7 @@ import H5webPage from "./pages/H5webPage.jsx";
 import PredictionsPage from "./pages/PredictionsPage.jsx";
 import CollectionPage from "./pages/CollectionPage.jsx";
 import CallbackPage from "./pages/CallbackPage.jsx";
+import SubstancePage from "./pages/SubstancePage.jsx";
 
 import "./index.css";
 
@@ -40,6 +41,10 @@ const router = createBrowserRouter(
     {
       path: "/predictions/:id/*",
       Component: PredictionsPage,
+    },
+    {
+      path: "/substance",
+      Component: SubstancePage,
     },
     {
       path: "/collection",

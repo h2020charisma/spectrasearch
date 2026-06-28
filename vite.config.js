@@ -11,6 +11,6 @@ export default defineConfig({
     dedupe: ["react", "react-dom"],
   },
   optimizeDeps: {
-    include: ["@adma/qubounds-viewer"],
+    include: ["@adma/qubounds-viewer", "@ideaconsult/jtoxkit-react"],
   },
 });

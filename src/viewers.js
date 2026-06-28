@@ -12,6 +12,21 @@
 // {placeholders} from the result item) + optional `requires`/`transform`. Edit URLs here.
 
 const VIEWERS = [
+  // Solr doc shape: { type_s:"substance", s_uuid_hs:"NNRG-...", dbtag_hss:["NNRG"], ... }
+  // ramanchada-api surfaces s_uuid_hs as item.uuid (the Solr "id" is NOT the substance UUID).
+  // SubstancePage derives apiBase from the UUID prefix via tagdbs.js (no env var needed).
+  {
+    id: "substance",
+    kind: "route",
+    label: "Substance studies",
+    icon: "fa6/FaFlask",
+    types: ["substance"],
+    route: "/substance",
+    idField: "uuid",         // parse_solr_response surfaces s_uuid_hs as item.uuid
+    paramName: "substanceId",
+    multi: false,
+    priority: 10,
+  },
   {
     id: "predictions",
     kind: "route",
@@ -139,6 +154,7 @@ export function buildExternalHref(viewer, item) {
 // ---- route link building (internal viewers) --------------------------------
 
 function paramFor(viewer, item) {
+  if (viewer.paramName) return viewer.paramName;
   return viewer.mode && viewer.mode[item?.type] === "compound" ? "compound" : "item";
 }
 
