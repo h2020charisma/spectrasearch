@@ -5,4 +5,12 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: "/search/",
+  resolve: {
+    // The linked @adma/qubounds-viewer package ships its own node_modules/react;
+    // dedupe forces a single React instance so embedded component hooks work.
+    dedupe: ["react", "react-dom"],
+  },
+  optimizeDeps: {
+    include: ["@adma/qubounds-viewer", "@ideaconsult/jtoxkit-react"],
+  },
 });

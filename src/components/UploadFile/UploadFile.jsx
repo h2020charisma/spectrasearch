@@ -114,6 +114,21 @@ export default function UploadFile({
     fetchMoleculeVector();
   }, [smiles, moleculeQuery, setImageData]);
 
+  // Similarity options come from the backend config (/db/query/sources).
+  const similarityOptions = dataSources?.similarity || [];
+  // Molecule UI is only relevant when the config offers a molecule similarity.
+  const hasMolecule = similarityOptions.some((s) =>
+    /molecul/i.test(s?.name || "")
+  );
+
+  // Auto-select the first similarity option from the config when none is chosen.
+  useEffect(() => {
+    if (similarityOptions.length && !similarity?.name) {
+      const first = similarityOptions[0];
+      setSimilarity({ name: first.name, vector: first.vector });
+    }
+  }, [similarityOptions, similarity, setSimilarity]);
+
   const handleSmilesExport = (exportedSmiles) => {
     setSmiles(exportedSmiles);
     // Clear file when molecule is drawn
@@ -199,7 +214,9 @@ export default function UploadFile({
             )}
           </div>
           {!fileName && !smiles && (
-            <span className="uploadPlaceholder">No file or molecule selected</span>
+            <span className="uploadPlaceholder">
+              {hasMolecule ? "No file or molecule selected" : "No file selected"}
+            </span>
           )}
 
           {isLoading && <Spinner />}
@@ -227,8 +244,8 @@ export default function UploadFile({
               }}
             />
           </label>
-          {/* Hide EditorDialog if the selected search type is explicitly "Spectrum" */}
-          {(!similarity?.name || !similarity.name.toLowerCase().includes("spectrum")) && (
+          {/* Molecule editor only when the backend config offers a molecule similarity. */}
+          {hasMolecule && (
             <EditorDialog onSmilesExport={handleSmilesExport} onMolExport={handleMolExport} />
           )}
         </div>

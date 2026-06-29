@@ -6,7 +6,10 @@ import ReactDOM from "react-dom/client";
 import HitPage from "./pages/HitPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import H5webPage from "./pages/H5webPage.jsx";
+import PredictionsPage from "./pages/PredictionsPage.jsx";
+import CollectionPage from "./pages/CollectionPage.jsx";
 import CallbackPage from "./pages/CallbackPage.jsx";
+import SubstancePage from "./pages/SubstancePage.jsx";
 
 import "./index.css";
 
@@ -30,6 +33,22 @@ const router = createBrowserRouter(
     {
       path: "/h5web/:domain/*",
       Component: H5webPage,
+    },
+    {
+      path: "/predictions",
+      Component: PredictionsPage,
+    },
+    {
+      path: "/predictions/:id/*",
+      Component: PredictionsPage,
+    },
+    {
+      path: "/substance",
+      Component: SubstancePage,
+    },
+    {
+      path: "/collection",
+      Component: CollectionPage,
     },
     {
       path: "/hits/:hitId/*",
