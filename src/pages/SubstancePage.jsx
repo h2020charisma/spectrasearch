@@ -28,6 +28,10 @@ export default function SubstancePage() {
     import.meta.env.VITE_AMBIT_URL ||
     "";
 
+  // ramanchada-api base — used only for the dose-response conversion endpoint
+  // (POST /dataset/convert?format=effectarray). Everything-except-AMBIT goes here.
+  const convertBase = (import.meta.env.VITE_BaseURL || "").replace(/\/$/, "");
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <Header />
@@ -45,6 +49,7 @@ export default function SubstancePage() {
           <SubstanceStudyViewer
             substanceId={substanceId}
             apiBase={apiBase}
+            convertBase={convertBase}
             token={token}
             showHeader={false}
           />
