@@ -18,17 +18,17 @@ Current route viewers:
 | Viewer | Package | Route | Page |
 |---|---|---|---|
 | h5web default | `@h5web/app` | `/h5web/:domain/*` | `src/pages/H5webPage.jsx` |
-| predictions | `@adma/qubounds-viewer` | `/predictions`, `/predictions/:id/*` | `src/pages/PredictionsPage.jsx` |
+| predictions | `@ideaconsult/qubounds-viewer` | `/predictions`, `/predictions/:id/*` | `src/pages/PredictionsPage.jsx` |
 
-`@adma/qubounds-viewer` is the current temporary/local package name for the qu-bounds viewer. When the package is renamed or published, update `package.json`, imports, `vite.config.js` dependency optimization, and this document together.
+When the qu-bounds viewer package version or embedding props change, update `package.json`, imports, `vite.config.js` dependency optimization, deployment build args, and this document together.
 
 ## Qu-bounds Embedding
 
 `PredictionsPage` embeds the viewer as a React component and passes the existing OIDC access token as a prop. Do not put tokens in prediction viewer URLs.
 
 ```jsx
-import PredictionViewer from "@adma/qubounds-viewer";
-import "@adma/qubounds-viewer/style.css";
+import PredictionViewer from "@ideaconsult/qubounds-viewer";
+import "@ideaconsult/qubounds-viewer/style.css";
 
 <PredictionViewer
   items={[id]}
@@ -36,6 +36,9 @@ import "@adma/qubounds-viewer/style.css";
   dataSource={dataSource}
   token={token}
   apiBase={apiBase}
+  chemicalsCore={chemicalsCore}
+  subjectField={subjectField}
+  hsds={hsds}
   showHeader={false}
 />
 ```
@@ -48,7 +51,7 @@ The viewer package scopes its CSS under `.qubounds-root`, so importing its CSS s
 - `/predictions?item=...&item=...` opens one or more prediction item ids.
 - `/predictions?compound=...&compound=...` opens one or more subject compound ids.
 
-If `data_source` is not present in the URL, `PredictionsPage` uses `VITE_PredictionsCore` and then falls back to `vega`.
+If `data_source` is not present in the URL, `PredictionsPage` uses `VITE_PredictionsCore` and then falls back to `vega`. It also passes `VITE_ChemicalsCore`, `VITE_SubjectField`, `VITE_HsdsUrl`, and `VITE_HsdsDomain` to the viewer so the host owns backend and HSDS integration config.
 
 ## Registry And Dispatch
 

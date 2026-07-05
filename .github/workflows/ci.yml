@@ -79,7 +79,15 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Set a fake .env file
-        run: printf '%s\n' 'VITE_BaseURL="http://localhost:8080/"' > .env
+        run: |
+          cat > .env <<'EOF'
+          VITE_BaseURL="http://localhost:8080/"
+          VITE_PredictionsCore="vega"
+          VITE_ChemicalsCore="dsstox"
+          VITE_SubjectField="dsstox_id_s"
+          VITE_HsdsUrl="https://hsds.adma.ai"
+          VITE_HsdsDomain="/qubounds"
+          EOF
 
       - name: Run Cypress
         uses: cypress-io/github-action@v7.4.0
@@ -103,8 +111,18 @@ jobs:
         target: &docker-targets
           - tag: spectra
             url: https://api.ramanchada.ideaconsult.net/
+            predictionsCore: vega
+            chemicalsCore: dsstox
+            subjectField: dsstox_id_s
+            hsdsUrl: https://hsds.adma.ai
+            hsdsDomain: /qubounds
           - tag: nambit
             url: https://api.nambit.adma.ai/
+            predictionsCore: vega
+            chemicalsCore: dsstox
+            subjectField: dsstox_id_s
+            hsdsUrl: https://hsds.adma.ai
+            hsdsDomain: /qubounds
 
     steps:
 
@@ -136,6 +154,11 @@ jobs:
         with:
           build-args: |
             VITE_BaseURL=${{ matrix.target.url }}
+            VITE_PredictionsCore=${{ matrix.target.predictionsCore }}
+            VITE_ChemicalsCore=${{ matrix.target.chemicalsCore }}
+            VITE_SubjectField=${{ matrix.target.subjectField }}
+            VITE_HsdsUrl=${{ matrix.target.hsdsUrl }}
+            VITE_HsdsDomain=${{ matrix.target.hsdsDomain }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: .
@@ -196,6 +219,11 @@ jobs:
         with:
           build-args: |
             VITE_BaseURL=${{ matrix.target.url }}
+            VITE_PredictionsCore=${{ matrix.target.predictionsCore }}
+            VITE_ChemicalsCore=${{ matrix.target.chemicalsCore }}
+            VITE_SubjectField=${{ matrix.target.subjectField }}
+            VITE_HsdsUrl=${{ matrix.target.hsdsUrl }}
+            VITE_HsdsDomain=${{ matrix.target.hsdsDomain }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: .

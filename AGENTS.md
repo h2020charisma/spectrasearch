@@ -42,7 +42,7 @@
 - Use pnpm, not npm or yarn; the pnpm version is pinned by `packageManager` in `package.json`.
 - Install reproducibly: `pnpm install --frozen-lockfile`.
 - `pnpm-workspace.yaml` enforces a 24-hour strict minimum release age, ignores missing publish-time metadata, disables side-effects cache, and allowlists build scripts for Cypress and esbuild.
-- `@adma/qubounds-viewer` is currently a temporary/local qu-bounds viewer package name; when it is renamed or published, update `package.json`, imports, `vite.config.js` dependency optimization, lockfile, and docs together.
+- qu-bounds uses `@ideaconsult/qubounds-viewer`; when changing viewer package names or embedding props, update `package.json`, imports, `vite.config.js` dependency optimization, lockfile, and docs together.
 - Create local environment: `cp .env.example .env`, then edit `VITE_BaseURL` when needed.
 - Start Vite dev server: `pnpm dev`.
 - Lint: `pnpm lint`.
@@ -65,7 +65,7 @@
 - GitHub Actions are under `.github/workflows/`; Dependabot configuration is `.github/dependabot.yml`.
 - CI runs `pnpm install --frozen-lockfile` before Cypress validation. Existing ESLint debt is not yet a required CI gate.
 - The Dockerfile `FROM node:x.y.z-slim AS build-stage` line is the source of truth for the Node.js version used by CI; update `.github/workflows/ci.yml` if that line format changes.
-- Docker builds use `VITE_BaseURL` as a build argument so separate frontend images can be built for different backend deployments.
+- Docker builds use `VITE_BaseURL` plus qu-bounds viewer config build args (`VITE_PredictionsCore`, `VITE_ChemicalsCore`, `VITE_SubjectField`, `VITE_HsdsUrl`, `VITE_HsdsDomain`) so separate frontend images can be built for different backend deployments.
 - Same-repo PRs publish mutable and immutable preview images for all configured targets; fork PRs run validation only and do not build or publish Docker images.
 - Only `push` events to `main` publish production tags and sign images with cosign.
 - Docker uses Corepack with pnpm in the Node build stage and `nginxinc/nginx-unprivileged` at runtime.
