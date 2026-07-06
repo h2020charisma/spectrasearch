@@ -82,6 +82,7 @@ jobs:
         run: |
           cat > .env <<'EOF'
           VITE_BASE_URL="http://localhost:8080/"
+          VITE_AMBIT_URL="https://apps.ideaconsult.net/nanoreg1/"
           VITE_PREDICTIONS_CORE="vega"
           VITE_CHEMICALS_CORE="dsstox"
           VITE_SUBJECT_FIELD="dsstox_id_s"
@@ -111,6 +112,7 @@ jobs:
         target: &docker-targets
           - tag: spectra
             url: https://api.ramanchada.ideaconsult.net/
+            ambitUrl: https://apps.ideaconsult.net/nanoreg1/
             predictionsCore: vega
             chemicalsCore: dsstox
             subjectField: dsstox_id_s
@@ -118,6 +120,7 @@ jobs:
             hsdsDomain: /qubounds
           - tag: nambit
             url: https://api.nambit.adma.ai/
+            ambitUrl: https://apps.ideaconsult.net/nanoreg1/
             predictionsCore: vega
             chemicalsCore: dsstox
             subjectField: dsstox_id_s
@@ -154,6 +157,7 @@ jobs:
         with:
           build-args: |
             VITE_BASE_URL=${{ matrix.target.url }}
+            VITE_AMBIT_URL=${{ matrix.target.ambitUrl }}
             VITE_PREDICTIONS_CORE=${{ matrix.target.predictionsCore }}
             VITE_CHEMICALS_CORE=${{ matrix.target.chemicalsCore }}
             VITE_SUBJECT_FIELD=${{ matrix.target.subjectField }}
@@ -219,6 +223,7 @@ jobs:
         with:
           build-args: |
             VITE_BASE_URL=${{ matrix.target.url }}
+            VITE_AMBIT_URL=${{ matrix.target.ambitUrl }}
             VITE_PREDICTIONS_CORE=${{ matrix.target.predictionsCore }}
             VITE_CHEMICALS_CORE=${{ matrix.target.chemicalsCore }}
             VITE_SUBJECT_FIELD=${{ matrix.target.subjectField }}

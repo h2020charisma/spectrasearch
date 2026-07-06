@@ -3,6 +3,9 @@ packages: []
 minimumReleaseAge: 1440
 minimumReleaseAgeStrict: true
 minimumReleaseAgeIgnoreMissingTime: true
+minimumReleaseAgeExclude:
+  - "@ideaconsult/qubounds-viewer"
+  - "@ideaconsult/jtoxkit-react"
 sideEffectsCache: false
 
 allowBuilds:

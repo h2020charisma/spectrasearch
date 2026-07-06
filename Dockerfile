@@ -14,6 +14,9 @@ RUN CI=true pnpm install --frozen-lockfile
 ARG VITE_BASE_URL="https://api.ramanchada.ideaconsult.net/"
 ENV VITE_BASE_URL=$VITE_BASE_URL
 
+ARG VITE_AMBIT_URL="https://apps.ideaconsult.net/nanoreg1/"
+ENV VITE_AMBIT_URL=$VITE_AMBIT_URL
+
 ARG VITE_PREDICTIONS_CORE="vega"
 ENV VITE_PREDICTIONS_CORE=$VITE_PREDICTIONS_CORE
 

@@ -18,14 +18,15 @@
 - Search results are rendered by `src/components/ImageSelect/` and table view code in `src/components/DataTable/`.
 - Spectrum previews are rendered by `src/components/Chart/Chart.jsx` from `/db/dataset` responses.
 - HDF5/HSDS browsing is handled by `src/components/h5web/h5web.jsx` and the `/h5web/:domain/*` route.
-- Result viewer dispatch is centralized in `src/viewers.js`; route viewers include h5web and predictions, and external viewers are declarative URL templates.
-- Prediction viewer embedding is handled by `src/pages/PredictionsPage.jsx`; result actions use `src/components/ResultActions/ResultActions.jsx`, simpler primary links use `src/components/ViewerLink/ViewerLink.jsx`, and multi-item viewer links are rendered by `src/pages/CollectionPage.jsx`.
+- Result viewer dispatch is centralized in `src/viewers.js`; route viewers include h5web, predictions, and substance/study, and external viewers are declarative URL templates.
+- Prediction viewer embedding is handled by `src/pages/PredictionsPage.jsx`; substance/study viewer embedding is handled by `src/pages/SubstancePage.jsx`; result actions use `src/components/ResultActions/ResultActions.jsx`, simpler primary links use `src/components/ViewerLink/ViewerLink.jsx`, and multi-item viewer links are rendered by `src/pages/CollectionPage.jsx`.
 - Authentication uses `react-oidc-context`; bearer tokens are attached in `src/utils/useFetch.jsx` and passed to image requests through `public/serviceWorker.js`.
 - Shared client state is a mix of React state, session/local storage hooks, and a small Zustand store in `src/store/store.js`.
 
 ## Backend Contract
 
 - Set the backend base URL with `VITE_BASE_URL`; keep the value ending in `/`.
+- Set the fallback AMBIT base URL for unmapped substance UUID/dbtag values with `VITE_AMBIT_URL`; the default is `https://apps.ideaconsult.net/nanoreg1/`.
 - Discover backend-driven UI metadata with `GET /db/query/sources`; do not hard-code source names, field names, application names, or similarity modes unless there is an explicit compatibility requirement.
 - `GET /db/query/sources` is expected to return `application_name`, `default`, `data_sources`, `fields`, and `similarity`.
 - Search requests use `GET /db/query` with `page`, `pagesize`, optional `q`, optional `query_type`, optional `ann`, optional `vector_field`, and repeated `data_source` parameters.
@@ -41,8 +42,8 @@
 
 - Use pnpm, not npm or yarn; the pnpm version is pinned by `packageManager` in `package.json`.
 - Install reproducibly: `pnpm install --frozen-lockfile`.
-- `pnpm-workspace.yaml` enforces a 24-hour strict minimum release age, ignores missing publish-time metadata, disables side-effects cache, and allowlists build scripts for Cypress and esbuild.
-- qu-bounds uses `@ideaconsult/qubounds-viewer`; when changing viewer package names or embedding props, update `package.json`, imports, `vite.config.js` dependency optimization, lockfile, and docs together.
+- `pnpm-workspace.yaml` enforces a 24-hour strict minimum release age, excludes first-party viewer packages from that age gate, ignores missing publish-time metadata, disables side-effects cache, and allowlists build scripts for Cypress and esbuild.
+- qu-bounds uses `@ideaconsult/qubounds-viewer`; substance/study uses `@ideaconsult/jtoxkit-react`; when changing viewer package names or embedding props, update `package.json`, imports, `vite.config.js` dependency optimization, lockfile, and docs together.
 - Create local environment: `cp .env.example .env`, then edit `VITE_BASE_URL` when needed.
 - Start Vite dev server: `pnpm dev`.
 - Lint: `pnpm lint`.
@@ -65,7 +66,7 @@
 - GitHub Actions are under `.github/workflows/`; Dependabot configuration is `.github/dependabot.yml`.
 - CI runs `pnpm install --frozen-lockfile` before Cypress validation. Existing ESLint debt is not yet a required CI gate.
 - The Dockerfile `FROM node:x.y.z-slim AS build-stage` line is the source of truth for the Node.js version used by CI; update `.github/workflows/ci.yml` if that line format changes.
-- Docker builds use `VITE_BASE_URL` plus qu-bounds viewer config build args (`VITE_PREDICTIONS_CORE`, `VITE_CHEMICALS_CORE`, `VITE_SUBJECT_FIELD`, `VITE_HSDS_URL`, `VITE_HSDS_DOMAIN`) so separate frontend images can be built for different backend deployments.
+- Docker builds use `VITE_BASE_URL`, `VITE_AMBIT_URL`, and qu-bounds viewer config build args (`VITE_PREDICTIONS_CORE`, `VITE_CHEMICALS_CORE`, `VITE_SUBJECT_FIELD`, `VITE_HSDS_URL`, `VITE_HSDS_DOMAIN`) so separate frontend images can be built for different backend deployments.
 - Same-repo PRs publish mutable and immutable preview images for all configured targets; fork PRs run validation only and do not build or publish Docker images.
 - Only `push` events to `main` publish production tags and sign images with cosign.
 - Docker uses Corepack with pnpm in the Node build stage and `nginxinc/nginx-unprivileged` at runtime.
