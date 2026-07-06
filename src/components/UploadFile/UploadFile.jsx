@@ -19,8 +19,8 @@ export default function UploadFile({
   smiles,
   setSmiles,
 }) {
-  const fileQuery = `${import.meta.env.VITE_BaseURL}db/download?what=knnquery`;
-  const moleculeQuery = `${import.meta.env.VITE_BaseURL}db/download?what=knnquery`;
+  const fileQuery = `${import.meta.env.VITE_BASE_URL}db/download?what=knnquery`;
+  const moleculeQuery = `${import.meta.env.VITE_BASE_URL}db/download?what=knnquery`;
 
   const [isNotRightFile, setIsNotRightFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

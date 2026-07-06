@@ -51,7 +51,7 @@ The viewer package scopes its CSS under `.qubounds-root`, so importing its CSS s
 - `/predictions?item=...&item=...` opens one or more prediction item ids.
 - `/predictions?compound=...&compound=...` opens one or more subject compound ids.
 
-If `data_source` is not present in the URL, `PredictionsPage` uses `VITE_PredictionsCore` and then falls back to `vega`. It also passes `VITE_ChemicalsCore`, `VITE_SubjectField`, `VITE_HsdsUrl`, and `VITE_HsdsDomain` to the viewer so the host owns backend and HSDS integration config.
+If `data_source` is not present in the URL, `PredictionsPage` uses `VITE_PREDICTIONS_CORE` and then falls back to `vega`. It also passes `VITE_CHEMICALS_CORE`, `VITE_SUBJECT_FIELD`, `VITE_HSDS_URL`, and `VITE_HSDS_DOMAIN` to the viewer so the host owns backend and HSDS integration config.
 
 ## Registry And Dispatch
 

@@ -15,7 +15,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
   const { querySourcesString } = useQueryStringSourcesParams();
 
   const datasetQuery = !isNexusFile
-    ? `${import.meta.env.VITE_BaseURL}db/dataset?domain=${encodeURIComponent(
+    ? `${import.meta.env.VITE_BASE_URL}db/dataset?domain=${encodeURIComponent(
         imageSelected
       )}&values=True&${querySourcesString}`
     : "";

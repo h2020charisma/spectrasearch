@@ -19,7 +19,7 @@ export default function SearchSelect({
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState("");
 
-  const baseURL = `${import.meta.env.VITE_BaseURL}`;
+  const baseURL = `${import.meta.env.VITE_BASE_URL}`;
   const debounced = useDebounce(search, 300);
 
   // Build full endpoint including data sources

@@ -51,7 +51,7 @@ cp .env.example .env
 Edit `.env` if you need a non-default backend:
 
 ```sh
-VITE_BaseURL="https://api.ramanchada.ideaconsult.net/"
+VITE_BASE_URL="https://api.ramanchada.ideaconsult.net/"
 ```
 
 Start the development server:
@@ -122,8 +122,8 @@ Use a compatible local Node.js version for development. When changing the Docker
 
 ## Backend API expectations
 
-- `VITE_BaseURL` must point to a `ramanchada-api` deployment and should end with `/`.
-- qu-bounds embedding reads `VITE_PredictionsCore`, `VITE_ChemicalsCore`, `VITE_SubjectField`, `VITE_HsdsUrl`, and `VITE_HsdsDomain`, then passes them as props to `@ideaconsult/qubounds-viewer`.
+- `VITE_BASE_URL` must point to a `ramanchada-api` deployment and should end with `/`.
+- qu-bounds embedding reads `VITE_PREDICTIONS_CORE`, `VITE_CHEMICALS_CORE`, `VITE_SUBJECT_FIELD`, `VITE_HSDS_URL`, and `VITE_HSDS_DOMAIN`, then passes them as props to `@ideaconsult/qubounds-viewer`.
 - The app discovers data sources, fields, app name, and similarity modes from `GET /db/query/sources`.
 - Search requests use `GET /db/query` with repeated `data_source` parameters where needed.
 - Dynamic filters should follow backend field names returned by discovery; qdynamic filters are sent as `qdynamic.<field>=value`.
@@ -175,7 +175,7 @@ minimumReleaseAgeExclude:
 
 The app is served under `/search/`. Current deployment uses Traefik with `PathPrefix('/search')` and prefix stripping before requests reach nginx.
 
-Docker builds pass `VITE_BaseURL` and qu-bounds viewer config as build arguments. This allows images for different backend deployments while keeping the frontend code backend-discovery driven.
+Docker builds pass `VITE_BASE_URL` and qu-bounds viewer config as build arguments. This allows images for different backend deployments while keeping the frontend code backend-discovery driven.
 
 Docker uses Corepack with pnpm in the pinned Node.js build stage and `nginxinc/nginx-unprivileged` at runtime. The runtime container listens on port `8080`.
 

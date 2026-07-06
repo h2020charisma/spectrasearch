@@ -16,15 +16,15 @@ export default function PredictionsPage() {
   const token = auth?.user?.access_token;
   const dataSource =
     params.get("data_source") ||
-    import.meta.env.VITE_PredictionsCore ||
+    import.meta.env.VITE_PREDICTIONS_CORE ||
     "vega";
-  const chemicalsCore = import.meta.env.VITE_ChemicalsCore || "dsstox";
-  const subjectField = import.meta.env.VITE_SubjectField || "dsstox_id_s";
+  const chemicalsCore = import.meta.env.VITE_CHEMICALS_CORE || "dsstox";
+  const subjectField = import.meta.env.VITE_SUBJECT_FIELD || "dsstox_id_s";
   const hsds = {
-    url: import.meta.env.VITE_HsdsUrl || "https://hsds.adma.ai",
-    domain: import.meta.env.VITE_HsdsDomain || "/qubounds",
+    url: import.meta.env.VITE_HSDS_URL || "https://hsds.adma.ai",
+    domain: import.meta.env.VITE_HSDS_DOMAIN || "/qubounds",
   };
-  const apiBase = (import.meta.env.VITE_BaseURL || "").replace(/\/$/, "");
+  const apiBase = (import.meta.env.VITE_BASE_URL || "").replace(/\/$/, "");
 
   // List mode: repeatable ?item= / ?compound= (e.g. from a collection) shows
   // several together. Single mode: the :id path param + ?mode= (item|compound).
