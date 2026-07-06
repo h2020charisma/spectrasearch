@@ -31,7 +31,7 @@ git config --global pull.rebase true
 - Use `pnpm install --frozen-lockfile` for CI-like verification.
 - Use `pnpm install` only when intentionally updating dependencies and the lockfile.
 - The pnpm version is pinned by `packageManager` in `package.json`.
-- pnpm enforces a 24-hour strict minimum package release age and disables side-effects cache.
+- pnpm enforces a 24-hour strict minimum package release age, except for first-party viewer packages, and disables side-effects cache.
 - Docker is optional for local app development, but useful for testing the production container.
 
 ## Start developing
@@ -123,7 +123,9 @@ Use a compatible local Node.js version for development. When changing the Docker
 ## Backend API expectations
 
 - `VITE_BASE_URL` must point to a `ramanchada-api` deployment and should end with `/`.
+- `VITE_AMBIT_URL` is the fallback AMBIT base URL for substance/study viewing when the substance UUID/dbtag is not mapped by `src/utils/tagdbs.js`; the default is `https://apps.ideaconsult.net/nanoreg1/`.
 - qu-bounds embedding reads `VITE_PREDICTIONS_CORE`, `VITE_CHEMICALS_CORE`, `VITE_SUBJECT_FIELD`, `VITE_HSDS_URL`, and `VITE_HSDS_DOMAIN`, then passes them as props to `@ideaconsult/qubounds-viewer`.
+- jtoxkit substance/study embedding derives `apiBase` from the result UUID/dbtag when possible, falls back to `VITE_AMBIT_URL`, and passes `VITE_BASE_URL` as the dose-response conversion base to `@ideaconsult/jtoxkit-react`.
 - The app discovers data sources, fields, app name, and similarity modes from `GET /db/query/sources`.
 - Search requests use `GET /db/query` with repeated `data_source` parameters where needed.
 - Dynamic filters should follow backend field names returned by discovery; qdynamic filters are sent as `qdynamic.<field>=value`.
@@ -252,7 +254,7 @@ minimumReleaseAgeExclude:
 
 The app is served under `/search/`. Current deployment uses Traefik with `PathPrefix('/search')` and prefix stripping before requests reach nginx.
 
-Docker builds pass `VITE_BASE_URL` and qu-bounds viewer config as build arguments. This allows images for different backend deployments while keeping the frontend code backend-discovery driven.
+Docker builds pass `VITE_BASE_URL`, `VITE_AMBIT_URL`, and qu-bounds viewer config as build arguments. This allows images for different backend deployments while keeping the frontend code backend-discovery driven.
 
 Docker uses Corepack with pnpm in the pinned Node.js build stage and `nginxinc/nginx-unprivileged` at runtime. The runtime container listens on port `8080`.
 

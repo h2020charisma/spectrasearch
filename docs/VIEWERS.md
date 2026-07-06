@@ -4,7 +4,7 @@
 
 Search results (`/db/query`) each carry a result type (`type`). Viewer dispatch maps each result to one or more actions without hard-coding viewer links in result components.
 
-The default route viewer is h5web. Prediction and chemical results can also open the qu-bounds prediction viewer. External website actions, such as AOP mapper or AOP-Wiki, use the same registry but render as normal external links.
+The default route viewer is h5web. Prediction and chemical results can also open the qu-bounds prediction viewer, and substance results can open the jtoxkit substance/study viewer. External website actions, such as AOP mapper or AOP-Wiki, use the same registry but render as normal external links.
 
 ## Viewer Kinds
 
@@ -19,6 +19,7 @@ Current route viewers:
 |---|---|---|---|
 | h5web default | `@h5web/app` | `/h5web/:domain/*` | `src/pages/H5webPage.jsx` |
 | predictions | `@ideaconsult/qubounds-viewer` | `/predictions`, `/predictions/:id/*` | `src/pages/PredictionsPage.jsx` |
+| substance/study | `@ideaconsult/jtoxkit-react` | `/substance` | `src/pages/SubstancePage.jsx` |
 
 When a viewer package version or embedding props change, update `package.json`, imports, `vite.config.js` dependency optimization, deployment build args, and this document together.
 
@@ -53,6 +54,32 @@ The viewer package scopes its CSS under `.qubounds-root`, so importing its CSS s
 
 If `data_source` is not present in the URL, `PredictionsPage` uses `VITE_PREDICTIONS_CORE` and then falls back to `vega`. It also passes `VITE_CHEMICALS_CORE`, `VITE_SUBJECT_FIELD`, `VITE_HSDS_URL`, and `VITE_HSDS_DOMAIN` to the viewer so the host owns backend and HSDS integration config.
 
+## Substance/Study Embedding
+
+`SubstancePage` embeds the jtoxkit substance/study viewer and passes the existing OIDC access token as a prop. Do not put tokens in substance viewer URLs.
+
+```jsx
+import SubstanceStudyViewer from "@ideaconsult/jtoxkit-react";
+import "@ideaconsult/jtoxkit-react/style.css";
+
+<SubstanceStudyViewer
+  substanceId={substanceId}
+  apiBase={apiBase}
+  convertBase={convertBase}
+  token={token}
+  showHeader={false}
+/>
+```
+
+`SubstancePage` accepts query parameters built from search result fields:
+
+- `/substance?substanceId=...` opens the substance UUID surfaced from `s_uuid_hs` as `item.uuid`.
+- `/substance?substanceId=...&dbtag=...` can use `dbtag_hss[0]` when available.
+
+`apiBase` is derived from `dbtag` or the substance UUID prefix through `src/utils/tagdbs.js`. If the tag is not mapped, `SubstancePage` falls back to `VITE_AMBIT_URL`, which defaults to `https://apps.ideaconsult.net/nanoreg1/`. `convertBase` is derived from `VITE_BASE_URL` and is used only for the ramanchada-api dose-response conversion endpoint.
+
+The viewer package scopes its CSS under `.jtoxkit-root`, so importing its CSS should not leak globals into the search app.
+
 ## Local Viewer Development
 
 For local debugging of [`@ideaconsult/qubounds-viewer`](https://github.com/ideaconsult/qubounds-viewer) or [`@ideaconsult/jtoxkit-react`](https://github.com/ideaconsult/jtoxkit-react), prefer `pnpm link` over committed `file:` dependencies.
@@ -83,6 +110,18 @@ Use `pnpm pack` tarballs only for package-consumer smoke tests. Tarball installs
 
 ```js
 const VIEWERS = [
+  {
+    id: "substance",
+    kind: "route",
+    label: "Substance studies",
+    icon: "fa6/FaFlask",
+    types: ["substance"],
+    route: "/substance",
+    idField: "uuid",
+    paramName: "substanceId",
+    multi: false,
+    priority: 10,
+  },
   {
     id: "predictions",
     kind: "route",
