@@ -82,7 +82,7 @@ jobs:
         run: printf '%s\n' 'VITE_BaseURL="http://localhost:8080/"' > .env
 
       - name: Run Cypress
-        uses: cypress-io/github-action@v7.4.0
+        uses: cypress-io/github-action@v7.4.1
         with:
           install: false
           start: pnpm build-serve
