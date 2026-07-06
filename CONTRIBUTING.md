@@ -138,9 +138,86 @@ Use `kind: "external"` for viewers that can be represented as links built from r
 
 Use `kind: "route"` for embedded React viewers. A route viewer should have a props-driven component, a page under `src/pages/`, a route in `src/main.jsx`, and a registry entry in `src/viewers.js`.
 
-The qu-bounds viewer is imported as `@ideaconsult/qubounds-viewer`. Treat local `file:` dependencies as development-only; when the viewer package version or embedding props change, update package metadata, imports, Vite dependency optimization, lockfile, and docs together.
+The qu-bounds viewer is imported as [`@ideaconsult/qubounds-viewer`](https://github.com/ideaconsult/qubounds-viewer). The substance/study viewer is imported as [`@ideaconsult/jtoxkit-react`](https://github.com/ideaconsult/jtoxkit-react). Treat local `file:` dependencies as development-only; when a viewer package version or embedding props change, update package metadata, imports, Vite dependency optimization, lockfile, and docs together.
 
 When changing viewer registry behavior, routes, viewer package names, or embedding props, update `docs/VIEWERS.md` in the same pull request.
+
+### Local viewer package development
+
+Keep committed viewer dependencies as semver npm packages. For local debugging, prefer
+`pnpm link` so package overrides stay in `node_modules` instead of `package.json` and
+`pnpm-lock.yaml`.
+
+Viewer packages expose built `dist/` files, not their `src/` files. Keep the relevant
+library build running in watch mode while this app is running.
+
+For jtoxkit-react:
+
+```sh
+# terminal 1, in ../jtoxkit-react
+pnpm build:lib -- --watch
+```
+
+```sh
+# terminal 2, in this repo
+pnpm link ../jtoxkit-react
+pnpm dev -- --force
+```
+
+For qubounds-viewer:
+
+```sh
+# terminal 1, in ../qubounds-viewer
+pnpm build:lib -- --watch
+```
+
+```sh
+# terminal 2, in this repo
+pnpm link ../qubounds-viewer
+pnpm dev -- --force
+```
+
+If both local viewers are needed, link both before starting the dev server:
+
+```sh
+pnpm link ../jtoxkit-react
+pnpm link ../qubounds-viewer
+pnpm dev -- --force
+```
+
+Because `vite.config.js` prebundles both viewer packages through `optimizeDeps.include`, a
+library rebuild may not appear until Vite re-optimizes dependencies. Restart the dev server
+with `pnpm dev -- --force` whenever updates are not picked up.
+
+To return to registry packages:
+
+```sh
+pnpm unlink @ideaconsult/jtoxkit-react
+pnpm unlink @ideaconsult/qubounds-viewer
+pnpm install --frozen-lockfile
+pnpm dev -- --force
+```
+
+Use packed tarballs for package-consumer smoke tests, not everyday live debugging. In the
+viewer repo:
+
+```sh
+pnpm build:lib
+pnpm pack --pack-destination /tmp/viewer-packs
+```
+
+Then install the tarball in this repo, preferably on a throwaway branch:
+
+```sh
+pnpm add /tmp/viewer-packs/ideaconsult-jtoxkit-react-0.1.0.tgz
+# or:
+pnpm add /tmp/viewer-packs/ideaconsult-qubounds-viewer-0.1.0.tgz
+pnpm dev -- --force
+```
+
+Tarball installs intentionally modify `package.json` and `pnpm-lock.yaml`. Restore the
+normal semver dependency before committing. Do not commit local `file:` or `.tgz` viewer
+dependencies unless the pull request is explicitly about temporary local integration.
 
 ## Dependency updates
 

@@ -20,7 +20,7 @@ Current route viewers:
 | h5web default | `@h5web/app` | `/h5web/:domain/*` | `src/pages/H5webPage.jsx` |
 | predictions | `@ideaconsult/qubounds-viewer` | `/predictions`, `/predictions/:id/*` | `src/pages/PredictionsPage.jsx` |
 
-When the qu-bounds viewer package version or embedding props change, update `package.json`, imports, `vite.config.js` dependency optimization, deployment build args, and this document together.
+When a viewer package version or embedding props change, update `package.json`, imports, `vite.config.js` dependency optimization, deployment build args, and this document together.
 
 ## Qu-bounds Embedding
 
@@ -52,6 +52,30 @@ The viewer package scopes its CSS under `.qubounds-root`, so importing its CSS s
 - `/predictions?compound=...&compound=...` opens one or more subject compound ids.
 
 If `data_source` is not present in the URL, `PredictionsPage` uses `VITE_PREDICTIONS_CORE` and then falls back to `vega`. It also passes `VITE_CHEMICALS_CORE`, `VITE_SUBJECT_FIELD`, `VITE_HSDS_URL`, and `VITE_HSDS_DOMAIN` to the viewer so the host owns backend and HSDS integration config.
+
+## Local Viewer Development
+
+For local debugging of [`@ideaconsult/qubounds-viewer`](https://github.com/ideaconsult/qubounds-viewer) or [`@ideaconsult/jtoxkit-react`](https://github.com/ideaconsult/jtoxkit-react), prefer `pnpm link` over committed `file:` dependencies.
+
+The viewer packages expose built `dist/` files, so run the library build in watch mode:
+
+```sh
+# in ../qubounds-viewer or ../jtoxkit-react
+pnpm build:lib -- --watch
+```
+
+Then link the package in this repo and force Vite dependency optimization:
+
+```sh
+pnpm link ../qubounds-viewer
+# or:
+pnpm link ../jtoxkit-react
+pnpm dev -- --force
+```
+
+If updates are not picked up after a viewer rebuild, restart `pnpm dev -- --force`. Return to registry packages with `pnpm unlink <package>`, then `pnpm install --frozen-lockfile`.
+
+Use `pnpm pack` tarballs only for package-consumer smoke tests. Tarball installs modify `package.json` and `pnpm-lock.yaml`, so do them on a throwaway branch or restore the normal semver dependencies before committing.
 
 ## Registry And Dispatch
 
