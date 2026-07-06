@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const testURLRoot = "http://127.0.0.1:50722/search/";
-const baseURL = Cypress.env("VITE_BaseURL");
+const baseURL = Cypress.env("VITE_BASE_URL");
 
 import { ann } from "../fixtures/json/ann_params";
 

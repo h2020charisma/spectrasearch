@@ -14,7 +14,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@adma/qubounds-viewer": "file:../../git_idea/qubounds-viewer",
+    "@ideaconsult/qubounds-viewer": "^0.1.0",
     "@ideaconsult/jtoxkit-react": "file:../../git_idea/jtoxkit-react",
     "@h5web/app": "^15.0.0",
     "@observablehq/plot": "^0.6.15",

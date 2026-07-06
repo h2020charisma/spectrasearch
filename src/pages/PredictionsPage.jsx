@@ -1,8 +1,8 @@
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "react-oidc-context";
 import { ErrorBoundary } from "react-error-boundary";
-import PredictionViewer from "@adma/qubounds-viewer";
-import "@adma/qubounds-viewer/style.css";
+import PredictionViewer from "@ideaconsult/qubounds-viewer";
+import "@ideaconsult/qubounds-viewer/style.css";
 import Header from "../components/Header/Header";
 
 // Embeds the qu-bounds prediction viewer as a React component (like h5web).
@@ -16,9 +16,15 @@ export default function PredictionsPage() {
   const token = auth?.user?.access_token;
   const dataSource =
     params.get("data_source") ||
-    import.meta.env.VITE_PredictionsCore ||
+    import.meta.env.VITE_PREDICTIONS_CORE ||
     "vega";
-  const apiBase = (import.meta.env.VITE_BaseURL || "").replace(/\/$/, "");
+  const chemicalsCore = import.meta.env.VITE_CHEMICALS_CORE || "dsstox";
+  const subjectField = import.meta.env.VITE_SUBJECT_FIELD || "dsstox_id_s";
+  const hsds = {
+    url: import.meta.env.VITE_HSDS_URL || "https://hsds.adma.ai",
+    domain: import.meta.env.VITE_HSDS_DOMAIN || "/qubounds",
+  };
+  const apiBase = (import.meta.env.VITE_BASE_URL || "").replace(/\/$/, "");
 
   // List mode: repeatable ?item= / ?compound= (e.g. from a collection) shows
   // several together. Single mode: the :id path param + ?mode= (item|compound).
@@ -48,6 +54,10 @@ export default function PredictionsPage() {
             {...selector}
             type="prediction"
             dataSource={dataSource}
+            predictionsCore={dataSource}
+            chemicalsCore={chemicalsCore}
+            subjectField={subjectField}
+            hsds={hsds}
             token={token}
             apiBase={apiBase}
             showHeader={false}

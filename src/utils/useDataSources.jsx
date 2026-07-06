@@ -3,7 +3,7 @@
 import useFetch from "./useFetch";
 
 async function useDataSources() {
-  const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
+  const sorcesUrl = `${import.meta.env.VITE_BASE_URL}db/query/sources`;
   const data = await fetch(sorcesUrl);
 
   return { data };

@@ -11,8 +11,23 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN CI=true pnpm install --frozen-lockfile
 
-ARG VITE_BaseURL="https://api.ramanchada.ideaconsult.net/"
-ENV VITE_BaseURL=$VITE_BaseURL
+ARG VITE_BASE_URL="https://api.ramanchada.ideaconsult.net/"
+ENV VITE_BASE_URL=$VITE_BASE_URL
+
+ARG VITE_PREDICTIONS_CORE="vega"
+ENV VITE_PREDICTIONS_CORE=$VITE_PREDICTIONS_CORE
+
+ARG VITE_CHEMICALS_CORE="dsstox"
+ENV VITE_CHEMICALS_CORE=$VITE_CHEMICALS_CORE
+
+ARG VITE_SUBJECT_FIELD="dsstox_id_s"
+ENV VITE_SUBJECT_FIELD=$VITE_SUBJECT_FIELD
+
+ARG VITE_HSDS_URL="https://hsds.adma.ai"
+ENV VITE_HSDS_URL=$VITE_HSDS_URL
+
+ARG VITE_HSDS_DOMAIN="/qubounds"
+ENV VITE_HSDS_DOMAIN=$VITE_HSDS_DOMAIN
 
 COPY index.html vite.config.js ./
 COPY public ./public

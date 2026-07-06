@@ -44,7 +44,7 @@ export default function H5web({ domain }) {
     const token = auth?.user?.access_token;
 
     fetch(
-      `${import.meta.env.VITE_BaseURL}db/download?what=h5&domain=${
+      `${import.meta.env.VITE_BASE_URL}db/download?what=h5&domain=${
         domain || h5webParams
       }&${querySourcesString}`,
       {
