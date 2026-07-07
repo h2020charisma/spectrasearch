@@ -36,8 +36,8 @@ importers:
         specifier: ^11.2.10
         version: 11.18.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       katex:
-        specifier: ^0.16.23
-        version: 0.16.47
+        specifier: ^0.17.0
+        version: 0.17.0
       kekule:
         specifier: ^1.0.3
         version: 1.0.4
@@ -2328,6 +2328,10 @@ packages:
 
   katex@0.16.47:
     resolution: {integrity: sha512-Eeo8Ys1doU1z+x8AZsPpQu+p/QcZBI5PeOo7QGQdy2x2m0MU/hYagBbGOmXwr5KVbEfVuWv9LpnQWeehogurjg==}
+    hasBin: true
+
+  katex@0.17.0:
+    resolution: {integrity: sha512-Vdw0ATsQ9V+LuegM/BTwQqV/6cTl5lbGcIrU+BCgLxyf6bo38ybOr372tuSIxir3CN720flu1meYR6XzNMwQnw==}
     hasBin: true
 
   kekule-react@0.1.1:
@@ -5775,6 +5779,10 @@ snapshots:
   jwt-decode@4.0.0: {}
 
   katex@0.16.47:
+    dependencies:
+      commander: 8.3.0
+
+  katex@0.17.0:
     dependencies:
       commander: 8.3.0
 

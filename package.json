@@ -23,7 +23,7 @@
     "@uidotdev/usehooks": "^2.4.1",
     "axios": "^1.7.7",
     "framer-motion": "^11.2.10",
-    "katex": "^0.16.23",
+    "katex": "^0.17.0",
     "kekule": "^1.0.3",
     "kekule-react": "^0.1.1",
     "keycloak-js": "^25.0.5",
