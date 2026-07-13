@@ -62,7 +62,7 @@ export default function SearchComp({ setDomain }) {
   const [similarity, setSimilarity] = useState({ name: "", vector: "" });
   const [smiles, setSmiles] = useSessionStorage("SMILES", "");
 
-  const sorcesUrl = `${import.meta.env.VITE_BASE_URL}db/query/sources`;
+  const sorcesUrl = "db/query/sources";
   const { data: allDataSources } = useFetch(sorcesUrl);
 
   console.log(appName);

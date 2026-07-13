@@ -5,6 +5,7 @@ import Spinner from "../Icons/Spinner";
 import { useSessionStorage } from "../../utils/useSessionStorage";
 import { ModeSelect } from "../UI/Select";
 import EditorDialog from "../EditorDialog/EditorDialog";
+import { apiUrl } from "../../config";
 
 
 // eslint-disable-next-line react/prop-types
@@ -19,8 +20,8 @@ export default function UploadFile({
   smiles,
   setSmiles,
 }) {
-  const fileQuery = `${import.meta.env.VITE_BASE_URL}db/download?what=knnquery`;
-  const moleculeQuery = `${import.meta.env.VITE_BASE_URL}db/download?what=knnquery`;
+  const fileQuery = apiUrl("db/download?what=knnquery");
+  const moleculeQuery = apiUrl("db/download?what=knnquery");
 
   const [isNotRightFile, setIsNotRightFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

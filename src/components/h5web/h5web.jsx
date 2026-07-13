@@ -5,6 +5,7 @@ import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
 import { useAuth } from "react-oidc-context";
 import { useQueryStringSourcesParams } from "../../utils/useQueryStringSourcesParams";
 import BackArrow from "../Icons/BackArrow";
+import { apiUrl } from "../../config";
 
 // eslint-disable-next-line react/prop-types
 export default function H5web({ domain }) {
@@ -44,9 +45,9 @@ export default function H5web({ domain }) {
     const token = auth?.user?.access_token;
 
     fetch(
-      `${import.meta.env.VITE_BASE_URL}db/download?what=h5&domain=${
-        domain || h5webParams
-      }&${querySourcesString}`,
+      apiUrl(
+        `db/download?what=h5&domain=${domain || h5webParams}&${querySourcesString}`
+      ),
       {
         headers: token ? { Authorization: 'Bearer ' + token } : {},
       }

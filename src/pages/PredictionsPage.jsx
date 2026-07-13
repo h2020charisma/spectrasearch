@@ -4,6 +4,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import PredictionViewer from "@ideaconsult/qubounds-viewer";
 import "@ideaconsult/qubounds-viewer/style.css";
 import Header from "../components/Header/Header";
+import { getRuntimeConfig } from "../config";
 
 // Embeds the qu-bounds prediction viewer as a React component (like h5web).
 // Auth is native: the Keycloak token is passed as a prop; same origin/scope so
@@ -12,19 +13,20 @@ export default function PredictionsPage() {
   const { id } = useParams();
   const [params] = useSearchParams();
   const auth = useAuth();
+  const config = getRuntimeConfig();
 
   const token = auth?.user?.access_token;
   const dataSource =
     params.get("data_source") ||
-    import.meta.env.VITE_PREDICTIONS_CORE ||
+    config.predictionsCore ||
     "vega";
-  const chemicalsCore = import.meta.env.VITE_CHEMICALS_CORE || "dsstox";
-  const subjectField = import.meta.env.VITE_SUBJECT_FIELD || "dsstox_id_s";
+  const chemicalsCore = config.chemicalsCore || "dsstox";
+  const subjectField = config.subjectField || "dsstox_id_s";
   const hsds = {
-    url: import.meta.env.VITE_HSDS_URL || "https://hsds.adma.ai",
-    domain: import.meta.env.VITE_HSDS_DOMAIN || "/qubounds",
+    url: config.hsdsUrl || "https://hsds.adma.ai",
+    domain: config.hsdsDomain || "/qubounds",
   };
-  const apiBase = (import.meta.env.VITE_BASE_URL || "").replace(/\/$/, "");
+  const apiBase = (config.apiBaseUrl || "").replace(/\/$/, "");
 
   // List mode: repeatable ?item= / ?compound= (e.g. from a collection) shows
   // several together. Single mode: the :id path param + ?mode= (item|compound).
