@@ -42,16 +42,26 @@ Clone the repository and install dependencies:
 pnpm install --frozen-lockfile
 ```
 
-Create a local environment file:
+Create a local environment file only if you need to override Cypress intercepts:
 
 ```sh
 cp .env.example .env
 ```
 
-Edit `.env` if you need a non-default backend:
+Select one of the tracked frontend config profiles for local runs. The name may include or omit `.json`:
 
 ```sh
-VITE_BASE_URL="https://api.ramanchada.ideaconsult.net/"
+pnpm select-config spectra
+# or
+pnpm select-config nambit.json
+```
+
+This generates the git-ignored `public/config.json`. If it is missing, `pnpm dev` and `pnpm build` generate it from `spectra.json`. You may edit the generated file for temporary local experiments without dirtying the worktree:
+
+```json
+{
+  "apiBaseUrl": "https://api.ramanchada.ideaconsult.net/"
+}
 ```
 
 Start the development server:
@@ -110,7 +120,7 @@ For interactive Cypress work, use:
 pnpm exec cypress open
 ```
 
-Cypress uses `cypress-dotenv`, so `.env` should contain the backend URL expected by the tests.
+Cypress intercepts runtime config and API startup requests before visiting the app, using a non-routable test origin by default. `cypress-dotenv` can override that test-only origin with `API_BASE_URL` from `.env`; it does not configure the application build.
 
 Cypress fixtures for `/db/query/sources` should mirror the backend discovery response, including `application_name`, `fields`, and `similarity` when tests exercise dynamic sidebar or similarity behavior.
 
@@ -122,10 +132,10 @@ Use a compatible local Node.js version for development. When changing the Docker
 
 ## Backend API expectations
 
-- `VITE_BASE_URL` must point to a `ramanchada-api` deployment and should end with `/`.
-- `VITE_AMBIT_URL` is the fallback AMBIT base URL for substance/study viewing when the substance UUID/dbtag is not mapped by `src/utils/tagdbs.js`; the default is `https://apps.ideaconsult.net/nanoreg1/`.
-- qu-bounds embedding reads `VITE_PREDICTIONS_CORE`, `VITE_CHEMICALS_CORE`, `VITE_SUBJECT_FIELD`, `VITE_HSDS_URL`, and `VITE_HSDS_DOMAIN`, then passes them as props to `@ideaconsult/qubounds-viewer`.
-- jtoxkit substance/study embedding derives `apiBase` from the result UUID/dbtag when possible, falls back to `VITE_AMBIT_URL`, and passes `VITE_BASE_URL` as the dose-response conversion base to `@ideaconsult/jtoxkit-react`.
+- `apiBaseUrl` in frontend runtime config must point to a `ramanchada-api` deployment and should end with `/`.
+- `ambitUrl` in frontend runtime config is the fallback AMBIT base URL for substance/study viewing when the substance UUID/dbtag is not mapped by `src/utils/tagdbs.js`; the default is `https://apps.ideaconsult.net/nanoreg1/`.
+- qu-bounds embedding reads `predictionsCore`, `chemicalsCore`, `subjectField`, `hsdsUrl`, and `hsdsDomain` from frontend runtime config, then passes them as props to `@ideaconsult/qubounds-viewer`.
+- jtoxkit substance/study embedding derives `apiBase` from the result UUID/dbtag when possible, falls back to runtime config `ambitUrl`, and passes runtime config `apiBaseUrl` as the dose-response conversion base to `@ideaconsult/jtoxkit-react`.
 - The app discovers data sources, fields, app name, and similarity modes from `GET /db/query/sources`.
 - Search requests use `GET /db/query` with repeated `data_source` parameters where needed.
 - Dynamic filters should follow backend field names returned by discovery; qdynamic filters are sent as `qdynamic.<field>=value`.
@@ -254,15 +264,27 @@ minimumReleaseAgeExclude:
 
 The app is served under `/search/`. Current deployment uses Traefik with `PathPrefix('/search')` and prefix stripping before requests reach nginx.
 
-Docker builds pass `VITE_BASE_URL`, `VITE_AMBIT_URL`, and qu-bounds viewer config as build arguments. This allows images for different backend deployments while keeping the frontend code backend-discovery driven.
+Docker builds one generic frontend image. Packaged deployment configs live under `public/configs/*.json`, and the container selects one at startup with `SPECTRASEARCH_CONFIG_FILE`, defaulting to `spectra.json`.
+
+For example:
+
+```yaml
+services:
+  spectrasearch:
+    image: ghcr.io/h2020charisma/spectrasearch:latest
+    environment:
+      SPECTRASEARCH_CONFIG_FILE: nambit.json
+```
 
 Docker uses Corepack with pnpm in the pinned Node.js build stage and `nginxinc/nginx-unprivileged` at runtime. The runtime container listens on port `8080`.
+
+The deployed asset tree remains root-owned. Only `/usr/share/nginx/html/config.json` is writable by the unprivileged nginx user so the startup selector cannot modify application bundles.
 
 The checked-in nginx config lives at `docker/nginx/default.conf`. It provides the React Router fallback for routes served behind the `/search/` deployment path.
 
 The `.dockerignore` file intentionally allowlists only Docker build inputs. Update it when new files become required for production builds.
 
-CI validates pull requests with Cypress before any Docker job. Same-repo pull requests publish preview images for all configured backend targets. Fork pull requests run validation only and do not build or publish Docker images. Pushes to `main` publish production tags and sign images with cosign.
+CI validates pull requests with Cypress before any Docker job. Same-repo pull requests publish one generic preview image. Fork pull requests run validation only and do not build or publish Docker images. Pushes to `main` publish `latest` and immutable `sha-*` production tags and sign images with cosign.
 
 Dependabot covers GitHub Actions, pnpm-managed npm dependencies, and Docker base images. Docker updates intentionally ignore Node.js versions `>=25` while this project is pinned to Node 24.
 
