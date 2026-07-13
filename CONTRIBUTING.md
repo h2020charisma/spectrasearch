@@ -54,6 +54,8 @@ Select one of the tracked frontend config profiles for local runs. The name may 
 pnpm select-config spectra
 # or
 pnpm select-config nambit.json
+# or, for viewer integration against the test API
+pnpm select-config test
 ```
 
 This generates the git-ignored `public/config.json`. If it is missing, `pnpm dev` and `pnpm build` generate it from `spectra.json`. You may edit the generated file for temporary local experiments without dirtying the worktree:
@@ -264,7 +266,7 @@ minimumReleaseAgeExclude:
 
 The app is served under `/search/`. Current deployment uses Traefik with `PathPrefix('/search')` and prefix stripping before requests reach nginx.
 
-Docker builds one generic frontend image. Packaged deployment configs live under `public/configs/*.json`, and the container selects one at startup with `SPECTRASEARCH_CONFIG_FILE`, defaulting to `spectra.json`.
+Docker builds one generic frontend image. Packaged deployment configs live under `public/configs/*.json`, and the container selects one at startup with `SPECTRASEARCH_CONFIG_FILE`, defaulting to `spectra.json`. Use `test.json` for viewer integration against `https://api-test.ramanchada.ideaconsult.net/`.
 
 For example:
 
@@ -273,7 +275,7 @@ services:
   spectrasearch:
     image: ghcr.io/h2020charisma/spectrasearch:latest
     environment:
-      SPECTRASEARCH_CONFIG_FILE: nambit.json
+      SPECTRASEARCH_CONFIG_FILE: test.json
 ```
 
 Docker uses Corepack with pnpm in the pinned Node.js build stage and `nginxinc/nginx-unprivileged` at runtime. The runtime container listens on port `8080`.

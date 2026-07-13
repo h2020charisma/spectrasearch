@@ -47,7 +47,7 @@
 - qu-bounds uses `@ideaconsult/qubounds-viewer`; substance/study uses `@ideaconsult/jtoxkit-react`; when changing viewer package names or embedding props, update `package.json`, imports, `vite.config.js` dependency optimization, lockfile, and docs together.
 - Select a local frontend config with `pnpm select-config <name>`; names may include or omit `.json`. Edit the generated `public/config.json` only for temporary local experiments. `.env.example` is only for optional Cypress intercept overrides.
 - Start Vite dev server: `pnpm dev`.
-- Select a packaged local config: `pnpm select-config spectra` or `pnpm select-config nambit`.
+- Select a packaged local config: `pnpm select-config spectra`, `pnpm select-config nambit`, or `pnpm select-config test`.
 - Lint: `pnpm lint`.
 - Build production assets: `pnpm build`.
 - Build a local `/search/` tree and serve it for Cypress: `pnpm build-serve`.
@@ -68,7 +68,7 @@
 - GitHub Actions are under `.github/workflows/`; Dependabot configuration is `.github/dependabot.yml`.
 - CI runs `pnpm install --frozen-lockfile` before Cypress validation. Existing ESLint debt is not yet a required CI gate.
 - The Dockerfile `FROM node:x.y.z-slim AS build-stage` line is the source of truth for the Node.js version used by CI; update `.github/workflows/ci.yml` if that line format changes.
-- Docker builds one generic frontend image with packaged configs under `public/configs/`; select one at container startup with `SPECTRASEARCH_CONFIG_FILE`.
+- Docker builds one generic frontend image with packaged configs under `public/configs/`; select one at container startup with `SPECTRASEARCH_CONFIG_FILE`. The `test.json` profile targets `api-test.ramanchada.ideaconsult.net` for viewer integration testing.
 - Docker builds generate a deterministic `spectra.json` active config before Vite runs; the container entrypoint replaces only `config.json` at startup.
 - Same-repo PRs publish mutable and immutable preview images; fork PRs run validation only and do not build or publish Docker images.
 - Only `push` events to `main` publish production tags and sign images with cosign.
