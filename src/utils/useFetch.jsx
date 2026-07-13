@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "react-oidc-context";
 import axios from "axios";
+import { apiUrl } from "../config";
 
 const axiosInstance = axios.create({
-  baseURL: `${import.meta.env.VITE_BASE_URL}`,
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });
@@ -36,7 +36,7 @@ function useFetch(url) {
     );
 
     try {
-      const response = await axiosInstance.get(url, {
+      const response = await axiosInstance.get(apiUrl(url), {
         signal: controller.signal,
         headers: {
           Authorization: kc_token ? `Bearer ${kc_token}` : "",

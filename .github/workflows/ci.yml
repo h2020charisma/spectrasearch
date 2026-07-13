@@ -18,7 +18,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEFAULT_TARGET: spectra
   IMAGE_NAME: ${{ github.repository }}
   REGISTRY: ghcr.io
   DOCKER_METADATA_LABELS: |
@@ -78,18 +77,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Set a fake .env file
-        run: |
-          cat > .env <<'EOF'
-          VITE_BASE_URL="http://localhost:8080/"
-          VITE_AMBIT_URL="https://apps.ideaconsult.net/nanoreg1/"
-          VITE_PREDICTIONS_CORE="vega"
-          VITE_CHEMICALS_CORE="dsstox"
-          VITE_SUBJECT_FIELD="dsstox_id_s"
-          VITE_HSDS_URL="https://hsds.adma.ai"
-          VITE_HSDS_DOMAIN="/qubounds"
-          EOF
-
       - name: Run Cypress
         uses: cypress-io/github-action@v7.4.1
         with:
@@ -107,26 +94,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    strategy:
-      matrix:
-        target: &docker-targets
-          - tag: spectra
-            url: https://api.ramanchada.ideaconsult.net/
-            ambitUrl: https://apps.ideaconsult.net/nanoreg1/
-            predictionsCore: vega
-            chemicalsCore: dsstox
-            subjectField: dsstox_id_s
-            hsdsUrl: https://hsds.adma.ai
-            hsdsDomain: /qubounds
-          - tag: nambit
-            url: https://api.nambit.adma.ai/
-            ambitUrl: https://apps.ideaconsult.net/nanoreg1/
-            predictionsCore: vega
-            chemicalsCore: dsstox
-            subjectField: dsstox_id_s
-            hsdsUrl: https://hsds.adma.ai
-            hsdsDomain: /qubounds
-
     steps:
 
       - name: Checkout repository
@@ -149,20 +116,12 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           labels: ${{ env.DOCKER_METADATA_LABELS }}
           tags: |
-            type=raw,value=pr-${{ github.event.pull_request.number }}-${{ matrix.target.tag }}
-            type=raw,value=pr-${{ github.event.pull_request.number }}-${{ github.sha }}-${{ matrix.target.tag }}
+            type=raw,value=pr-${{ github.event.pull_request.number }}
+            type=raw,value=pr-${{ github.event.pull_request.number }}-${{ github.sha }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7.3.0
         with:
-          build-args: |
-            VITE_BASE_URL=${{ matrix.target.url }}
-            VITE_AMBIT_URL=${{ matrix.target.ambitUrl }}
-            VITE_PREDICTIONS_CORE=${{ matrix.target.predictionsCore }}
-            VITE_CHEMICALS_CORE=${{ matrix.target.chemicalsCore }}
-            VITE_SUBJECT_FIELD=${{ matrix.target.subjectField }}
-            VITE_HSDS_URL=${{ matrix.target.hsdsUrl }}
-            VITE_HSDS_DOMAIN=${{ matrix.target.hsdsDomain }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: .
@@ -183,10 +142,6 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio for production images.
       id-token: write
-    strategy:
-      matrix:
-        target: *docker-targets
-
     steps:
 
       - name: Checkout repository
@@ -212,23 +167,13 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           labels: ${{ env.DOCKER_METADATA_LABELS }}
           tags: |
-            type=raw,value=latest,enable=${{ matrix.target.tag == env.DEFAULT_TARGET }}
-            type=raw,value=${{ matrix.target.tag }}
-            type=raw,value=main-${{ matrix.target.tag }}
-            type=raw,value=sha-${{ github.sha }}-${{ matrix.target.tag }}
+            type=raw,value=latest
+            type=raw,value=sha-${{ github.sha }}
 
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v7.3.0
         with:
-          build-args: |
-            VITE_BASE_URL=${{ matrix.target.url }}
-            VITE_AMBIT_URL=${{ matrix.target.ambitUrl }}
-            VITE_PREDICTIONS_CORE=${{ matrix.target.predictionsCore }}
-            VITE_CHEMICALS_CORE=${{ matrix.target.chemicalsCore }}
-            VITE_SUBJECT_FIELD=${{ matrix.target.subjectField }}
-            VITE_HSDS_URL=${{ matrix.target.hsdsUrl }}
-            VITE_HSDS_DOMAIN=${{ matrix.target.hsdsDomain }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           context: .

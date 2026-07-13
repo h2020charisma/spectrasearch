@@ -5,6 +5,7 @@ import SubstanceStudyViewer from "@ideaconsult/jtoxkit-react";
 import "@ideaconsult/jtoxkit-react/style.css";
 import Header from "../components/Header/Header";
 import { substance2server } from "../utils/tagdbs";
+import { getRuntimeConfig } from "../config";
 
 // Embeds the jtoxkit-react substance/study viewer.
 //
@@ -13,10 +14,11 @@ import { substance2server } from "../utils/tagdbs";
 //   ?dbtag=<dbtag_hss[0]>               e.g. NNRG  (optional — UUID prefix is sufficient)
 //
 // apiBase is derived from the substance UUID prefix via TAG_DBS (no manual env var needed).
-// Falls back to VITE_AMBIT_URL if the prefix is not in the table (unlikely).
+// Falls back to runtime config ambitUrl if the prefix is not in the table (unlikely).
 export default function SubstancePage() {
   const [params] = useSearchParams();
   const auth = useAuth();
+  const config = getRuntimeConfig();
 
   const token = auth?.user?.access_token;
   const substanceId = params.get("substanceId") || undefined;
@@ -25,12 +27,12 @@ export default function SubstancePage() {
   // Derive apiBase: prefer explicit dbtag param, else extract from UUID prefix.
   const apiBase =
     substance2server(dbtag || substanceId) ||
-    import.meta.env.VITE_AMBIT_URL ||
+    config.ambitUrl ||
     "";
 
   // ramanchada-api base — used only for the dose-response conversion endpoint
   // (POST /dataset/convert?format=effectarray). Everything-except-AMBIT goes here.
-  const convertBase = (import.meta.env.VITE_BASE_URL || "").replace(/\/$/, "");
+  const convertBase = (config.apiBaseUrl || "").replace(/\/$/, "");
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>

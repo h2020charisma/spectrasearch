@@ -1,0 +1,9 @@
+{
+  "apiBaseUrl": "https://api.nambit.adma.ai/",
+  "ambitUrl": "https://apps.ideaconsult.net/nanoreg1/",
+  "predictionsCore": "vega",
+  "chemicalsCore": "dsstox",
+  "subjectField": "dsstox_id_s",
+  "hsdsUrl": "https://hsds.adma.ai",
+  "hsdsDomain": "/qubounds"
+}

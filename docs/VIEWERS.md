@@ -21,7 +21,7 @@ Current route viewers:
 | predictions | `@ideaconsult/qubounds-viewer` | `/predictions`, `/predictions/:id/*` | `src/pages/PredictionsPage.jsx` |
 | substance/study | `@ideaconsult/jtoxkit-react` | `/substance` | `src/pages/SubstancePage.jsx` |
 
-When a viewer package version or embedding props change, update `package.json`, imports, `vite.config.js` dependency optimization, deployment build args, and this document together.
+When a viewer package version or embedding props change, update `package.json`, imports, `vite.config.js` dependency optimization, packaged runtime configs, and this document together.
 
 ## Qu-bounds Embedding
 
@@ -52,7 +52,7 @@ The viewer package scopes its CSS under `.qubounds-root`, so importing its CSS s
 - `/predictions?item=...&item=...` opens one or more prediction item ids.
 - `/predictions?compound=...&compound=...` opens one or more subject compound ids.
 
-If `data_source` is not present in the URL, `PredictionsPage` uses `VITE_PREDICTIONS_CORE` and then falls back to `vega`. It also passes `VITE_CHEMICALS_CORE`, `VITE_SUBJECT_FIELD`, `VITE_HSDS_URL`, and `VITE_HSDS_DOMAIN` to the viewer so the host owns backend and HSDS integration config.
+If `data_source` is not present in the URL, `PredictionsPage` uses runtime config `predictionsCore` and then falls back to `vega`. It also passes `chemicalsCore`, `subjectField`, `hsdsUrl`, and `hsdsDomain` to the viewer so the host owns backend and HSDS integration config.
 
 ## Substance/Study Embedding
 
@@ -76,7 +76,7 @@ import "@ideaconsult/jtoxkit-react/style.css";
 - `/substance?substanceId=...` opens the substance UUID surfaced from `s_uuid_hs` as `item.uuid`.
 - `/substance?substanceId=...&dbtag=...` can use `dbtag_hss[0]` when available.
 
-`apiBase` is derived from `dbtag` or the substance UUID prefix through `src/utils/tagdbs.js`. If the tag is not mapped, `SubstancePage` falls back to `VITE_AMBIT_URL`, which defaults to `https://apps.ideaconsult.net/nanoreg1/`. `convertBase` is derived from `VITE_BASE_URL` and is used only for the ramanchada-api dose-response conversion endpoint.
+`apiBase` is derived from `dbtag` or the substance UUID prefix through `src/utils/tagdbs.js`. If the tag is not mapped, `SubstancePage` falls back to runtime config `ambitUrl`, which defaults to `https://apps.ideaconsult.net/nanoreg1/`. `convertBase` is derived from runtime config `apiBaseUrl` and is used only for the ramanchada-api dose-response conversion endpoint.
 
 The viewer package scopes its CSS under `.jtoxkit-root`, so importing its CSS should not leak globals into the search app.
 

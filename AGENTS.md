@@ -25,8 +25,9 @@
 
 ## Backend Contract
 
-- Set the backend base URL with `VITE_BASE_URL`; keep the value ending in `/`.
-- Set the fallback AMBIT base URL for unmapped substance UUID/dbtag values with `VITE_AMBIT_URL`; the default is `https://apps.ideaconsult.net/nanoreg1/`.
+- Frontend config profiles are tracked in `public/configs/*.json`. `public/config.json` is generated, git-ignored, and used by local builds.
+- Runtime config must include `apiBaseUrl`; keep the value ending in `/`.
+- Runtime config `ambitUrl` is the fallback AMBIT base URL for unmapped substance UUID/dbtag values; the default is `https://apps.ideaconsult.net/nanoreg1/`.
 - Discover backend-driven UI metadata with `GET /db/query/sources`; do not hard-code source names, field names, application names, or similarity modes unless there is an explicit compatibility requirement.
 - `GET /db/query/sources` is expected to return `application_name`, `default`, `data_sources`, `fields`, and `similarity`.
 - Search requests use `GET /db/query` with `page`, `pagesize`, optional `q`, optional `query_type`, optional `ann`, optional `vector_field`, and repeated `data_source` parameters.
@@ -44,8 +45,9 @@
 - Install reproducibly: `pnpm install --frozen-lockfile`.
 - `pnpm-workspace.yaml` enforces a 24-hour strict minimum release age, excludes first-party viewer packages from that age gate, ignores missing publish-time metadata, disables side-effects cache, and allowlists build scripts for Cypress and esbuild.
 - qu-bounds uses `@ideaconsult/qubounds-viewer`; substance/study uses `@ideaconsult/jtoxkit-react`; when changing viewer package names or embedding props, update `package.json`, imports, `vite.config.js` dependency optimization, lockfile, and docs together.
-- Create local environment: `cp .env.example .env`, then edit `VITE_BASE_URL` when needed.
+- Select a local frontend config with `pnpm select-config <name>`; names may include or omit `.json`. Edit the generated `public/config.json` only for temporary local experiments. `.env.example` is only for optional Cypress intercept overrides.
 - Start Vite dev server: `pnpm dev`.
+- Select a packaged local config: `pnpm select-config spectra` or `pnpm select-config nambit`.
 - Lint: `pnpm lint`.
 - Build production assets: `pnpm build`.
 - Build a local `/search/` tree and serve it for Cypress: `pnpm build-serve`.
@@ -56,7 +58,7 @@
 
 - There is currently no `pnpm test` script; Cypress is the configured browser test runner.
 - Cypress E2E tests live in `cypress/e2e/`; fixtures live in `cypress/fixtures/`.
-- Cypress loads `.env` through `cypress-dotenv`, so keep test backend values aligned with `.env` or CI setup.
+- Cypress loads `.env` through `cypress-dotenv` for an optional test-only `API_BASE_URL`; it intercepts runtime config before the app starts and must not contact production APIs.
 - Cypress fixtures for `/db/query/sources` should mirror the backend discovery response, including `application_name`, `fields`, and `similarity` when tests exercise dynamic sidebar or similarity behavior.
 - Run focused checks after code changes. For docs-only changes, inspect the rendered Markdown and skip build-heavy checks unless the content affects commands or tooling.
 - If existing lint or test debt blocks an unrelated change, do not hide it. Document what was run and what failed.
@@ -66,16 +68,18 @@
 - GitHub Actions are under `.github/workflows/`; Dependabot configuration is `.github/dependabot.yml`.
 - CI runs `pnpm install --frozen-lockfile` before Cypress validation. Existing ESLint debt is not yet a required CI gate.
 - The Dockerfile `FROM node:x.y.z-slim AS build-stage` line is the source of truth for the Node.js version used by CI; update `.github/workflows/ci.yml` if that line format changes.
-- Docker builds use `VITE_BASE_URL`, `VITE_AMBIT_URL`, and qu-bounds viewer config build args (`VITE_PREDICTIONS_CORE`, `VITE_CHEMICALS_CORE`, `VITE_SUBJECT_FIELD`, `VITE_HSDS_URL`, `VITE_HSDS_DOMAIN`) so separate frontend images can be built for different backend deployments.
-- Same-repo PRs publish mutable and immutable preview images for all configured targets; fork PRs run validation only and do not build or publish Docker images.
+- Docker builds one generic frontend image with packaged configs under `public/configs/`; select one at container startup with `SPECTRASEARCH_CONFIG_FILE`.
+- Docker builds generate a deterministic `spectra.json` active config before Vite runs; the container entrypoint replaces only `config.json` at startup.
+- Same-repo PRs publish mutable and immutable preview images; fork PRs run validation only and do not build or publish Docker images.
 - Only `push` events to `main` publish production tags and sign images with cosign.
 - Docker uses Corepack with pnpm in the Node build stage and `nginxinc/nginx-unprivileged` at runtime.
 - `.dockerignore` intentionally keeps Docker context narrow; update it if new build inputs are added.
 - Checked-in nginx config lives in `docker/nginx/default.conf`; the runtime container listens on port `8080`.
+- Docker startup scripts live in `docker/entrypoint.d/`; the config selector copies `/usr/share/nginx/html/configs/$SPECTRASEARCH_CONFIG_FILE` to `/usr/share/nginx/html/config.json`, defaulting to `spectra.json`.
 - The app expects browser URLs under `/search/`. Current deployment uses Traefik `PathPrefix('/search')` plus prefix stripping before requests reach nginx.
 - The production container serves static Vite output with nginx. Keep Docker, nginx, Vite base path, and Traefik assumptions in sync.
 - Dependabot covers GitHub Actions, pnpm-managed npm dependencies, and Docker base images. Docker updates intentionally ignore Node versions `>=25` while the project is pinned to Node 24.
-- Do not add secrets to the image build context or checked-in environment files. `.env` is local-only.
+- Do not add secrets to packaged frontend config, the image build context, or checked-in environment files. Frontend runtime config is public browser data.
 
 ## Maintenance Rules
 
