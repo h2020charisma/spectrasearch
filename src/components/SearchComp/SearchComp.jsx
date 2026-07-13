@@ -62,7 +62,7 @@ export default function SearchComp({ setDomain }) {
   const [similarity, setSimilarity] = useState({ name: "", vector: "" });
   const [smiles, setSmiles] = useSessionStorage("SMILES", "");
 
-  const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
+  const sorcesUrl = "db/query/sources";
   const { data: allDataSources } = useFetch(sorcesUrl);
 
   console.log(appName);
@@ -73,6 +73,11 @@ export default function SearchComp({ setDomain }) {
 
   useEffect(() => {
     setAppName(allDataSources?.application_name);
+    // Persist to localStorage so viewer/collection pages (opened in new tabs,
+    // which don't inherit sessionStorage) show the same app title.
+    if (allDataSources?.application_name) {
+      localStorage.setItem("appName", allDataSources.application_name);
+    }
   }, [allDataSources, setAppName]);
 
   useEffect(() => {

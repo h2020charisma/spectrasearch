@@ -3,6 +3,7 @@ import * as Plot from "@observablehq/plot";
 import { useEffect, useRef, useState } from "react";
 import { useQueryStringSourcesParams } from "../../utils/useQueryStringSourcesParams";
 import useFetch from "../../utils/useFetch";
+import { apiUrl } from "../../config";
 
 import { latexToUnicode } from "../../utils/latexToUnicode";
 import "katex/dist/katex.min.css";
@@ -15,9 +16,11 @@ export default function Chart({ imageSelected, isNexusFile }) {
   const { querySourcesString } = useQueryStringSourcesParams();
 
   const datasetQuery = !isNexusFile
-    ? `${import.meta.env.VITE_BaseURL}db/dataset?domain=${encodeURIComponent(
-        imageSelected
-      )}&values=True&${querySourcesString}`
+    ? apiUrl(
+        `db/dataset?domain=${encodeURIComponent(
+          imageSelected
+        )}&values=True&${querySourcesString}`
+      )
     : "";
 
   const { data, loading, error } = useFetch(imageSelected && datasetQuery);

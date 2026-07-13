@@ -1,9 +1,18 @@
 {
+  "application_name": "Spectra search test",
   "default": "charisma",
   "data_sources": [
     {
       "name": "charisma",
-      "description": "CHARISMA"
+      "description": "CHARISMA",
+      "public": true
+    }
+  ],
+  "fields": [],
+  "similarity": [
+    {
+      "name": "Text search",
+      "vector": "None"
     }
   ]
 }

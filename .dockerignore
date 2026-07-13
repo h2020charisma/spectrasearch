@@ -11,6 +11,11 @@
 !src/**
 !public/
 !public/**
+public/config.json
+!scripts/
+!scripts/select-config.mjs
 !docker/
+!docker/entrypoint.d/
+!docker/entrypoint.d/*.sh
 !docker/nginx/
 !docker/nginx/*.conf

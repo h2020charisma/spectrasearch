@@ -4,6 +4,7 @@ import useDebounce from "../../utils/useDebounce";
 import SearchIcon from "../Icons/SearchIcon";
 import Close from "../Icons/Close";
 import useSWR from "swr";
+import { apiUrl } from "../../config";
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
 
@@ -19,17 +20,18 @@ export default function SearchSelect({
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState("");
 
-  const baseURL = `${import.meta.env.VITE_BaseURL}`;
   const debounced = useDebounce(search, 300);
 
   // Build full endpoint including data sources
   const apiURL =
     debounced && debounced.length > 0
-      ? `${baseURL}db/query/field/terms?name=${field}&prefix=${encodeURIComponent(
-          debounced
-        )}&limit=25${
-          queryStringSourcesParams ? `&${queryStringSourcesParams}` : ""
-        }`
+      ? apiUrl(
+          `db/query/field/terms?name=${field}&prefix=${encodeURIComponent(
+            debounced
+          )}&limit=25${
+            queryStringSourcesParams ? `&${queryStringSourcesParams}` : ""
+          }`
+        )
       : null;
 
   const { data, error } = useSWR(apiURL, fetcher);

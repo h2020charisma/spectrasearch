@@ -5,15 +5,18 @@
   "packageManager": "pnpm@11.4.0",
   "type": "module",
   "scripts": {
-    "build": "rimraf dist && vite build",
-    "build-docker": "rimraf dist && vite build --base=/search",
-    "build-serve": "rimraf dist && vite build --base /search --outDir dist/search && http-server -a 127.0.0.1 -p 50722 dist",
+    "build": "node scripts/select-config.mjs --ensure && rimraf dist && vite build",
+    "build-docker": "node scripts/select-config.mjs spectra && rimraf dist && vite build",
+    "build-serve": "node scripts/select-config.mjs spectra && rimraf dist && vite build --outDir dist/search && http-server -a 127.0.0.1 -p 50722 dist",
     "clean": "rimraf dist",
-    "dev": "vite",
+    "dev": "node scripts/select-config.mjs --ensure && vite",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "select-config": "node scripts/select-config.mjs"
   },
   "dependencies": {
+    "@ideaconsult/qubounds-viewer": "^0.1.0",
+    "@ideaconsult/jtoxkit-react": "^0.1.0",
     "@h5web/app": "^15.0.0",
     "@observablehq/plot": "^0.6.15",
     "@radix-ui/react-dialog": "^1.1.1",

@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import PreviewDialog from "../PreviewDialog/PreviewDialog";
+import ViewerLink from "../ViewerLink/ViewerLink";
+import ResultActions from "../ResultActions/ResultActions";
 
 // eslint-disable-next-line react/prop-types
 export default function ImageItem({ img, i, setImageSelectedStore }) {
@@ -26,7 +27,7 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
           }}
           className={`${show ? "imageNonSelectedHover" : "imageNonSelected"}`}
         >
-          <Link to={`h5web/${img.value}`}>
+          <ResultActions item={img}>
             <img
               className="imgSelected"
               src={img.imageLink}
@@ -34,7 +35,7 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
               height={"auto"}
               alt={img.text}
             />
-          </Link>
+          </ResultActions>
         </div>
 
         <div className="imgDescription">
@@ -55,7 +56,7 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
           </div>
         </div>
         {show && (
-          <Link to={`h5web/${img.value}`}>
+          <ViewerLink item={img}>
             <div
               className="descriptionHover"
               dangerouslySetInnerHTML={{ __html: img.text }}
@@ -65,7 +66,7 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
                   : { textAlign: "center" }
               }
             />
-          </Link>
+          </ViewerLink>
         )}
       </div>
       <p className="imgCaption">
