@@ -40,9 +40,9 @@ export default function Expander({ children, title, status, data, icon }) {
     <div
       className="expander"
       style={
-        title == "Search by Similarity"
-          ? { overflow: "visible" }
-          : { overflow: "hidden" }
+        title == "Search Results"
+          ? { border: "none" }
+          : { border: "1px solid #e0e0e0", borderRadius: "4px" }
       }
     >
       <div

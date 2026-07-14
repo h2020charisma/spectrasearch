@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react";
 
 import { useAuth } from "react-oidc-context";
 import { useLocation } from "react-router-dom";
@@ -16,6 +16,7 @@ import ImageSelect from "../ImageSelect/ImageSelect";
 import Sidebar from "../Sidebar/Sidebar";
 import Expander from "../UI/Expander";
 import ToastDemo from "../UI/Toast/Toast";
+import ImagePlaceholder from "../UI/ImagePlaceholder";
 
 import "../../App.css";
 import Pagination from "../Pagination/Pagination";
@@ -30,7 +31,7 @@ export default function SearchComp({ setDomain }) {
   let [open, setOpen] = useState(true);
   let [dialog, setDialog] = useState(false);
   let [imageSelected, setImageSelected] = useState(
-    domainParams ? domainParams : ""
+    domainParams ? domainParams : "",
   );
 
   let isNexusFile = false;
@@ -79,12 +80,12 @@ export default function SearchComp({ setDomain }) {
     if (allDataSources && sources?.length < 1 && !dialog) {
       setSources(
         allDataSources?.data_sources?.filter(
-          (item) => item?.name === defaultSourceLower
-        )
+          (item) => item?.name === defaultSourceLower,
+        ),
       );
     }
     let isDefault = sources.some(
-      (source) => source?.name.toLowerCase() === defaultSourceLower
+      (source) => source?.name.toLowerCase() === defaultSourceLower,
     );
     setToast(sources?.length == 1 && isDefault);
   }, [dialog, sources, allDataSources, setSources, toast, defaultSourceLower]);
@@ -236,15 +237,26 @@ export default function SearchComp({ setDomain }) {
         />
         {file && imageData && (
           <div className="imageUploded">
-            <img src={imageData && imageData.imageLink} alt="Spectrum or molecule" />
+            <img
+              src={imageData && imageData.imageLink}
+              alt="Spectrum or molecule"
+            />
           </div>
         )}
         {smiles && imageData && !file && (
           <div className="imageUploded">
-            <img src={imageData && imageData.imageLink} alt="Molecule structure" />
+            <img
+              src={imageData && imageData.imageLink}
+              alt="Molecule structure"
+            />
           </div>
         )}
         <Expander title="Search Results" status={true} data={data}>
+          {/* {loading && (
+            <div className="loadingSpinner">
+              <ImagePlaceholder />
+            </div>
+          )} */}
           <ErrorBoundary
             fallback={
               <div className="errorMessage">

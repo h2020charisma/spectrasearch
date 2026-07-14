@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import SearchComp from "../components/SearchComp/SearchComp";
 
 import Footer from "../components/Footer/Footer";
-import H5web from "../components/h5web/h5web";
+// import H5web from "../components/h5web/h5web";
+
 import Header from "../components/Header/Header";
-import ToastComp from "../components/UI/Toast/Toast";
 import GoToTop from "../components/UI/GoToTop";
+import ToastComp from "../components/UI/Toast/Toast";
+
+const H5web = lazy(() => import("../components/h5web/h5web"));
 
 export default function HomePage() {
   const location = useLocation();
@@ -22,7 +25,9 @@ export default function HomePage() {
 
       <div>
         {h5webParams ? (
-          <H5web domain={domain} />
+          <Suspense fallback={<div>Loading H5web...</div>}>
+            <H5web domain={domain} />
+          </Suspense>
         ) : (
           <div>
             <SearchComp setDomain={setDomain} />

@@ -57,6 +57,7 @@ h1 {
   overflow: hidden;
   background-color: light-dark(#fff, #202020);
   color: light-dark(#202020, #ccc);
+  min-height: fit-content;
 }
 .expanderFreeSearch {
   border: 1px solid #00ace1;
@@ -782,4 +783,13 @@ h1 {
 
 .closeBtn:focus {
   outline: none;
+}
+
+.loadingSpinner {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 2rem;
 }
