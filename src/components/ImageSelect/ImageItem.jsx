@@ -55,7 +55,7 @@ export default function ImageItem({ img, i, setImageSelectedStore }) {
           </div>
         </div>
         {show && (
-          <Link to={`h5web/${img.value}`}>
+          <Link to={`h5web${img.value}`}>
             <div
               className="descriptionHover"
               dangerouslySetInnerHTML={{ __html: img.text }}

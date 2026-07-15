@@ -8,26 +8,20 @@ const iconPackLoaders = {
   hi2: () => import("react-icons/hi2"),
   ai: () => import("react-icons/ai"),
 };
-
-// Icon "FaFileAlt" not found in pack "fa6"
-// Error: Icon "FaFileAlt" not found in pack "fa6"
-
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useMemo } from "react";
 
 function DynamicIcon({ name, pack }) {
-  if (!pack || !name) return;
+  const Icon = useMemo(() => {
+    if (!pack || !name) return null;
 
-  const Icon = lazy(() => {
-    return iconPackLoaders[pack]().then((module) => {
-      const Component = module[name];
+    return lazy(() =>
+      iconPackLoaders[pack]().then((module) => ({
+        default: module[name],
+      })),
+    );
+  }, [pack, name]);
 
-      if (!Component) {
-        throw new Error(`Icon "${name}" not found in pack "${pack}"`);
-      }
-
-      return { default: Component };
-    });
-  });
+  if (!Icon) return null;
 
   return (
     <Suspense fallback={null}>

@@ -1,11 +1,10 @@
 .pagination-wrap {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-right: 1rem;
-  margin-bottom: 4px;
+  margin-top: 0.6rem;
+  padding-left: 0.6rem;
 }
 
 .btns-wrap {
@@ -33,7 +32,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: fit-content;
+  width: 170px;
 }
 
 .pageNumberInput {
@@ -47,9 +46,10 @@
 .firstPageNumber {
   cursor: pointer;
   color: light-dark(#2b2b2b, #fff);
+  min-width: 46px;
 }
 .firstPageNumber {
-  width: 14px;
+  width: 12px;
 }
 
 .lastPageNumber:hover {
@@ -74,7 +74,9 @@
   background-color: #00ace1;
   border: 1px solid #00ace1;
   color: #fff;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 .next-page-btn:disabled {

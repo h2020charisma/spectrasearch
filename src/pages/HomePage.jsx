@@ -9,6 +9,7 @@ import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
 import GoToTop from "../components/UI/GoToTop";
 import ToastComp from "../components/UI/Toast/Toast";
+import { ErrorBoundary } from "react-error-boundary";
 
 const H5web = lazy(() => import("../components/h5web/h5web"));
 
@@ -26,7 +27,13 @@ export default function HomePage() {
       <div>
         {h5webParams ? (
           <Suspense fallback={<div>Loading H5web...</div>}>
-            <H5web domain={domain} />
+            <ErrorBoundary
+              fallback={
+                <div className="errorMessage">Sorry, no data available</div>
+              }
+            >
+              <H5web domain={domain} />
+            </ErrorBoundary>
           </Suspense>
         ) : (
           <div>

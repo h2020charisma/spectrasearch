@@ -16,7 +16,7 @@ import ImageSelect from "../ImageSelect/ImageSelect";
 import Sidebar from "../Sidebar/Sidebar";
 import Expander from "../UI/Expander";
 import ToastDemo from "../UI/Toast/Toast";
-import ImagePlaceholder from "../UI/ImagePlaceholder";
+import SourcesDialog from "../SourcesDialog/SourcesDialog";
 
 import "../../App.css";
 import Pagination from "../Pagination/Pagination";
@@ -207,34 +207,23 @@ export default function SearchComp({ setDomain }) {
         </AnimatePresence>
       </div>
       <div className="content">
-        <DisplaySearchFilters
-          params={q_params}
-          setParams={setQ_Params}
-          qQuery={q}
-          setqQuery={setQ}
-          provider={provider}
-          setProvider={setProvider}
-          instrument={instrument}
-          setInstrument={setInstrument}
-          wavelengths={wavelengths}
-          setWavelengths={setWavelengths}
-          reference={q_reference}
-          setReference={setQReference}
-          sources={sources}
-          setSources={setSources}
-          dialog={dialog}
-          setDialog={setDialog}
-          allDataSources={allDataSources}
-          freeSearch={freeSearch}
-          setFreeSearch={setFreeSearch}
-          methods={methods}
-          setMethods={setMethods}
+        <div className="data-sources-wrap">
+          <SourcesDialog
+            sources={sources}
+            setSources={setSources}
+            allDataSources={allDataSources}
+            dialog={dialog}
+            setDialog={setDialog}
+          />
+        </div>
+        <Pagination
           pagesize={pagesize}
           pages={pages}
           setPagesize={setPagesize}
           setPages={setPages}
           founds={data?.numFound}
         />
+
         {file && imageData && (
           <div className="imageUploded">
             <img
@@ -267,6 +256,34 @@ export default function SearchComp({ setDomain }) {
               </div>
             }
           >
+            <DisplaySearchFilters
+              params={q_params}
+              setParams={setQ_Params}
+              qQuery={q}
+              setqQuery={setQ}
+              provider={provider}
+              setProvider={setProvider}
+              instrument={instrument}
+              setInstrument={setInstrument}
+              wavelengths={wavelengths}
+              setWavelengths={setWavelengths}
+              reference={q_reference}
+              setReference={setQReference}
+              sources={sources}
+              setSources={setSources}
+              dialog={dialog}
+              setDialog={setDialog}
+              allDataSources={allDataSources}
+              freeSearch={freeSearch}
+              setFreeSearch={setFreeSearch}
+              methods={methods}
+              setMethods={setMethods}
+              pagesize={pagesize}
+              pages={pages}
+              setPagesize={setPagesize}
+              setPages={setPages}
+              founds={data?.numFound}
+            />
             <ImageSelect
               data={data}
               error={error}

@@ -3,37 +3,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import "../../App.css";
 import Close from "../Icons/Close";
-import SourcesDialog from "../SourcesDialog/SourcesDialog";
-import Pagination from "../Pagination/Pagination";
 
-export default function DisplaySearchFilters({
-  params,
-  setParams,
-  sources,
-  dialog,
-  setDialog,
-  setSources,
-  allDataSources,
-  pagesize,
-  pages,
-  setPagesize,
-  setPages,
-  founds,
-}) {
+export default function DisplaySearchFilters({ params, setParams }) {
   return (
-    <div style={{ textAlign: "right", paddingTop: "0.4rem" }}>
-      <SourcesDialog
-        sources={sources}
-        setSources={setSources}
-        allDataSources={allDataSources}
-        dialog={dialog}
-        setDialog={setDialog}
-      />
+    <div style={{ textAlign: "right" }}>
       <div className="search-filters-wrap">
         <div className="search-filters-container">
-          <div className="resetFilters" onClick={() => setParams([])}>
-            {params.length > 1 && <p className="resetLabel">Clear</p>}
-          </div>
+          {params.length > 1 && (
+            <div className="resetFilters" onClick={() => setParams([])}>
+              <p className="resetLabel">Clear</p>
+            </div>
+          )}
           <div className="search-filters">
             <AnimatePresence>
               {params?.map(({ name, value }) => (
@@ -43,7 +23,7 @@ export default function DisplaySearchFilters({
                   value={value}
                   onClick={() =>
                     setParams((prev) =>
-                      prev.filter((item) => item.value !== value)
+                      prev.filter((item) => item.value !== value),
                     )
                   }
                 />
@@ -52,13 +32,6 @@ export default function DisplaySearchFilters({
           </div>
         </div>
       </div>
-      <Pagination
-        pagesize={pagesize}
-        pages={pages}
-        setPagesize={setPagesize}
-        setPages={setPages}
-        founds={founds}
-      />
     </div>
   );
 }

@@ -40,7 +40,7 @@ const router = createBrowserRouter(
       Component: CallbackPage,
     },
   ],
-  { basename: "/search/" }
+  { basename: "/search/" },
 );
 
 export const Main = () => {
@@ -59,7 +59,7 @@ export const Main = () => {
           "/search/serviceWorker.js",
           {
             scope: "/search/",
-          }
+          },
         );
 
         await registration.active.postMessage({
@@ -95,5 +95,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Main />
       <RouterProvider router={router} />
     </React.StrictMode>
-  </AuthProvider>
+  </AuthProvider>,
 );

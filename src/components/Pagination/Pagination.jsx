@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useMemo } from "react";
 import SelectNumber from "../UI/SelectNumber";
+
 import "./Pagination.css";
 
 function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
@@ -15,9 +16,16 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
     if (pagesize > 100 || pagesize < 1) {
       setPagesize(10);
     }
-  }, [pagesize, setPagesize]);
+    if (localStorage.getItem("currentPage")) {
+      setPages(parseInt(localStorage.getItem("currentPage")));
+    }
+  }, [pagesize, setPages, setPagesize]);
 
   const currentPage = pages + 1;
+
+  const storedPage = localStorage.getItem("currentPage");
+
+  // const currentPageNumber = localStorage.getItem("currentPage") || currentPage;
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -41,27 +49,39 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
       <div className="btns-wrap">
         <button
           className="next-page-btn"
-          onClick={() => setPages(pages - 1)}
+          onClick={() => {
+            setPages(pages - 1);
+            localStorage.setItem("currentPage", pages - 1);
+          }}
           disabled={pages < 1}
         >
           Previous Page
         </button>
         <div className="pages-numbers">
           {pages > 0 && (
-            <div className="firstPageNumber" onClick={() => setPages(0)}>
+            <div
+              className="firstPageNumber"
+              onClick={() => {
+                setPages(0);
+                localStorage.setItem("currentPage", 1);
+              }}
+            >
               1
             </div>
           )}
           {currentPage < 3 ? null : <p>&nbsp;...</p>}
           <div className="pages-info">
-            <span className="current-page">{currentPage}</span>
+            <span className="current-page">{pages + 1}</span>
           </div>
           {currentPage !== totalPages && (
             <div
               className="lastPageNumber"
-              onClick={() => setPages(totalPages - 1)}
+              onClick={() => {
+                setPages(totalPages - 1);
+                localStorage.setItem("currentPage", totalPages);
+              }}
             >
-              ... {totalPages ? totalPages : null}
+              ...&nbsp;&nbsp;{totalPages ? totalPages : null}
             </div>
           )}
         </div>
@@ -73,7 +93,10 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
         />
         <button
           className="next-page-btn"
-          onClick={() => setPages(pages + 1)}
+          onClick={() => {
+            setPages(pages + 1);
+            localStorage.setItem("currentPage", pages + 1);
+          }}
           disabled={pages > totalPages - 2}
         >
           Next Page
