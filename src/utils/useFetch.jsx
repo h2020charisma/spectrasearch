@@ -32,7 +32,7 @@ function useFetch(url) {
       },
       function (error) {
         return Promise.reject(error);
-      }
+      },
     );
 
     try {
@@ -47,10 +47,16 @@ function useFetch(url) {
       if (axios.isAxiosError(err)) {
         if (err.response) {
           switch (err.response.status) {
+            case 400:
+              setError(
+                "The request was invalid. Please check the request parameters and try again.",
+              );
+              console.error("Bad Request:", err.message);
+              break;
             case 401:
               if (auth.isAuthenticated) {
                 setError(
-                  "The requested information requires authorization. Please log in first, or select at least one publicly available data source."
+                  "The requested information requires authorization. Please log in first, or select at least one publicly available data source.",
                 );
                 console.error("Unauthorized access:", err.message);
               }
@@ -58,7 +64,7 @@ function useFetch(url) {
               break;
             case 403:
               setError(
-                "You are not granted access to some of the requested information. Please click the data sources button and select the desired sources again."
+                "You are not granted access to some of the requested information. Please click the data sources button and select the desired sources again.",
               );
               console.error("Forbidden access:", err.message);
               break;
@@ -67,24 +73,24 @@ function useFetch(url) {
             case 503:
             case 504:
               setError(
-                "There is a problem connecting to the data backend server. Please wait a few minutes and try again. If the problem persists, please write to <support@ideaconsult.net>"
+                "There is a problem connecting to the data backend server. Please wait a few minutes and try again. If the problem persists, please write to <support@ideaconsult.net>",
               );
               console.error("Server/Resource issue:", err.message);
               break;
             default:
               setError(
-                `An unexpected server error occurred (Status: ${err.response.status}). Please try again.`
+                `An unexpected server error occurred (Status: ${err.response.status}). Please try again.`,
               );
               console.error(
                 "Unhandled HTTP error:",
                 err.response.status,
-                err.response.data
+                err.response.data,
               );
               break;
           }
         } else if (err.request) {
           setError(
-            "There is a problem connecting to the data backend server. Please check your internet connectivity. If it works, please wait a few minutes and try again. If the problem persists, please write to <support@ideaconsult.net>."
+            "There is a problem connecting to the data backend server. Please check your internet connectivity. If it works, please wait a few minutes and try again. If the problem persists, please write to <support@ideaconsult.net>.",
           );
           console.error("Network Error: No response received.", err.message);
         } else {
