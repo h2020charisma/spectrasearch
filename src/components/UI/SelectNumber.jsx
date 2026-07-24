@@ -1,4 +1,6 @@
 /* eslint-disable react/prop-types */
+import { useMemorizedValue } from "../../utils/useMemorizedValue";
+
 export default function SelectNumber({
   value,
   setValue,
@@ -6,6 +8,7 @@ export default function SelectNumber({
   founds,
   setPages,
 }) {
+  const memorizedFounds = useMemorizedValue(founds);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
       <p>Shown</p>
@@ -34,7 +37,8 @@ export default function SelectNumber({
         }}
       />
       <p>
-        of <span style={{ fontWeight: "600" }}>{founds} </span>hits
+        of <span style={{ fontWeight: "600" }}>{memorizedFounds} </span>
+        hits
       </p>
     </div>
   );

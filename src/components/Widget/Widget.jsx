@@ -11,6 +11,8 @@ export default function Widget({
   setImageSelected,
   params,
   setParams,
+  pages,
+  setPages,
 }) {
   const providerURL = `db/query/field?name=${field}${
     queryStringSourcesParams && `&${queryStringSourcesParams}`
@@ -28,6 +30,8 @@ export default function Widget({
         setImageSelected={setImageSelected}
         label={name}
         field={field}
+        pages={pages}
+        setPages={setPages}
       />
       {!data && <ListPlaceholder count={4} />}
     </div>

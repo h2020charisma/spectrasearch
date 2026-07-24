@@ -11,6 +11,8 @@ export default function SearchSelect({
   setImageSelected,
   label,
   field,
+  pages,
+  setPages,
 }) {
   const [open, setOpen] = useState(true);
 
@@ -33,9 +35,9 @@ export default function SearchSelect({
           return item.value
             .toLocaleLowerCase()
             .includes(search.toLocaleLowerCase());
-        })
+        }),
       ),
-    [data, search]
+    [data, search],
   );
 
   return (
@@ -109,6 +111,7 @@ export default function SearchSelect({
                 // setOpen(false);
                 setSearch(item.value);
                 setImageSelected("");
+                setPages(0);
               }}
             >
               {item.value}

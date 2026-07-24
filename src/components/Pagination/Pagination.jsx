@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useMemo } from "react";
 import SelectNumber from "../UI/SelectNumber";
+import { useMemorizedValue } from "../../utils/useMemorizedValue";
 
 import "./Pagination.css";
 
@@ -11,6 +12,8 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
       return Math.ceil(founds / pagesize);
     }
   }, [founds, pagesize]);
+
+  const memorizedTotalPages = useMemorizedValue(totalPages);
 
   useEffect(() => {
     if (pagesize > 100 || pagesize < 1) {
@@ -81,7 +84,7 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
                 localStorage.setItem("currentPage", totalPages);
               }}
             >
-              ...&nbsp;&nbsp;{totalPages ? totalPages : null}
+              ...&nbsp;&nbsp;{memorizedTotalPages ? memorizedTotalPages : null}
             </div>
           )}
         </div>

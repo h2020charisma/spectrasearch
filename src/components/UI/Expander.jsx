@@ -18,6 +18,8 @@ import TableViewIcon from "../Icons/TableViewIcon";
 import { useStore } from "../../store/store";
 import Notification from "./Notification";
 
+import { useMemorizedValue } from "../../utils/useMemorizedValue";
+
 // eslint-disable-next-line react/prop-types
 export default function Expander({ children, title, status, data, icon }) {
   const [open, setOpen] = useState(status);
@@ -28,6 +30,7 @@ export default function Expander({ children, title, status, data, icon }) {
 
   const [iconName, setIconName] = useState("");
   const [iconPack, setIconPack] = useState("");
+  const memorizedData = useMemorizedValue(data);
 
   useEffect(() => {
     if (!icon) return;
@@ -75,7 +78,9 @@ export default function Expander({ children, title, status, data, icon }) {
               </div>
               {title}
               {title == "Search Results" && (
-                <p className="foundLabel">{data?.numFound} hits found</p>
+                <p className="foundLabel">
+                  {memorizedData?.numFound} hits found
+                </p>
               )}
             </div>
           </IconContext.Provider>

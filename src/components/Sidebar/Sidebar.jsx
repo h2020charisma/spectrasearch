@@ -29,7 +29,8 @@ export default function Sidebar({
   file,
   setFile,
   queryStringSourcesParams,
-
+  pages,
+  setPages,
   setFreeSearch,
   freeSearch,
   fileName,
@@ -104,6 +105,8 @@ export default function Sidebar({
                 setImageSelected={setImageSelected}
                 params={params}
                 setParams={setParams}
+                pages={pages}
+                setPages={setPages}
               />
             </Expander>
           );
@@ -123,6 +126,8 @@ export default function Sidebar({
               setImageSelected={setImageSelected}
               params={params}
               setParams={setParams}
+              pages={pages}
+              setPages={setPages}
             />
           </Expander>
         );
