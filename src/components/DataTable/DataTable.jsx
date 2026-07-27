@@ -39,7 +39,7 @@ const columns = [
     accessorKey: "value",
     cell: (props) => (
       <Link
-        to={`/h5web/${props.getValue()}`}
+        to={`/h5web/${String(props.getValue()).replace(/^\/+/, "")}`}
         target="_blank"
         style={{ color: "#5b5b5b", fontSize: "12px" }}
       >
@@ -53,6 +53,8 @@ const columns = [
     cell: (props) => <PreviewDialog img={props.getValue()} />,
   },
 ];
+
+// <Link to={`/h5web/${String(props.getValue()).replace(/^\/+/, "")}`}>
 
 export default function DataTable({ data }) {
   const [columnVisibility, setColumnVisibility] = useState({});
