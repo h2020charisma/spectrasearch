@@ -30,7 +30,7 @@ export default function SearchComp({ setDomain }) {
   let [open, setOpen] = useState(true);
   let [dialog, setDialog] = useState(false);
   let [imageSelected, setImageSelected] = useState(
-    domainParams ? domainParams : ""
+    domainParams ? domainParams : "",
   );
 
   let isNexusFile = false;
@@ -65,8 +65,6 @@ export default function SearchComp({ setDomain }) {
   const sorcesUrl = `${import.meta.env.VITE_BaseURL}db/query/sources`;
   const { data: allDataSources } = useFetch(sorcesUrl);
 
-  console.log(appName);
-
   const defaultSource = localStorage.getItem("defaultSource") || "";
 
   const defaultSourceLower = allDataSources?.default?.toLowerCase();
@@ -79,12 +77,12 @@ export default function SearchComp({ setDomain }) {
     if (allDataSources && sources?.length < 1 && !dialog) {
       setSources(
         allDataSources?.data_sources?.filter(
-          (item) => item?.name === defaultSourceLower
-        )
+          (item) => item?.name === defaultSourceLower,
+        ),
       );
     }
     let isDefault = sources.some(
-      (source) => source?.name.toLowerCase() === defaultSourceLower
+      (source) => source?.name.toLowerCase() === defaultSourceLower,
     );
     setToast(sources?.length == 1 && isDefault);
   }, [dialog, sources, allDataSources, setSources, toast, defaultSourceLower]);
@@ -236,12 +234,18 @@ export default function SearchComp({ setDomain }) {
         />
         {file && imageData && (
           <div className="imageUploded">
-            <img src={imageData && imageData.imageLink} alt="Spectrum or molecule" />
+            <img
+              src={imageData && imageData.imageLink}
+              alt="Spectrum or molecule"
+            />
           </div>
         )}
         {smiles && imageData && !file && (
           <div className="imageUploded">
-            <img src={imageData && imageData.imageLink} alt="Molecule structure" />
+            <img
+              src={imageData && imageData.imageLink}
+              alt="Molecule structure"
+            />
           </div>
         )}
         <Expander title="Search Results" status={true} data={data}>
