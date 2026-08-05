@@ -7,7 +7,24 @@ import { ModeSelect } from "../UI/Select";
 import EditorDialog from "../EditorDialog/EditorDialog";
 import { apiUrl } from "../../config";
 
-// eslint-disable-next-line react/prop-types
+const invalidInputMessage =
+  "Invalid data submitted. Please check your inputs.";
+const uploadFailureMessage =
+  "Something went wrong on our end. Please try again later.";
+
+async function responseErrorMessage(response) {
+  const fallback =
+    response.status === 400 ? invalidInputMessage : uploadFailureMessage;
+
+  try {
+    const errorData = await response.json();
+    const message = errorData?.detail || errorData?.message;
+    return typeof message === "string" && message.trim() ? message : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export default function UploadFile({
   setImageData,
   setType,
@@ -24,8 +41,14 @@ export default function UploadFile({
 
   const [isNotRightFile, setIsNotRightFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   const [fileName, setFileName] = useSessionStorage("fileName", "");
+  const similarityOptions = dataSources?.similarity;
+  const hasMolecule =
+    similarityOptions?.some((option) =>
+      /molecul/i.test(option?.name || "")
+    ) || false;
 
   useEffect(() => {
     if (file && fileName === "") {
@@ -34,66 +57,66 @@ export default function UploadFile({
   }, [file, fileName, setFileName]);
 
   useEffect(() => {
+    if (!file) return;
+
+    const controller = new AbortController();
+
     async function fetchDate() {
+      setIsLoading(true);
+      setIsNotRightFile(false);
+      setUploadError("");
+
       const formData = new FormData();
       formData.append("files", file);
 
-      const response = await fetch(fileQuery, {
-        method: "POST",
-        body: formData,
-      });
-      if (response) setIsLoading(false);
+      try {
+        const response = await fetch(fileQuery, {
+          method: "POST",
+          body: formData,
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        if (response.status === 400) {
-          setIsNotRightFile(true);
-          // Try to read a specific error message from the server backend
-          const errorData = await response.json();
-          // console.log(errorData.detail);
-
-          throw new Error(
-            errorData.message ||
-              "Invalid data submitted. Please check your inputs.",
-          );
-        } else {
-          throw new Error(
-            "Something went wrong on our end. Please try again later.",
-          );
+        if (!response.ok) {
+          throw new Error(await responseErrorMessage(response));
         }
-      }
 
-      if (file && !response.ok) {
-        setIsNotRightFile(true);
-        setImageData(null);
-      }
-
-      if (response.ok) {
-        setIsNotRightFile(false);
         const img = await response.json();
         setImageData(img);
 
         // Auto-select similarity based on vector_field
-        if (img.vector_field && dataSources?.similarity) {
-          const match = dataSources.similarity.find(
+        if (img.vector_field && similarityOptions) {
+          const match = similarityOptions.find(
             (s) => s.vector === img.vector_field,
           );
           if (match) {
             setSimilarity({ name: match.name, vector: match.vector });
           }
         }
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        setIsNotRightFile(true);
+        setUploadError(error.message || uploadFailureMessage);
+        setImageData(null);
+        console.error("Error uploading file:", error);
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     }
-    if (file) {
-      fetchDate();
-    }
-  }, [file, fileQuery, isLoading, setFile, setImageData, setType]);
+
+    fetchDate();
+    return () => controller.abort();
+  }, [file, fileQuery, similarityOptions, setImageData, setSimilarity]);
 
   // Fetch molecule vector when SMILES changes
   useEffect(() => {
-    async function fetchMoleculeVector() {
-      if (!smiles) return;
+    if (!smiles) return;
 
+    const controller = new AbortController();
+
+    async function fetchMoleculeVector() {
       setIsLoading(true);
+      setIsNotRightFile(false);
+      setUploadError("");
 
       try {
         const response = await fetch(moleculeQuery, {
@@ -102,23 +125,19 @@ export default function UploadFile({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ smiles }),
+          signal: controller.signal,
         });
 
-        setIsLoading(false);
-
         if (!response.ok) {
-          setIsNotRightFile(true);
-          setImageData(null);
-          return;
+          throw new Error(await responseErrorMessage(response));
         }
 
-        setIsNotRightFile(false);
         const data = await response.json();
         setImageData(data);
 
         // Auto-select similarity based on vector_field
-        if (data.vector_field && dataSources?.similarity) {
-          const match = dataSources.similarity.find(
+        if (data.vector_field && similarityOptions) {
+          const match = similarityOptions.find(
             (s) => s.vector === data.vector_field,
           );
           if (match) {
@@ -126,32 +145,31 @@ export default function UploadFile({
           }
         }
       } catch (error) {
-        setIsLoading(false);
+        if (error.name === "AbortError") return;
         setIsNotRightFile(true);
+        setUploadError(error.message || uploadFailureMessage);
         setImageData(null);
         console.error("Error fetching molecule vector:", error);
+      } finally {
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     }
 
     fetchMoleculeVector();
-  }, [smiles, moleculeQuery, setImageData]);
-
-  // Similarity options come from the backend config (/db/query/sources).
-  const similarityOptions = dataSources?.similarity || [];
-  // Molecule UI is only relevant when the config offers a molecule similarity.
-  const hasMolecule = similarityOptions.some((s) =>
-    /molecul/i.test(s?.name || "")
-  );
+    return () => controller.abort();
+  }, [smiles, moleculeQuery, similarityOptions, setImageData, setSimilarity]);
 
   // Auto-select the first similarity option from the config when none is chosen.
   useEffect(() => {
-    if (similarityOptions.length && !similarity?.name) {
+    if (similarityOptions?.length && !similarity?.name) {
       const first = similarityOptions[0];
       setSimilarity({ name: first.name, vector: first.vector });
     }
   }, [similarityOptions, similarity, setSimilarity]);
 
   const handleSmilesExport = (exportedSmiles) => {
+    setUploadError("");
+    setIsNotRightFile(false);
     setSmiles(exportedSmiles);
     // Clear file when molecule is drawn
     if (file) {
@@ -161,6 +179,8 @@ export default function UploadFile({
   };
 
   const handleClearMolecule = () => {
+    setUploadError("");
+    setIsNotRightFile(false);
     setSmiles("");
     sessionStorage.removeItem("SMILES");
     setImageData(null);
@@ -183,11 +203,13 @@ export default function UploadFile({
       <form>
         <div className="fileNameWrap">
           <div>
+            {isNotRightFile && (
+              <div className="notRightFile" role="alert">
+                {uploadError || uploadFailureMessage}
+              </div>
+            )}
             {fileName && (
               <div>
-                {isNotRightFile && (
-                  <div className="notRightFile">Some error occurred.</div>
-                )}
                 <>
                   <span className="fileName">File Name</span>
                   <div
@@ -204,6 +226,8 @@ export default function UploadFile({
                       onClick={() => {
                         setFile(null);
                         setFileName("");
+                        setUploadError("");
+                        setIsNotRightFile(false);
                       }}
                     >
                       <Close />
@@ -259,6 +283,7 @@ export default function UploadFile({
                 setFile(e.target.files[0]);
                 setIsLoading(true);
                 setIsNotRightFile(false);
+                setUploadError("");
                 setImageData(null);
                 // Clear molecule when file is uploaded
                 if (smiles) {

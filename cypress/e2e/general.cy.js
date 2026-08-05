@@ -117,11 +117,22 @@ function setProviderIntercepts() {
   ).as("getAllSamples");
 }
 
-function setFileUploadIntercepts() {
-  cy.intercept({
-    method: "POST",
-    url: `${baseURL}/db/download?what=knnquery`,
-  }).as("postFile");
+function setFileUploadIntercepts(response = {}) {
+  cy.intercept(
+    {
+      method: "POST",
+      url: `${baseURL}/db/download?what=knnquery`,
+    },
+    {
+      statusCode: 200,
+      body: {
+        cdf: "test-vector",
+        imageLink: `${testURLRoot}blank.png`,
+        vector_field: "spectrum_p1024",
+      },
+      ...response,
+    }
+  ).as("postFile");
 }
 
 function setDatasetIntercepts() {
@@ -224,6 +235,26 @@ describe("General site functionality", () => {
         force: true,
       }
     );
+    cy.wait("@postFile");
+    cy.get("@postFile.all").should("have.length", 1);
+  });
+
+  it("shows the backend message when a file upload is rejected", () => {
+    setFileUploadIntercepts({
+      statusCode: 400,
+      body: { detail: "Unsupported spectrum format" },
+    });
+    cy.get("input[type=file]").selectFile(
+      "cypress/fixtures/generic/Cal_785_SEX139.txt",
+      { force: true }
+    );
+    cy.wait("@postFile");
+    cy.get(".notRightFile").should(
+      "have.text",
+      "Unsupported spectrum format"
+    );
+    cy.get(".searchOptions").should("not.exist");
+    cy.get("@postFile.all").should("have.length", 1);
   });
 
   // it("opens Search by Data-provider and looks for the domain", () => {
