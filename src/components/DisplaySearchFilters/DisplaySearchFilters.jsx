@@ -28,7 +28,11 @@ export default function DisplaySearchFilters({
       <Link
         to="/collection"
         className="sourcesBtn"
-        style={{ marginRight: 8, textDecoration: "none", display: "inline-block" }}
+        style={{
+          marginRight: 8,
+          textDecoration: "none",
+          display: "inline-block",
+        }}
       >
         My collection{collectionCount ? ` (${collectionCount})` : ""}
       </Link>
@@ -38,6 +42,7 @@ export default function DisplaySearchFilters({
         allDataSources={allDataSources}
         dialog={dialog}
         setDialog={setDialog}
+        setPages={setPages}
       />
       <div className="search-filters-wrap">
         <div className="search-filters-container">
@@ -51,11 +56,12 @@ export default function DisplaySearchFilters({
                   key={name}
                   label={name}
                   value={value}
-                  onClick={() =>
+                  onClick={() => {
                     setParams((prev) =>
-                      prev.filter((item) => item.value !== value)
-                    )
-                  }
+                      prev.filter((item) => item.value !== value),
+                    );
+                    setPages(0);
+                  }}
                 />
               ))}
             </AnimatePresence>

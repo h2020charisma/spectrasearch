@@ -11,6 +11,8 @@ export default function SearchSelect({
   setImageSelected,
   label,
   field,
+  pages,
+  setPages,
 }) {
   const [open, setOpen] = useState(true);
 
@@ -33,17 +35,17 @@ export default function SearchSelect({
           return item.value
             .toLocaleLowerCase()
             .includes(search.toLocaleLowerCase());
-        })
+        }),
       ),
-    [data, search]
+    [data, search],
   );
 
   return (
     <section>
       <div
-        // onClick={() => {
-        //   !search && setOpen(!open);
-        // }}
+        onClick={() => {
+          !search && setOpen(!open);
+        }}
         className="selectBtn"
         style={{ position: "relative" }}
       >
@@ -55,7 +57,10 @@ export default function SearchSelect({
             selected ? "searchSelectInput active" : "searchSelectInput"
           }
           value={selected || search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPages(0);
+          }}
           placeholder={`Search for ${label}`}
         />
         <div
@@ -67,6 +72,7 @@ export default function SearchSelect({
             setSearch("");
             setSelected("");
             setImageSelected("");
+            setPages(0);
           }}
         >
           {selected && (
@@ -106,9 +112,10 @@ export default function SearchSelect({
                   ]);
                 }
                 setSelected(item.value);
-                // setOpen(false);
+                setOpen(false);
                 setSearch(item.value);
                 setImageSelected("");
+                setPages(0);
               }}
             >
               {item.value}
@@ -130,12 +137,11 @@ export default function SearchSelect({
                 }
                 setSearch(item.value);
                 setSelected(item.value);
-                // setOpen(false);
+                setOpen(false);
                 setImageSelected("");
+                setPages(0);
               }}
-            >
-              {/* {item.value}! */}
-            </p>
+            ></p>
           ))}
       </div>
     </section>

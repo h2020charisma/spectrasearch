@@ -5,7 +5,6 @@ import Expander from "../UI/Expander";
 import UploadFile from "../UploadFile/UploadFile";
 import Widget from "../Widget/Widget";
 import WidgetLiveSearch from "../Widget/WidgetLiveSearch";
-import ListPlaceholder from "../UI/ListPlaceholder";
 
 const errorMsg = "Sorry, no data available";
 
@@ -15,21 +14,16 @@ export default function Sidebar({
   setSimilarity,
   similarity,
   dataSources,
-  setqQuery,
-  qQuery,
-  instrument,
-  setInstrument,
   setImageSelected,
   setImageData,
   imageData,
-  methods,
-  setMethods,
   type,
   setType,
   file,
   setFile,
   queryStringSourcesParams,
-
+  pages,
+  setPages,
   setFreeSearch,
   freeSearch,
   fileName,
@@ -76,18 +70,10 @@ export default function Sidebar({
           similarity={similarity}
           smiles={smiles}
           setSmiles={setSmiles}
+          setPages={setPages}
         />
       </Expander>
-      {/* <Expander title="Debouncing search" status={false}>
-        <WidgetLiveSearch
-          name="Debouncing search"
-          field="qdynamic.CASRN_s"
-          queryStringSourcesParams={queryStringSourcesParams}
-          setImageSelected={setImageSelected}
-          params={params}
-          setParams={setParams}
-        />
-      </Expander> */}
+
       {dataSources?.fields.map((item) => {
         if (item.search === "/db/query/field/terms") {
           return (
@@ -104,6 +90,8 @@ export default function Sidebar({
                 setImageSelected={setImageSelected}
                 params={params}
                 setParams={setParams}
+                pages={pages}
+                setPages={setPages}
               />
             </Expander>
           );
@@ -123,6 +111,8 @@ export default function Sidebar({
               setImageSelected={setImageSelected}
               params={params}
               setParams={setParams}
+              pages={pages}
+              setPages={setPages}
             />
           </Expander>
         );
