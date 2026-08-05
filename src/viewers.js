@@ -161,9 +161,13 @@ function paramFor(viewer, item) {
 // href/route for opening one item in a viewer (kind-aware).
 export function viewerHref(viewer, item) {
   if (isExternal(viewer)) return buildExternalHref(viewer, item);
-  const idVal = item?.[viewer.idField] ?? "";
+  const idVal = item?.[viewer.idField];
+  if (idVal == null || idVal === "") return null;
   if (viewer.route.includes("{itemId}")) {
-    return viewer.route.replace("{itemId}", idVal);
+    return viewer.route.replace(
+      "{itemId}",
+      String(idVal).replace(/^\/+/, "")
+    );
   }
   const qs = new URLSearchParams();
   qs.append(paramFor(viewer, item), idVal);
