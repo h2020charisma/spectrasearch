@@ -252,6 +252,11 @@ h1 {
   color: rgb(217, 0, 0);
   font-size: 14px;
 }
+.notRightFile {
+  color: rgb(217, 0, 0);
+  font-size: 14px;
+  margin-bottom: 0.5rem;
+}
 
 .uploadBtnsWrap {
   display: flex;
