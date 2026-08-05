@@ -39,7 +39,7 @@ const columns = [
     accessorKey: "value",
     cell: (props) => (
       <Link
-        to={`/h5web/${props.getValue()}`}
+        to={`/h5web/${String(props.getValue()).replace(/^\/+/, "")}`}
         target="_blank"
         style={{ color: "#5b5b5b", fontSize: "12px" }}
       >
