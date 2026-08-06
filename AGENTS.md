@@ -4,9 +4,11 @@
 
 - Prefer `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `vite.config.js`, `cypress.config.js`, `.eslintrc.cjs`, `Dockerfile`, `.dockerignore`, `docker/nginx/default.conf`, `.github/workflows/ci.yml`, and `.github/dependabot.yml` for current tooling behavior.
 - `docs/VIEWERS.md` documents result viewer dispatch; keep it aligned with `src/viewers.js`, route pages, and viewer package imports.
+- `docs/ADDING_VIEWERS.md` is the required contract for creating a viewer package or adding a viewer integration. Read it before scaffolding a viewer or changing its public package boundary.
 - `README.md` is intentionally short and is not enough to understand development, testing, or deployment.
 - The backend is `ramanchada-api`: https://github.com/h2020charisma/ramanchada-api. Treat its API and `/db/query/sources` response as the source of truth for data sources, fields, app name, and similarity modes.
 - Keep this file and `CONTRIBUTING.md` updated whenever commands, tooling, deployment behavior, or backend API assumptions change.
+- Viewer documentation currently describes SpectraSearch PR #104 (`viewers`) and ramanchada-api PR #134 (`viewers_support`) as if merged. After both merge, remove this temporary instruction and the pre-merge notices/branch URLs in `CONTRIBUTING.md`, `docs/VIEWERS.md`, and `docs/ADDING_VIEWERS.md` without removing the permanent viewer guidance.
 
 ## Project Shape
 
@@ -39,9 +41,21 @@
 - Public data should work without login; private/protected sources require an OIDC bearer token and backend-side authorization.
 - Different backend personalities are expected to be backend configuration concerns. The frontend should adapt from discovery metadata instead of branching on a specific backend deployment.
 
+## Viewer Development Contract
+
+- Before creating a publishable viewer, read `docs/ADDING_VIEWERS.md`. If this checkout may be stale, fetch the current guide from `https://raw.githubusercontent.com/h2020charisma/spectrasearch/main/docs/ADDING_VIEWERS.md`; use the `viewers` branch in that URL only until PR #104 merges. If the guide cannot be retrieved, stop and ask the user to provide it rather than proceeding from assumptions.
+- Seed a new viewer repository with its own `AGENTS.md` that links to the guide and records the package's public API, commands, data contracts, tests, and release process.
+- Keep standalone app concerns out of reusable library code. Viewer package internals must not read host routes, host storage, `import.meta.env`, `VITE_*`, deployment config, or host OIDC state. The standalone shell and embedding host translate those values into documented props.
+- The host owns routing, authentication acquisition, runtime deployment config, result dispatch, layout, and route-level error handling. The backend owns normalization of storage-specific fields into the `/db/query` result contract.
+- React and ReactDOM are host singletons: declare them as peers, externalize React and its runtime subpaths from the package build, and retain host deduplication for linked development.
+- Treat CSS and assets as public API. Export a stable stylesheet, mark it side-effectful, scope it under a package root, and keep standalone global styles outside the library graph.
+- Test the packed artifact in a clean consumer. Source tests and a local link do not validate npm contents, export maps, CSS paths, peer resolution, or production builds.
+- Keep committed host dependencies on npm semver versions. `pnpm link`, `file:`, tarballs, and temporary overrides are local development or artifact-test mechanisms only.
+
 ## Commands
 
 - Use pnpm, not npm or yarn; the pnpm version is pinned by `packageManager` in `package.json`.
+- The Dockerfile build-stage image is the source of truth for Node.js. On native Windows, prefer pnpm-managed Node installed with `pnpm runtime set node <Dockerfile-version> -g`; avoid an MSI-installed Node taking precedence in `PATH`.
 - Install reproducibly: `pnpm install --frozen-lockfile`.
 - `pnpm-workspace.yaml` enforces a 24-hour strict minimum release age, excludes first-party viewer packages from that age gate, ignores missing publish-time metadata, disables side-effects cache, and allowlists build scripts for Cypress and esbuild.
 - qu-bounds uses `@ideaconsult/qubounds-viewer`; substance/study uses `@ideaconsult/jtoxkit-react`; when changing viewer package names or embedding props, update `package.json`, imports, `vite.config.js` dependency optimization, lockfile, and docs together.
@@ -86,5 +100,6 @@
 - Prefer small, direct changes that preserve the backend-driven UI model.
 - Do not introduce hard-coded backend-specific fields, sources, or labels when they can come from `/db/query/sources`.
 - When changing viewer registry behavior, routes, viewer package names, or embedding props, update `docs/VIEWERS.md` in the same change.
+- When changing the reusable viewer package contract, local link/tarball workflow, package publication requirements, or viewer definition of done, update `docs/ADDING_VIEWERS.md` in the same change.
 - Keep generated output such as `dist/` out of commits unless a future project decision explicitly changes this.
 - Update `AGENTS.md` and `CONTRIBUTING.md` in the same PR when changing install commands, scripts, test tooling, deployment assumptions, or backend API expectations.
