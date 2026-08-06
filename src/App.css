@@ -108,7 +108,7 @@ h1 {
 .imageSelectWrap {
   padding: 1rem 0;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 6px;
@@ -169,6 +169,7 @@ h1 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
 }
 .descriptionHover {
   position: absolute;
@@ -182,7 +183,7 @@ h1 {
   border: 1px solid #00ace1;
   font-size: 0.8rem;
   font-weight: 500;
-  width: 180px;
+  width: 196px;
   max-width: 260px;
   white-space: wrap;
   z-index: 10;

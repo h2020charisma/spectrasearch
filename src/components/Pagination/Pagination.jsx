@@ -13,6 +13,18 @@ function Pagination({ pagesize, setPagesize, pages, setPages, founds }) {
     }
   }, [founds, pagesize]);
   const memorizedTotalPages = useMemorizedValue(totalPages);
+  console.log(
+    "pages",
+    pages,
+    "totalPages",
+    totalPages,
+    "founds",
+    founds,
+    "pagesize",
+    pagesize,
+    "memorizedTotalPages",
+    memorizedTotalPages,
+  );
 
   useEffect(() => {
     if (founds === 0) {

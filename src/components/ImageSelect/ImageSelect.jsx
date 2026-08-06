@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useStore } from "../../store/store";
 import DataTable from "../DataTable/DataTable";
+import ImagePlaceholder from "../UI/ImagePlaceholder";
 import ImageItem from "./ImageItem";
 
 export default function ImageSelect({ data, error, loading }) {
@@ -19,6 +20,7 @@ export default function ImageSelect({ data, error, loading }) {
     ));
   return (
     <div className="imageSelectWrap">
+      {loading && <ImagePlaceholder />}
       {data && Object.prototype.hasOwnProperty.call(data, "error") && (
         <p>Sorry</p>
       )}

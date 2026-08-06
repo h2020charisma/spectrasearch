@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "react-oidc-context";
 import { useLocation } from "react-router-dom";
@@ -18,7 +18,6 @@ import Expander from "../UI/Expander";
 import ToastDemo from "../UI/Toast/Toast";
 
 import "../../App.css";
-import Pagination from "../Pagination/Pagination";
 
 const defaultSourceMessage =
   "Since you have not selected any data sources, the default one was automatically selected for you.";
@@ -40,7 +39,7 @@ export default function SearchComp({ setDomain }) {
   let [q_reference, setQReference] = useSessionStorage("reference", "*");
   let [provider, setProvider] = useSessionStorage("provider", "*");
   let [pages, setPages] = useState(0);
-  let [pagesize, setPagesize] = useState(10);
+  let [pagesize, setPagesize] = useState(12);
   let [q, setQ] = useSessionStorage("q", "*");
   let [instrument, setInstrument] = useSessionStorage("instrument", "*");
   let [wavelengths, setWavelengths] = useSessionStorage("wavelengths", "*");
