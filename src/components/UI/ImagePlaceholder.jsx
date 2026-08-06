@@ -1,5 +1,6 @@
-function ImagePlaceholder() {
-  const count = 15;
+// eslint-disable-next-line react/prop-types
+function ImagePlaceholder({ pagesize }) {
+  const count = pagesize || 10;
   return (
     <ul className="imagePlaceholderWrap">
       {Array.from({ length: count }).map((_, i) => (
