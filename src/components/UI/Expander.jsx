@@ -42,11 +42,11 @@ export default function Expander({ children, title, status, data, icon }) {
   return (
     <div
       className="expander"
-      style={
-        title == "Search Results"
-          ? { border: "none" }
-          : { border: "1px solid #e0e0e0", borderRadius: "4px" }
-      }
+      style={{
+        border: title === "Search Results" ? "none" : "1px solid #e0e0e0",
+        borderRadius: title === "Search Results" ? "0" : "4px",
+        overflow: title === "Search by Similarity" ? "visible" : undefined,
+      }}
     >
       <div
         onClick={() => title !== "Search Results" && setOpen(!open)}

@@ -235,6 +235,8 @@ export default function SearchComp({ setDomain }) {
           setPagesize={setPagesize}
           setPages={setPages}
           founds={data?.numFound}
+          loading={loading}
+          error={error}
         />
         {file && imageData && (
           <div className="imageUploded">

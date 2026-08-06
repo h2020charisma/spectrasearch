@@ -21,6 +21,8 @@ export default function DisplaySearchFilters({
   setPagesize,
   setPages,
   founds,
+  loading,
+  error,
 }) {
   const collectionCount = useCollection((s) => s.items.length);
   return (
@@ -74,6 +76,8 @@ export default function DisplaySearchFilters({
         setPagesize={setPagesize}
         setPages={setPages}
         founds={founds}
+        loading={loading}
+        error={error}
       />
     </div>
   );

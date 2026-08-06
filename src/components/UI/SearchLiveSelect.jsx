@@ -12,9 +12,10 @@ export default function SearchSelect({
   qQuery,
   setqQuery,
   setImageSelected,
-  queryStringSourcesParams, // new prop for data sources
+  queryStringSourcesParams,
   label,
   field,
+  setPages,
 }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -22,15 +23,14 @@ export default function SearchSelect({
 
   const debounced = useDebounce(search, 300);
 
-  // Build full endpoint including data sources
   const apiURL =
     debounced && debounced.length > 0
       ? apiUrl(
           `db/query/field/terms?name=${field}&prefix=${encodeURIComponent(
-            debounced
+            debounced,
           )}&limit=25${
             queryStringSourcesParams ? `&${queryStringSourcesParams}` : ""
-          }`
+          }`,
         )
       : null;
 
@@ -39,6 +39,7 @@ export default function SearchSelect({
 
   useEffect(() => {
     const found = qQuery?.some((obj) => obj.name === label);
+
     if (!found) {
       setSelected("");
       setSearch("");
@@ -49,6 +50,7 @@ export default function SearchSelect({
     <section>
       <div className="selectBtn" style={{ position: "relative" }}>
         <SearchIcon />
+
         <input
           id={`Search for ${label}`}
           data-cy={label.replace(/\s+/g, "-").toLowerCase()}
@@ -63,10 +65,14 @@ export default function SearchSelect({
           onKeyDown={(e) => {
             if (e.key === "Enter" && search) {
               e.preventDefault();
+
               setqQuery((prev) => [
                 ...prev,
                 { name: label, value: search, field },
               ]);
+
+              setPages(0);
+
               setSearch("");
               setSelected("");
               setImageSelected("");
@@ -74,12 +80,18 @@ export default function SearchSelect({
           }}
           placeholder={`Search for ${label}`}
         />
+
         <div
-          style={{ position: "absolute", right: "0.5rem", cursor: "pointer" }}
+          style={{
+            position: "absolute",
+            right: "0.5rem",
+            cursor: "pointer",
+          }}
           onClick={() => {
-            setqQuery((prev) => [
-              ...prev.filter((item) => item.value !== selected),
-            ]);
+            setqQuery((prev) => prev.filter((item) => item.value !== selected));
+
+            setPages(0);
+
             setSearch("");
             setSelected("");
             setImageSelected("");
@@ -103,7 +115,10 @@ export default function SearchSelect({
               onClick={() => {
                 if (selected !== value) {
                   setqQuery((prev) => [...prev, { name: label, value, field }]);
+
+                  setPages(0);
                 }
+
                 setSearch(value);
                 setSelected(value);
                 setOpen(false);

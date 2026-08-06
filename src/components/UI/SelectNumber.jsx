@@ -14,8 +14,11 @@ export default function SelectNumber({
       <p>Shown</p>
       <input
         onChange={(e) => {
-          setValue(parseInt(e.target.value));
-          setPages(0);
+          const parsed = parseInt(e.target.value, 10);
+          if (!isNaN(parsed) && parsed >= 1 && parsed <= 100) {
+            setValue(parsed);
+            setPages(0);
+          }
         }}
         name={label}
         data-cy={label + "-input"}
