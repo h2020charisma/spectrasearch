@@ -24,6 +24,7 @@ export default function Sidebar({
   queryStringSourcesParams,
   pages,
   setPages,
+  resetPage,
   setFreeSearch,
   freeSearch,
   fileName,
@@ -49,6 +50,7 @@ export default function Sidebar({
           setFreeSearch={setFreeSearch}
           freeSearch={freeSearch}
           label="everything"
+          resetPage={resetPage}
         />
       </Expander>
       <Expander
@@ -71,6 +73,7 @@ export default function Sidebar({
           smiles={smiles}
           setSmiles={setSmiles}
           setPages={setPages}
+          resetPage={resetPage}
         />
       </Expander>
 

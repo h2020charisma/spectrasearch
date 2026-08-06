@@ -35,6 +35,7 @@ export default function UploadFile({
   smiles,
   setSmiles,
   setPages,
+  resetPage,
 }) {
   const fileQuery = apiUrl("db/download?what=knnquery");
   const moleculeQuery = apiUrl("db/download?what=knnquery");
@@ -175,6 +176,7 @@ export default function UploadFile({
       setFile(null);
       setFileName("");
     }
+    resetPage?.();
   };
 
   const handleClearMolecule = () => {
@@ -183,6 +185,7 @@ export default function UploadFile({
     setSmiles("");
     sessionStorage.removeItem("SMILES");
     setImageData(null);
+    resetPage?.();
   };
 
   const handleMolExport = (exportedFile) => {
@@ -195,6 +198,7 @@ export default function UploadFile({
     setIsLoading(true);
     setIsNotRightFile(false);
     setImageData(null);
+    resetPage?.();
   };
 
   return (
@@ -306,7 +310,10 @@ export default function UploadFile({
         {(file || smiles) && !isNotRightFile && (
           <div className="searchOptions">
             <label
-              onClick={() => setType("text")}
+              onClick={() => {
+                setType("text");
+                resetPage?.();
+              }}
               htmlFor="tx"
               style={{
                 fontSize: "16px",
@@ -325,7 +332,10 @@ export default function UploadFile({
             </label>
 
             <label
-              onClick={() => setType("knnquery")}
+              onClick={() => {
+                setType("knnquery");
+                resetPage?.();
+              }}
               htmlFor="sp"
               style={{
                 fontSize: "16px",
@@ -350,6 +360,7 @@ export default function UploadFile({
         dataSources={dataSources}
         setSimilarity={setSimilarity}
         similarity={similarity}
+        resetPage={resetPage}
       />
     </div>
   );

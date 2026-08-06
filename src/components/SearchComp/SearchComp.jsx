@@ -50,6 +50,7 @@ export default function SearchComp({ setDomain }) {
   const auth = useAuth();
 
   const [sources, setSources] = useSessionStorage("dataSources", []);
+  const resetPage = () => setPages(0);
 
   const [toast, setToast] = useState(false);
 
@@ -202,6 +203,7 @@ export default function SearchComp({ setDomain }) {
                 setFreeSearch={setFreeSearch}
                 smiles={smiles}
                 setSmiles={setSmiles}
+                resetPage={resetPage}
               />
             </motion.div>
           )}
@@ -234,6 +236,7 @@ export default function SearchComp({ setDomain }) {
           pages={pages}
           setPagesize={setPagesize}
           setPages={setPages}
+          resetPage={resetPage}
           founds={data?.numFound}
           loading={loading}
           error={error}

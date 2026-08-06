@@ -48,7 +48,13 @@ export default function DisplaySearchFilters({
       />
       <div className="search-filters-wrap">
         <div className="search-filters-container">
-          <div className="resetFilters" onClick={() => setParams([])}>
+          <div
+            className="resetFilters"
+            onClick={() => {
+              setParams([]);
+              setPages(0);
+            }}
+          >
             {params.length > 1 && <p className="resetLabel">Clear</p>}
           </div>
           <div className="search-filters">
