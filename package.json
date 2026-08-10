@@ -15,7 +15,7 @@
     "select-config": "node scripts/select-config.mjs"
   },
   "dependencies": {
-    "@ideaconsult/qubounds-viewer": "^0.1.0",
+    "@ideaconsult/qubounds-viewer": "^0.1.1",
     "@ideaconsult/jtoxkit-react": "^0.1.0",
     "@h5web/app": "^15.0.0",
     "@observablehq/plot": "^0.6.15",

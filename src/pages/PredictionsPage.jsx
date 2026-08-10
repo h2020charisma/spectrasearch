@@ -7,8 +7,8 @@ import Header from "../components/Header/Header";
 import { getRuntimeConfig } from "../config";
 
 // Embeds the qu-bounds prediction viewer as a React component (like h5web).
-// Auth is native: the Keycloak token is passed as a prop; same origin/scope so
-// the service worker + token cover the viewer's requests. No URL token.
+// The token prop covers fetch-based data requests. Synthesized thumbnail URLs
+// stay anonymous; the host service worker may authenticate eligible images.
 export default function PredictionsPage() {
   const { id } = useParams();
   const [params] = useSearchParams();

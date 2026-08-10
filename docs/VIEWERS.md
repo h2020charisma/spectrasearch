@@ -25,7 +25,7 @@ When a viewer package version or embedding props change, update `package.json`, 
 
 ## Qu-bounds Embedding
 
-`PredictionsPage` embeds the viewer as a React component and passes the existing OIDC access token as a prop. Do not put tokens in prediction viewer URLs.
+`PredictionsPage` embeds the viewer as a React component and passes the existing OIDC access token for fetch-based query and JSON data requests. The viewer keeps synthesized thumbnail URLs independent of authentication state; do not put tokens in prediction viewer URLs.
 
 ```jsx
 import PredictionViewer from "@ideaconsult/qubounds-viewer";

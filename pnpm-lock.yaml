@@ -15,8 +15,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0(@observablehq/plot@0.6.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@ideaconsult/qubounds-viewer':
-        specifier: ^0.1.0
-        version: 0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.1.1
+        version: 0.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@observablehq/plot':
         specifier: ^0.6.15
         version: 0.6.17
@@ -507,8 +507,8 @@ packages:
       '@observablehq/plot':
         optional: true
 
-  '@ideaconsult/qubounds-viewer@0.1.0':
-    resolution: {integrity: sha512-rm06nqlEgaT13LoLIkcaGPR17QVYh3xozLHjLqlizjN+g5ziqy3AI6B3/oFRr1/xUQVLf1PxWQVtNFpFF7aehg==}
+  '@ideaconsult/qubounds-viewer@0.1.1':
+    resolution: {integrity: sha512-kFROOBlfgWfUfIIW7+6KUMqwMG7iavb4WwSUZK5gJNR2WRdsoAIMVyS972JpOUcJd9AqNCosQpTmKADzoJ7EbA==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -3778,7 +3778,7 @@ snapshots:
     optionalDependencies:
       '@observablehq/plot': 0.6.17
 
-  '@ideaconsult/qubounds-viewer@0.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@ideaconsult/qubounds-viewer@0.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
