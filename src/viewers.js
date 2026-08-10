@@ -177,7 +177,9 @@ export function viewerHref(viewer, item) {
 // Internal route for opening many items together (multi-capable route viewers).
 export function viewerMultiHref(viewer, items) {
   const qs = new URLSearchParams();
-  for (const it of items) qs.append(paramFor(viewer, it), it?.[viewer.idField] ?? "");
+  for (const it of compatibleItemsForViewer(viewer, items)) {
+    qs.append(paramFor(viewer, it), it[viewer.idField]);
+  }
   return `${viewer.route}?${qs.toString()}`;
 }
 
@@ -189,10 +191,18 @@ export function resolveViewersForItem(item) {
     .filter((r) => r.href != null);
 }
 
-// Multi-capable viewers able to open a mixed set of items (internal route only).
+export function compatibleItemsForViewer(viewer, items) {
+  return items.filter((item) => {
+    const supportsType =
+      viewer.types.includes(item?.type) || viewer.types.includes("*");
+    const idVal = item?.[viewer.idField];
+    return supportsType && idVal != null && idVal !== "";
+  });
+}
+
+// Multi-capable viewers able to open at least one item (internal route only).
 export function multiViewersForItems(items) {
-  const types = new Set(items.map((i) => i.type));
   return VIEWERS.filter(
-    (v) => v.multi && [...types].some((t) => v.types.includes(t) || v.types.includes("*"))
+    (viewer) => viewer.multi && compatibleItemsForViewer(viewer, items).length > 0
   );
 }

@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import Header from "../components/Header/Header";
 import { useCollection, itemKey } from "../store/collection";
-import { multiViewersForItems, viewerMultiHref } from "../viewers";
+import {
+  compatibleItemsForViewer,
+  multiViewersForItems,
+  viewerMultiHref,
+} from "../viewers";
 import "../components/ResultActions/resultActions.css";
 
 // "My collection": the set of results the user compiled across searches
@@ -29,16 +33,19 @@ export default function CollectionPage() {
         ) : (
           <>
             <div style={{ display: "flex", gap: 8, margin: "12px 0", flexWrap: "wrap" }}>
-              {multiViewers.map((v) => (
-                <Link
-                  key={v.id}
-                  className="shareBtn"
-                  to={viewerMultiHref(v, items)}
-                  target="_blank"
-                >
-                  Open {items.length} in {v.label}
-                </Link>
-              ))}
+              {multiViewers.map((v) => {
+                const viewerItems = compatibleItemsForViewer(v, items);
+                return (
+                  <Link
+                    key={v.id}
+                    className="shareBtn"
+                    to={viewerMultiHref(v, viewerItems)}
+                    target="_blank"
+                  >
+                    Open {viewerItems.length} in {v.label}
+                  </Link>
+                );
+              })}
               <button className="shareBtn" onClick={clear}>
                 Clear
               </button>

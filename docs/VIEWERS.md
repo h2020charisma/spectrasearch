@@ -160,9 +160,10 @@ Dispatch helpers:
 
 - `viewersForType(type)` returns enabled viewers for a result type, sorted by priority.
 - `viewerHref(viewer, item)` builds one concrete route or external URL for a result. Route viewers are omitted when their `idField` is missing. H5Web route values are normalized to one separator while preserving internal slashes and the `#` initial-path fragment.
-- `viewerMultiHref(viewer, items)` builds a multi-item route for collection links.
+- `viewerMultiHref(viewer, items)` builds a multi-item route using only items whose type and identifier are supported by the viewer.
 - `resolveViewersForItem(item)` returns applicable viewer actions and drops external links that cannot be built.
-- `multiViewersForItems(items)` returns route viewers that can open at least one item type in a collection.
+- `compatibleItemsForViewer(viewer, items)` returns the collection items a viewer can open.
+- `multiViewersForItems(items)` returns route viewers that can open at least one identified item in a collection.
 
 Rendering entrypoints:
 
