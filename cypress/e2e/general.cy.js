@@ -1,14 +1,41 @@
 /* eslint-disable no-undef */
 const testURLRoot = "http://127.0.0.1:50722/search/";
-const baseURL = Cypress.env("VITE_BaseURL");
+const baseURL = (
+  Cypress.env("API_BASE_URL") || "https://spectrasearch.test.invalid/"
+).replace(/\/$/, "");
+const apiHostname = new URL(baseURL).hostname;
+
+if (
+  apiHostname !== "localhost" &&
+  apiHostname !== "127.0.0.1" &&
+  !apiHostname.endsWith(".invalid")
+) {
+  throw new Error("Cypress API_BASE_URL must use localhost or a .invalid domain");
+}
+
+const escapedBaseURL = baseURL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 import { ann } from "../fixtures/json/ann_params";
+
+function setConfigIntercept() {
+  cy.intercept("GET", `${testURLRoot}config.json`, {
+    body: {
+      apiBaseUrl: `${baseURL}/`,
+      ambitUrl: "https://apps.ideaconsult.net/nanoreg1/",
+      predictionsCore: "vega",
+      chemicalsCore: "dsstox",
+      subjectField: "dsstox_id_s",
+      hsdsUrl: "https://hsds.adma.ai",
+      hsdsDomain: "/qubounds",
+    },
+  }).as("getRuntimeConfig");
+}
 
 function setMainIntercepts() {
   cy.intercept(
     {
       method: "GET",
-      url: `${baseURL}/db/query?page=0&pagesize=30`,
+      url: new RegExp(`^${escapedBaseURL}/db/query\\?`),
     },
     {
       fixture: "json/bk_rcapi_samples_generated.json",
@@ -22,7 +49,7 @@ function setMainInterceptsWithParams(pages, hits, ann) {
       method: "GET",
       url: `${baseURL}/db/query?page=${pages ? pages : 0}&pagesize=${
         hits ? hits : 30
-      }ann=${ann ? ann : false}`,
+      }&ann=${ann ? ann : false}`,
     },
     {
       fixture: "json/bk_rcapi_samples_generated.json",
@@ -90,11 +117,22 @@ function setProviderIntercepts() {
   ).as("getAllSamples");
 }
 
-function setFileUploadIntercepts() {
-  cy.intercept({
-    method: "POST",
-    url: `${baseURL}/db/download?what=knnquery`,
-  }).as("postFile");
+function setFileUploadIntercepts(response = {}) {
+  cy.intercept(
+    {
+      method: "POST",
+      url: `${baseURL}/db/download?what=knnquery`,
+    },
+    {
+      statusCode: 200,
+      body: {
+        cdf: "test-vector",
+        imageLink: `${testURLRoot}blank.png`,
+        vector_field: "spectrum_p1024",
+      },
+      ...response,
+    }
+  ).as("postFile");
 }
 
 function setDatasetIntercepts() {
@@ -137,7 +175,7 @@ function setGenericImageIntercepts() {
   cy.intercept(
     {
       method: "GET",
-      url: `${testURLRoot}/blank.png`,
+      url: `${testURLRoot}blank.png`,
     },
     {
       fixture: "images/blank.png",
@@ -159,14 +197,16 @@ function setThumbnailImageIntercepts() {
 
 describe("General site functionality", () => {
   beforeEach(() => {
-    cy.visit(testURLRoot);
+    setConfigIntercept();
+    setSourcesIntercepts();
     setMainIntercepts();
     setGenericImageIntercepts();
     setThumbnailImageIntercepts();
+    cy.visit(testURLRoot);
+    cy.wait(["@getRuntimeConfig", "@getAllSources", "@getAllSamples"]);
   });
 
   it("opens and closes the sources modal window", () => {
-    setSourcesIntercepts();
     cy.get('[data-cy="sources-btn"]').click();
     cy.get(".DialogHeader").should("be.visible");
     cy.get('[data-cy="ok-btn"]').click();
@@ -195,6 +235,26 @@ describe("General site functionality", () => {
         force: true,
       }
     );
+    cy.wait("@postFile");
+    cy.get("@postFile.all").should("have.length", 1);
+  });
+
+  it("shows the backend message when a file upload is rejected", () => {
+    setFileUploadIntercepts({
+      statusCode: 400,
+      body: { detail: "Unsupported spectrum format" },
+    });
+    cy.get("input[type=file]").selectFile(
+      "cypress/fixtures/generic/Cal_785_SEX139.txt",
+      { force: true }
+    );
+    cy.wait("@postFile");
+    cy.get(".notRightFile").should(
+      "have.text",
+      "Unsupported spectrum format"
+    );
+    cy.get(".searchOptions").should("not.exist");
+    cy.get("@postFile.all").should("have.length", 1);
   });
 
   // it("opens Search by Data-provider and looks for the domain", () => {

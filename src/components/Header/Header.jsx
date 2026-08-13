@@ -6,7 +6,10 @@ export default function Header() {
   const auth = useAuth();
   const navigate = useNavigate();
   const [appName, setAppName] = useState(
-    () => sessionStorage.getItem("appName") || "Spectra Search"
+    () =>
+      localStorage.getItem("appName") ||
+      sessionStorage.getItem("appName") ||
+      "Spectra Search"
   );
 
   useEffect(() => {
