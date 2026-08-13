@@ -4,13 +4,19 @@ import Close from "../Icons/Close";
 import SearchIcon from "../Icons/SearchIcon";
 import "./CustomSearch.css";
 
-export default function CustomSearch({ label, freeSearch, setFreeSearch }) {
+export default function CustomSearch({
+  label,
+  freeSearch,
+  setFreeSearch,
+  resetPage,
+}) {
   const [searchInput, setSearchInput] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     setFreeSearch(searchInput.trim());
+    resetPage?.();
   };
 
   return (
@@ -31,6 +37,7 @@ export default function CustomSearch({ label, freeSearch, setFreeSearch }) {
           onClick={() => {
             setSearchInput("");
             setFreeSearch("");
+            resetPage?.();
           }}
         >
           <Close />

@@ -5,7 +5,12 @@ import CloseIcon from "../Icons/Close";
 import SearchIcon from "../Icons/SearchIcon";
 import "./Select.css";
 
-export default function Select({ sources, setSources, allDataSources }) {
+export default function Select({
+  sources,
+  setSources,
+  allDataSources,
+  setPages,
+}) {
   const defaultSource = localStorage.getItem("defaultSource") || "";
 
   const [filtered, setFiltered] = useState([]);
@@ -17,14 +22,14 @@ export default function Select({ sources, setSources, allDataSources }) {
     () =>
       setFiltered(
         allDataSources?.data_sources?.filter((item) =>
-          item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+          item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
         ),
         localStorage.setItem(
           "numberOfsources",
-          allDataSources?.data_sources?.length || 0
-        )
+          allDataSources?.data_sources?.length || 0,
+        ),
       ),
-    [search, allDataSources, defaultSource]
+    [search, allDataSources, defaultSource],
   );
 
   const removeSource = (name) => {
@@ -39,6 +44,7 @@ export default function Select({ sources, setSources, allDataSources }) {
           className="resetLabel"
           onClick={() => {
             setSources([]);
+            setPages(0);
           }}
         >
           Reset
@@ -62,6 +68,7 @@ export default function Select({ sources, setSources, allDataSources }) {
                   className="closeSourceBtn"
                   onClick={() => {
                     removeSource(item.name);
+                    setPages(0);
                   }}
                 >
                   <CloseIcon />
@@ -89,7 +96,7 @@ export default function Select({ sources, setSources, allDataSources }) {
         >
           {filtered?.map((item) => {
             let isSelected = !sources?.some(
-              (source) => source?.name === item?.name
+              (source) => source?.name === item?.name,
             );
 
             return (
@@ -108,9 +115,10 @@ export default function Select({ sources, setSources, allDataSources }) {
                     setSources((prev) => [...prev, item]);
                   } else {
                     setSources(() =>
-                      sources.filter((source) => source.name !== item.name)
+                      sources.filter((source) => source.name !== item.name),
                     );
                   }
+                  setPages(0);
                 }}
               >
                 <p className="sourceName">{item.name}</p>

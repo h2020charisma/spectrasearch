@@ -8,6 +8,8 @@ export default function WidgetLiveSearch({
   params,
   queryStringSourcesParams,
   setParams,
+  pages,
+  setPages,
 }) {
   return (
     <div>
@@ -18,6 +20,8 @@ export default function WidgetLiveSearch({
         queryStringSourcesParams={queryStringSourcesParams}
         label={name}
         field={field}
+        pages={pages}
+        setPages={setPages}
       />
     </div>
   );

@@ -1,4 +1,6 @@
 /* eslint-disable react/prop-types */
+import { useMemorizedValue } from "../../utils/useMemorizedValue";
+
 export default function SelectNumber({
   value,
   setValue,
@@ -6,16 +8,15 @@ export default function SelectNumber({
   founds,
   setPages,
 }) {
+  const memorizedFounds = useMemorizedValue(founds);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
       <p>Shown</p>
       <input
         onChange={(e) => {
-          if (e.target.value.trim() === "") {
-            setValue(10);
-            setPages(0);
-          } else {
-            setValue(e.target.value);
+          const parsed = parseInt(e.target.value, 10);
+          if (!isNaN(parsed) && parsed >= 1 && parsed <= 100) {
+            setValue(parsed);
             setPages(0);
           }
         }}
@@ -34,7 +35,8 @@ export default function SelectNumber({
         }}
       />
       <p>
-        of <span style={{ fontWeight: "600" }}>{founds} </span>hits
+        of <span style={{ fontWeight: "600" }}>{memorizedFounds} </span>
+        hits
       </p>
     </div>
   );

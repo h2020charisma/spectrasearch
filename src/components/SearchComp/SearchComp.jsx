@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "react-oidc-context";
 import { useLocation } from "react-router-dom";
@@ -18,7 +18,6 @@ import Expander from "../UI/Expander";
 import ToastDemo from "../UI/Toast/Toast";
 
 import "../../App.css";
-import Pagination from "../Pagination/Pagination";
 
 const defaultSourceMessage =
   "Since you have not selected any data sources, the default one was automatically selected for you.";
@@ -51,6 +50,7 @@ export default function SearchComp({ setDomain }) {
   const auth = useAuth();
 
   const [sources, setSources] = useSessionStorage("dataSources", []);
+  const resetPage = () => setPages(0);
 
   const [toast, setToast] = useState(false);
 
@@ -203,6 +203,7 @@ export default function SearchComp({ setDomain }) {
                 setFreeSearch={setFreeSearch}
                 smiles={smiles}
                 setSmiles={setSmiles}
+                resetPage={resetPage}
               />
             </motion.div>
           )}
@@ -235,7 +236,10 @@ export default function SearchComp({ setDomain }) {
           pages={pages}
           setPagesize={setPagesize}
           setPages={setPages}
+          resetPage={resetPage}
           founds={data?.numFound}
+          loading={loading}
+          error={error}
         />
         {file && imageData && (
           <div className="imageUploded">
@@ -270,6 +274,7 @@ export default function SearchComp({ setDomain }) {
               loading={loading}
               imageSelected={imageSelected}
               setImageSelected={setImageSelected}
+              pagesize={pagesize}
             />
           </ErrorBoundary>
         </Expander>

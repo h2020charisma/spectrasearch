@@ -33,7 +33,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: fit-content;
+  width: 160px;
 }
 
 .pageNumberInput {
@@ -74,7 +74,9 @@
   background-color: #00ace1;
   border: 1px solid #00ace1;
   color: #fff;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 .next-page-btn:disabled {

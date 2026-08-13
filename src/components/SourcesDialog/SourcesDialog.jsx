@@ -10,6 +10,7 @@ export default function SourcesDialog({
   allDataSources,
   dialog,
   setDialog,
+  setPages,
 }) {
   const dataSourcesCaption = () => {
     return (
@@ -58,6 +59,7 @@ export default function SourcesDialog({
             sources={sources}
             setSources={setSources}
             allDataSources={allDataSources}
+            setPages={setPages}
           />
 
           <div

@@ -2,9 +2,13 @@
 import { useEffect, useState } from "react";
 import Select, { components } from "react-select";
 import Close from "../Icons/Close";
-import { m } from "framer-motion";
 
-export const ModeSelect = ({ dataSources, similarity, setSimilarity }) => {
+export const ModeSelect = ({
+  dataSources,
+  similarity,
+  setSimilarity,
+  resetPage,
+}) => {
   const [selectedOption, setSelectedOption] = useState([]);
 
   useEffect(() => {
@@ -13,7 +17,7 @@ export const ModeSelect = ({ dataSources, similarity, setSimilarity }) => {
         dataSources?.similarity.map((item) => ({
           label: item?.name,
           value: item?.vector,
-        }))
+        })),
       );
     }
   }, [dataSources, similarity]);
@@ -47,8 +51,8 @@ export const ModeSelect = ({ dataSources, similarity, setSimilarity }) => {
       backgroundColor: state.isSelected
         ? "#00ace1" // selected option color
         : state.isFocused
-        ? "#f3fcffff" // hover/focused color
-        : "white", // default background
+          ? "#f3fcffff" // hover/focused color
+          : "white", // default background
       color: state.isSelected ? "white" : "#575757ff",
       fontSize: "1rem",
       fontWeight: "500",
@@ -66,9 +70,14 @@ export const ModeSelect = ({ dataSources, similarity, setSimilarity }) => {
           ? { label: similarity?.name, value: similarity?.vector }
           : null
       }
-      onChange={(option) =>
-        setSimilarity({ name: option?.label, vector: option?.value })
-      }
+      onChange={(option) => {
+        const similarityState = option
+          ? { name: option.label, vector: option.value }
+          : { name: "", vector: "" };
+
+        setSimilarity(similarityState);
+        resetPage?.();
+      }}
       components={{ ClearIndicator: CustomClearIndicator }}
       isClearable
       isSearchable
