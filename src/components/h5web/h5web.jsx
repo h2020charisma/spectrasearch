@@ -41,6 +41,10 @@ export default function H5web({ domain }) {
 
   const initialPath = initialPathParams || hash || "/";
 
+  if (auth.isLoading) {
+    return <div role="status">Loading viewer...</div>;
+  }
+
   const downloadFile = () => {
     const token = auth?.user?.access_token;
 
@@ -76,7 +80,6 @@ export default function H5web({ domain }) {
         </button>
       </div>
       <div style={{ height: "100vh" }}>
-        {auth.isLoading && <div role="status">Loading viewer...</div>}
         <HsdsProvider
           url="https://hsds-kc.ideaconsult.net"
           fetcher={fetcher}

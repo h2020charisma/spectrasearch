@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import SearchComp from "../components/SearchComp/SearchComp";
 
 import Footer from "../components/Footer/Footer";
