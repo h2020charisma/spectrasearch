@@ -18,8 +18,8 @@ export default function Chart({ imageSelected, isNexusFile }) {
   const datasetQuery = !isNexusFile
     ? apiUrl(
         `db/dataset?domain=${encodeURIComponent(
-          imageSelected
-        )}&values=True&${querySourcesString}`
+          imageSelected,
+        )}&values=True&${querySourcesString}`,
       )
     : "";
 

@@ -17,7 +17,7 @@ export default function ViewerLink({ item, children, ...rest }) {
     );
   }
   return (
-    <Link to={primary.href} target="_blank" {...rest}>
+    <Link to={primary.href} {...rest}>
       {children}
     </Link>
   );

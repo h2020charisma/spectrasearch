@@ -1,24 +1,24 @@
-import "@h5web/app/dist/styles.css";
 import { App, HsdsProvider, createBasicFetcher } from "@h5web/app";
-import { useState, useMemo } from "react";
-import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
+import "@h5web/app/dist/styles.css";
+import { useMemo, useState } from "react";
 import { useAuth } from "react-oidc-context";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { apiUrl } from "../../config";
 import { useQueryStringSourcesParams } from "../../utils/useQueryStringSourcesParams";
 import BackArrow from "../Icons/BackArrow";
-import { apiUrl } from "../../config";
 
 // eslint-disable-next-line react/prop-types
 export default function H5web({ domain }) {
   const [searchParams] = useSearchParams();
-  const location = useLocation();
+
   const navigate = useNavigate();
   const auth = useAuth();
   const { querySourcesString } = useQueryStringSourcesParams();
 
-  const queryParams = new URLSearchParams(location.search);
-  const h5webParams = queryParams.get("h5web");
   const initialPathParams = searchParams.get("initialPath");
-  const [hash] = useState(decodeURIComponent(window.location.hash.substring(1)));
+  const [hash] = useState(
+    decodeURIComponent(window.location.hash.substring(1)),
+  );
 
   // Dynamic fetcher: headers are read each time a request is made
 
@@ -26,12 +26,12 @@ export default function H5web({ domain }) {
     if (auth?.user?.access_token) {
       // Logged-in user
       return createBasicFetcher({
-        headers: { Authorization: 'Bearer ' + auth.user.access_token },
+        headers: { Authorization: "Bearer " + auth.user.access_token },
       });
     } else {
       // Public access using basic auth
-      const username = 'system-public-user';
-      const password = 'system-public-user';
+      const username = "system-public-user";
+      const password = "system-public-user";
       const basic = btoa(`${username}:${password}`);
       return createBasicFetcher({
         headers: { Authorization: `Basic ${basic}` },
@@ -41,16 +41,18 @@ export default function H5web({ domain }) {
 
   const initialPath = initialPathParams || hash || "/";
 
+  if (auth.isLoading) {
+    return <div role="status">Loading viewer...</div>;
+  }
+
   const downloadFile = () => {
     const token = auth?.user?.access_token;
 
     fetch(
-      apiUrl(
-        `db/download?what=h5&domain=${domain || h5webParams}&${querySourcesString}`
-      ),
+      apiUrl(`db/download?what=h5&domain=${domain}&${querySourcesString}`),
       {
-        headers: token ? { Authorization: 'Bearer ' + token } : {},
-      }
+        headers: token ? { Authorization: "Bearer " + token } : {},
+      },
     )
       .then((resp) => resp.blob())
       .then((blob) => {
@@ -58,7 +60,7 @@ export default function H5web({ domain }) {
         const a = document.createElement("a");
         a.style.display = "none";
         a.href = url;
-        a.download = `${domain || h5webParams}`;
+        a.download = `${domain}`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
@@ -83,7 +85,7 @@ export default function H5web({ domain }) {
           fetcher={fetcher}
           username="system-public-user"
           password="system-public-user"
-          filepath={`${domain || h5webParams}`}
+          filepath={`${domain}`}
         >
           <App initialPath={initialPath} />
         </HsdsProvider>

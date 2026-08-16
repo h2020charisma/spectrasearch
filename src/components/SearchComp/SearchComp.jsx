@@ -22,7 +22,7 @@ import "../../App.css";
 const defaultSourceMessage =
   "Since you have not selected any data sources, the default one was automatically selected for you.";
 
-export default function SearchComp({ setDomain }) {
+export default function SearchComp() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const domainParams = queryParams.get("domain");
@@ -280,11 +280,7 @@ export default function SearchComp({ setDomain }) {
         </Expander>
 
         {imageSelected && auth.isAuthenticated ? (
-          <Chart
-            imageSelected={imageSelected}
-            setDomain={setDomain}
-            isNexusFile={isNexusFile}
-          />
+          <Chart imageSelected={imageSelected} isNexusFile={isNexusFile} />
         ) : (
           <div className="errorMessage"></div>
         )}

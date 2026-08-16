@@ -13,6 +13,8 @@ A viewer entry in `src/viewers.js` is one of two kinds:
 - `kind: "route"`: an embedded React component mounted on an internal React Router route.
 - `kind: "external"`: a declarative external link built from result fields.
 
+Internal route viewers open in the current tab by default so they retain the active SpectraSearch OIDC context. External viewers open in a new tab with `rel="noreferrer"` and do not receive the SpectraSearch access token.
+
 Current route viewers:
 
 | Viewer | Package | Route | Page |
