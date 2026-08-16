@@ -18,7 +18,9 @@ export default function H5web({ domain }) {
   const queryParams = new URLSearchParams(location.search);
   const h5webParams = queryParams.get("h5web");
   const initialPathParams = searchParams.get("initialPath");
-  const [hash] = useState(decodeURIComponent(window.location.hash.substring(1)));
+  const [hash] = useState(
+    decodeURIComponent(window.location.hash.substring(1)),
+  );
 
   // Dynamic fetcher: headers are read each time a request is made
 
@@ -26,12 +28,12 @@ export default function H5web({ domain }) {
     if (auth?.user?.access_token) {
       // Logged-in user
       return createBasicFetcher({
-        headers: { Authorization: 'Bearer ' + auth.user.access_token },
+        headers: { Authorization: "Bearer " + auth.user.access_token },
       });
     } else {
       // Public access using basic auth
-      const username = 'system-public-user';
-      const password = 'system-public-user';
+      const username = "system-public-user";
+      const password = "system-public-user";
       const basic = btoa(`${username}:${password}`);
       return createBasicFetcher({
         headers: { Authorization: `Basic ${basic}` },
@@ -45,12 +47,10 @@ export default function H5web({ domain }) {
     const token = auth?.user?.access_token;
 
     fetch(
-      apiUrl(
-        `db/download?what=h5&domain=${domain || h5webParams}&${querySourcesString}`
-      ),
+      apiUrl(`db/download?what=h5&domain=${domain}&${querySourcesString}`),
       {
-        headers: token ? { Authorization: 'Bearer ' + token } : {},
-      }
+        headers: token ? { Authorization: "Bearer " + token } : {},
+      },
     )
       .then((resp) => resp.blob())
       .then((blob) => {
