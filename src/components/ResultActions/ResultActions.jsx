@@ -13,7 +13,6 @@ function ViewerAnchor({ external, href, className, title, onClick, children }) {
       <a
         className={className}
         href={href}
-        target="_blank"
         rel="noreferrer"
         title={title}
         onClick={onClick}
@@ -23,7 +22,7 @@ function ViewerAnchor({ external, href, className, title, onClick, children }) {
     );
   }
   return (
-    <Link className={className} to={href} target="_blank" title={title} onClick={onClick}>
+    <Link className={className} to={href} title={title} onClick={onClick}>
       {children}
     </Link>
   );
@@ -42,7 +41,7 @@ export default function ResultActions({ item, children }) {
   const primary = resolved[0];
 
   const inCollection = useCollection((s) =>
-    s.items.some((i) => itemKey(i) === itemKey(item))
+    s.items.some((i) => itemKey(i) === itemKey(item)),
   );
   const toggle = useCollection((s) => s.toggle);
 
