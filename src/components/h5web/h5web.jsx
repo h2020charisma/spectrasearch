@@ -1,22 +1,20 @@
-import "@h5web/app/dist/styles.css";
 import { App, HsdsProvider, createBasicFetcher } from "@h5web/app";
-import { useState, useMemo } from "react";
-import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
+import "@h5web/app/dist/styles.css";
+import { useMemo, useState } from "react";
 import { useAuth } from "react-oidc-context";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { apiUrl } from "../../config";
 import { useQueryStringSourcesParams } from "../../utils/useQueryStringSourcesParams";
 import BackArrow from "../Icons/BackArrow";
-import { apiUrl } from "../../config";
 
 // eslint-disable-next-line react/prop-types
 export default function H5web({ domain }) {
   const [searchParams] = useSearchParams();
-  const location = useLocation();
+
   const navigate = useNavigate();
   const auth = useAuth();
   const { querySourcesString } = useQueryStringSourcesParams();
 
-  const queryParams = new URLSearchParams(location.search);
-  const h5webParams = queryParams.get("h5web");
   const initialPathParams = searchParams.get("initialPath");
   const [hash] = useState(
     decodeURIComponent(window.location.hash.substring(1)),
@@ -58,7 +56,7 @@ export default function H5web({ domain }) {
         const a = document.createElement("a");
         a.style.display = "none";
         a.href = url;
-        a.download = `${domain || h5webParams}`;
+        a.download = `${domain}`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
@@ -78,12 +76,13 @@ export default function H5web({ domain }) {
         </button>
       </div>
       <div style={{ height: "100vh" }}>
+        {auth.isLoading && <div role="status">Loading viewer...</div>}
         <HsdsProvider
           url="https://hsds-kc.ideaconsult.net"
           fetcher={fetcher}
           username="system-public-user"
           password="system-public-user"
-          filepath={`${domain || h5webParams}`}
+          filepath={`${domain}`}
         >
           <App initialPath={initialPath} />
         </HsdsProvider>

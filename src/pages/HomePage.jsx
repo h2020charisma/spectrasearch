@@ -8,8 +8,6 @@ import GoToTop from "../components/UI/GoToTop";
 import ToastComp from "../components/UI/Toast/Toast";
 
 export default function HomePage() {
-  let [setDomain] = useState(null);
-
   return (
     <div>
       <ToastComp />
@@ -17,7 +15,7 @@ export default function HomePage() {
 
       <div>
         <div>
-          <SearchComp setDomain={setDomain} />
+          <SearchComp />
           <GoToTop />
           <Footer />
         </div>
