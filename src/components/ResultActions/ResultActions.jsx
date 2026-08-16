@@ -13,6 +13,7 @@ function ViewerAnchor({ external, href, className, title, onClick, children }) {
       <a
         className={className}
         href={href}
+        target="_blank"
         rel="noreferrer"
         title={title}
         onClick={onClick}

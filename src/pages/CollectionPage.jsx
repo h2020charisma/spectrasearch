@@ -32,7 +32,14 @@ export default function CollectionPage() {
           </p>
         ) : (
           <>
-            <div style={{ display: "flex", gap: 8, margin: "12px 0", flexWrap: "wrap" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                margin: "12px 0",
+                flexWrap: "wrap",
+              }}
+            >
               {multiViewers.map((v) => {
                 const viewerItems = compatibleItemsForViewer(v, items);
                 return (
@@ -40,7 +47,6 @@ export default function CollectionPage() {
                     key={v.id}
                     className="shareBtn"
                     to={viewerMultiHref(v, viewerItems)}
-                    target="_blank"
                   >
                     Open {viewerItems.length} in {v.label}
                   </Link>
@@ -64,10 +70,17 @@ export default function CollectionPage() {
                   }}
                 >
                   {it.imageLink && (
-                    <img src={it.imageLink} alt={it.text} width={48} height="auto" />
+                    <img
+                      src={it.imageLink}
+                      alt={it.text}
+                      width={48}
+                      height="auto"
+                    />
                   )}
                   <span style={{ flex: 1 }}>
-                    <span style={{ fontSize: 12, color: "#888", marginRight: 8 }}>
+                    <span
+                      style={{ fontSize: 12, color: "#888", marginRight: 8 }}
+                    >
                       {it.type}
                     </span>
                     {it.text || it.id}
