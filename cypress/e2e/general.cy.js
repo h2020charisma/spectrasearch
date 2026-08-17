@@ -244,7 +244,7 @@ describe("General site functionality", () => {
       statusCode: 400,
       body: {
         detail:
-          'Traceback (most recent call last):\n  File "/usr/local/lib/python3.12/site-packages/ramanchada2/spectrum/creators/from_local_file.py", line 88, in from_local_file\nValueError: filetype png not supported',
+          'Traceback (most recent call last):\n  File "/internal/server/path.py", line 42\nUnsupportedFileTypeError',
       },
     });
     cy.get("input[type=file]").selectFile(
@@ -257,7 +257,7 @@ describe("General site functionality", () => {
       "The file couldn't be processed. Its format may not be supported, or it may contain invalid or damaged spectrum data. Check the file and try again."
     );
     cy.get("body").should("not.contain.text", "Traceback");
-    cy.get("body").should("not.contain.text", "/usr/local/lib/python");
+    cy.get("body").should("not.contain.text", "/internal/server/path.py");
     cy.get(".fileNameStr").should("not.exist");
     cy.get(".closeBtn").should("not.exist");
     cy.get(".uploadPlaceholder").should("have.text", "No file selected");
