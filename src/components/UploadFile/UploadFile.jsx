@@ -11,7 +11,7 @@ const invalidInputMessage = "Invalid data submitted. Please check your inputs.";
 const uploadFailureMessage =
   "Something went wrong on our end. Please try again later.";
 const fileProcessingMessage =
-  "The file couldn't be processed. Its format may not be supported, or it may contain invalid or damaged spectrum data. Check the file and try again.";
+  "The file couldn't be processed. Its format may not be supported, or its contents may be invalid or damaged. Check the file and try again.";
 const fileUploadFailureMessage =
   "The file couldn't be uploaded. Please try again later.";
 

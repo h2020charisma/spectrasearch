@@ -262,7 +262,7 @@ describe("General site functionality", () => {
     cy.wait("@postFile");
     cy.get('.notRightFile[role="alert"]').should(
       "have.text",
-      "The file couldn't be processed. Its format may not be supported, or it may contain invalid or damaged spectrum data. Check the file and try again."
+      "The file couldn't be processed. Its format may not be supported, or its contents may be invalid or damaged. Check the file and try again."
     );
     cy.get("body").should("not.contain.text", "Traceback");
     cy.get("body").should("not.contain.text", "/internal/server/path.py");
