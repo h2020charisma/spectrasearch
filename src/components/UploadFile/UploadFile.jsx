@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Close from "../Icons/Close";
 import Spinner from "../Icons/Spinner";
 import { useSessionStorage } from "../../utils/useSessionStorage";
@@ -10,18 +10,17 @@ import { apiUrl } from "../../config";
 const invalidInputMessage = "Invalid data submitted. Please check your inputs.";
 const uploadFailureMessage =
   "Something went wrong on our end. Please try again later.";
+const fileProcessingMessage =
+  "The file couldn't be processed. Its format may not be supported, or it may contain invalid or damaged spectrum data. Check the file and try again.";
+const fileUploadFailureMessage =
+  "The file couldn't be uploaded. Please try again later.";
 
-async function responseErrorMessage(response) {
-  const fallback =
-    response.status === 400 ? invalidInputMessage : uploadFailureMessage;
-
-  try {
-    const errorData = await response.json();
-    const message = errorData?.detail || errorData?.message;
-    return typeof message === "string" && message.trim() ? message : fallback;
-  } catch {
-    return fallback;
-  }
+function responseErrorMessage(
+  response,
+  invalidMessage = invalidInputMessage,
+  failureMessage = uploadFailureMessage,
+) {
+  return response.status === 400 ? invalidMessage : failureMessage;
 }
 
 export default function UploadFile({
@@ -43,6 +42,7 @@ export default function UploadFile({
   const [isNotRightFile, setIsNotRightFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const fileInputRef = useRef(null);
 
   const [fileName, setFileName] = useSessionStorage("fileName", "");
   const similarityOptions = dataSources?.similarity;
@@ -62,6 +62,8 @@ export default function UploadFile({
     const controller = new AbortController();
 
     async function fetchDate() {
+      let errorMessage = fileUploadFailureMessage;
+
       setIsLoading(true);
       setIsNotRightFile(false);
       setUploadError("");
@@ -77,7 +79,12 @@ export default function UploadFile({
         });
 
         if (!response.ok) {
-          throw new Error(await responseErrorMessage(response));
+          errorMessage = responseErrorMessage(
+            response,
+            fileProcessingMessage,
+            fileUploadFailureMessage,
+          );
+          throw new Error(`Upload failed with status ${response.status}`);
         }
 
         const img = await response.json();
@@ -95,8 +102,11 @@ export default function UploadFile({
       } catch (error) {
         if (error.name === "AbortError") return;
         setIsNotRightFile(true);
-        setUploadError(error.message || uploadFailureMessage);
+        setUploadError(errorMessage);
+        setFile(null);
+        setFileName("");
         setImageData(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
         console.error("Error uploading file:", error);
       } finally {
         if (!controller.signal.aborted) setIsLoading(false);
@@ -105,7 +115,15 @@ export default function UploadFile({
 
     fetchDate();
     return () => controller.abort();
-  }, [file, fileQuery, similarityOptions, setImageData, setSimilarity]);
+  }, [
+    file,
+    fileQuery,
+    similarityOptions,
+    setFile,
+    setFileName,
+    setImageData,
+    setSimilarity,
+  ]);
 
   // Fetch molecule vector when SMILES changes
   useEffect(() => {
@@ -114,6 +132,8 @@ export default function UploadFile({
     const controller = new AbortController();
 
     async function fetchMoleculeVector() {
+      let errorMessage = uploadFailureMessage;
+
       setIsLoading(true);
       setIsNotRightFile(false);
       setUploadError("");
@@ -129,7 +149,10 @@ export default function UploadFile({
         });
 
         if (!response.ok) {
-          throw new Error(await responseErrorMessage(response));
+          errorMessage = responseErrorMessage(response);
+          throw new Error(
+            `Molecule request failed with status ${response.status}`,
+          );
         }
 
         const data = await response.json();
@@ -147,7 +170,7 @@ export default function UploadFile({
       } catch (error) {
         if (error.name === "AbortError") return;
         setIsNotRightFile(true);
-        setUploadError(error.message || uploadFailureMessage);
+        setUploadError(errorMessage);
         setImageData(null);
         console.error("Error fetching molecule vector:", error);
       } finally {
@@ -175,6 +198,7 @@ export default function UploadFile({
     if (file) {
       setFile(null);
       setFileName("");
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
     resetPage?.();
   };
@@ -232,6 +256,9 @@ export default function UploadFile({
                         setUploadError("");
                         setIsNotRightFile(false);
                         setPages(0);
+                        if (fileInputRef.current) {
+                          fileInputRef.current.value = "";
+                        }
                       }}
                     >
                       <Close />
@@ -265,7 +292,7 @@ export default function UploadFile({
               </div>
             )}
           </div>
-          {!fileName && !smiles && (
+          {!fileName && !smiles && !isNotRightFile && (
             <span className="uploadPlaceholder">
               {hasMolecule
                 ? "No file or molecule selected"
@@ -281,6 +308,7 @@ export default function UploadFile({
             <input
               type="file"
               id="file"
+              ref={fileInputRef}
               onChange={(e) => {
                 if (file) {
                   setFile(null);

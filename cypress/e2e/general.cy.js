@@ -226,7 +226,7 @@ describe("General site functionality", () => {
     cy.get("#projectSearch").type("Neon").type("{enter}");
   });
 
-  it("opens file", () => {
+  it("uploads, removes, and reselects a file", () => {
     setFileUploadIntercepts();
     setMainInterceptsWithParams(0, 30, ann);
     cy.get("input[type=file]").selectFile(
@@ -237,23 +237,41 @@ describe("General site functionality", () => {
     );
     cy.wait("@postFile");
     cy.get("@postFile.all").should("have.length", 1);
-  });
-
-  it("shows the backend message when a file upload is rejected", () => {
-    setFileUploadIntercepts({
-      statusCode: 400,
-      body: { detail: "Unsupported spectrum format" },
-    });
+    cy.get(".closeBtn").click();
+    cy.get("input[type=file]").should("have.value", "");
     cy.get("input[type=file]").selectFile(
       "cypress/fixtures/generic/Cal_785_SEX139.txt",
       { force: true }
     );
     cy.wait("@postFile");
-    cy.get(".notRightFile").should(
-      "have.text",
-      "Unsupported spectrum format"
+    cy.get("@postFile.all").should("have.length", 2);
+  });
+
+  it("handles a rejected file upload without exposing backend details", () => {
+    setFileUploadIntercepts({
+      statusCode: 400,
+      body: {
+        detail:
+          'Traceback (most recent call last):\n  File "/internal/server/path.py", line 42\nUnsupportedFileTypeError',
+      },
+    });
+    cy.get("input[type=file]").selectFile(
+      "cypress/fixtures/images/blank.png",
+      { force: true }
     );
+    cy.wait("@postFile");
+    cy.get('.notRightFile[role="alert"]').should(
+      "have.text",
+      "The file couldn't be processed. Its format may not be supported, or it may contain invalid or damaged spectrum data. Check the file and try again."
+    );
+    cy.get("body").should("not.contain.text", "Traceback");
+    cy.get("body").should("not.contain.text", "/internal/server/path.py");
+    cy.get(".fileNameStr").should("not.exist");
+    cy.get(".closeBtn").should("not.exist");
+    cy.get(".uploadPlaceholder").should("not.exist");
     cy.get(".searchOptions").should("not.exist");
+    cy.get(".imageUploded").should("not.exist");
+    cy.get("input[type=file]").should("have.value", "");
     cy.get("@postFile.all").should("have.length", 1);
   });
 
