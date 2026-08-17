@@ -226,7 +226,7 @@ describe("General site functionality", () => {
     cy.get("#projectSearch").type("Neon").type("{enter}");
   });
 
-  it("opens file", () => {
+  it("uploads, removes, and reselects a file", () => {
     setFileUploadIntercepts();
     setMainInterceptsWithParams(0, 30, ann);
     cy.get("input[type=file]").selectFile(
@@ -237,6 +237,14 @@ describe("General site functionality", () => {
     );
     cy.wait("@postFile");
     cy.get("@postFile.all").should("have.length", 1);
+    cy.get(".closeBtn").click();
+    cy.get("input[type=file]").should("have.value", "");
+    cy.get("input[type=file]").selectFile(
+      "cypress/fixtures/generic/Cal_785_SEX139.txt",
+      { force: true }
+    );
+    cy.wait("@postFile");
+    cy.get("@postFile.all").should("have.length", 2);
   });
 
   it("handles a rejected file upload without exposing backend details", () => {

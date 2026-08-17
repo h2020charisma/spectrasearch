@@ -132,6 +132,8 @@ export default function UploadFile({
     const controller = new AbortController();
 
     async function fetchMoleculeVector() {
+      let errorMessage = uploadFailureMessage;
+
       setIsLoading(true);
       setIsNotRightFile(false);
       setUploadError("");
@@ -147,7 +149,10 @@ export default function UploadFile({
         });
 
         if (!response.ok) {
-          throw new Error(responseErrorMessage(response));
+          errorMessage = responseErrorMessage(response);
+          throw new Error(
+            `Molecule request failed with status ${response.status}`,
+          );
         }
 
         const data = await response.json();
@@ -165,7 +170,7 @@ export default function UploadFile({
       } catch (error) {
         if (error.name === "AbortError") return;
         setIsNotRightFile(true);
-        setUploadError(error.message || uploadFailureMessage);
+        setUploadError(errorMessage);
         setImageData(null);
         console.error("Error fetching molecule vector:", error);
       } finally {
@@ -193,6 +198,7 @@ export default function UploadFile({
     if (file) {
       setFile(null);
       setFileName("");
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
     resetPage?.();
   };
@@ -250,6 +256,9 @@ export default function UploadFile({
                         setUploadError("");
                         setIsNotRightFile(false);
                         setPages(0);
+                        if (fileInputRef.current) {
+                          fileInputRef.current.value = "";
+                        }
                       }}
                     >
                       <Close />
