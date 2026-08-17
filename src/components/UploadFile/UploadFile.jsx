@@ -292,7 +292,7 @@ export default function UploadFile({
               </div>
             )}
           </div>
-          {!fileName && !smiles && (
+          {!fileName && !smiles && !isNotRightFile && (
             <span className="uploadPlaceholder">
               {hasMolecule
                 ? "No file or molecule selected"

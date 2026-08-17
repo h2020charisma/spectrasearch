@@ -268,7 +268,7 @@ describe("General site functionality", () => {
     cy.get("body").should("not.contain.text", "/internal/server/path.py");
     cy.get(".fileNameStr").should("not.exist");
     cy.get(".closeBtn").should("not.exist");
-    cy.get(".uploadPlaceholder").should("have.text", "No file selected");
+    cy.get(".uploadPlaceholder").should("not.exist");
     cy.get(".searchOptions").should("not.exist");
     cy.get(".imageUploded").should("not.exist");
     cy.get("input[type=file]").should("have.value", "");
