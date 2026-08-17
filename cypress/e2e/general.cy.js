@@ -239,21 +239,31 @@ describe("General site functionality", () => {
     cy.get("@postFile.all").should("have.length", 1);
   });
 
-  it("shows the backend message when a file upload is rejected", () => {
+  it("handles a rejected file upload without exposing backend details", () => {
     setFileUploadIntercepts({
       statusCode: 400,
-      body: { detail: "Unsupported spectrum format" },
+      body: {
+        detail:
+          'Traceback (most recent call last):\n  File "/usr/local/lib/python3.12/site-packages/ramanchada2/spectrum/creators/from_local_file.py", line 88, in from_local_file\nValueError: filetype png not supported',
+      },
     });
     cy.get("input[type=file]").selectFile(
-      "cypress/fixtures/generic/Cal_785_SEX139.txt",
+      "cypress/fixtures/images/blank.png",
       { force: true }
     );
     cy.wait("@postFile");
-    cy.get(".notRightFile").should(
+    cy.get('.notRightFile[role="alert"]').should(
       "have.text",
-      "Unsupported spectrum format"
+      "The file couldn't be processed. Its format may not be supported, or it may contain invalid or damaged spectrum data. Check the file and try again."
     );
+    cy.get("body").should("not.contain.text", "Traceback");
+    cy.get("body").should("not.contain.text", "/usr/local/lib/python");
+    cy.get(".fileNameStr").should("not.exist");
+    cy.get(".closeBtn").should("not.exist");
+    cy.get(".uploadPlaceholder").should("have.text", "No file selected");
     cy.get(".searchOptions").should("not.exist");
+    cy.get(".imageUploded").should("not.exist");
+    cy.get("input[type=file]").should("have.value", "");
     cy.get("@postFile.all").should("have.length", 1);
   });
 
