@@ -82,6 +82,49 @@ const VIEWERS = [
     priority: 4,
   },
   {
+    // name_s/name_hs (surfaced as item.text) is now the human-readable
+    // mineral name, not the RRUFF id -- see pipeline_nexus/tasks/
+    // read_rruff.py's _substance (name/publicname swap). The RRUFF id
+    // instead lives in the Solr id itself: build_papp sets
+    // papp.uuid = "RRUF_{rruf_id}_{pairing_key}", and solr_writer's
+    // entry2solr appends "/{effect_index}" (e.g.
+    // "RRUF_R250095_Abellaite__R250095-1__.../1", surfaced as item.id).
+    // A bare "R\d+" scan (first match anywhere in the string) is fragile --
+    // pairing_key repeats the id again later (as "R250095-1") and embeds
+    // the mineral name, either of which could shift what "first" means if
+    // the format ever changes. Anchor to the literal "RRUF_" prefix
+    // instead so only the id segment right after it can match, no matter
+    // what follows later in the string. Sample page:
+    // https://www.rruff.net/R250095.
+    id: "rruff",
+    kind: "external",
+    label: "RRUFF",
+    icon: "fa6/FaFlask",
+    types: ["study", "substance"],
+    url: "https://www.rruff.net",
+    link: { _default: "/{rruffId}" },
+    transform: { rruffId: { from: "id", extract: "(?<=^RRUF_)R\\d+" } },
+    requires: { field: "id", match: "^RRUF_R\\d+" },
+    enabled: true,
+    priority: 5,
+  },
+  {
+    // "study" needs its own direct h5web entry, not just the "*" fallback
+    // below -- once rruff registers types:["study"], viewersForType("study")
+    // only falls back to "*" when there are ZERO direct matches, so without
+    // this h5web would disappear for study results whose rruff link doesn't
+    // apply (requires fails, non-RRUFF data, etc).
+    id: "h5web-study",
+    kind: "route",
+    label: "h5web",
+    icon: "fa6/FaWaveSquare",
+    types: ["study"],
+    route: "/h5web/{itemId}",
+    idField: "value",
+    multi: false,
+    priority: 0,
+  },
+  {
     id: "h5web",
     kind: "route",
     label: "h5web",
