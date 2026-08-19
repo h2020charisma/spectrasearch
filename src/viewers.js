@@ -112,23 +112,6 @@ const VIEWERS = [
     priority: 5,
   },
   {
-    // "study" needs its own direct h5web entry, not just the "*" fallback
-    // below -- once rruff registers types:["study"], viewersForType("study")
-    // only falls back to "*" when there are ZERO direct matches, so without
-    // this h5web would disappear for study results whose rruff link doesn't
-    // apply (requires fails, non-RRUFF data, etc).
-    // we might want only external viewer fo RRUFF though
-    id: "h5web-study",
-    kind: "route",
-    label: "h5web",
-    icon: "fa6/FaWaveSquare",
-    types: ["placeholder"],
-    route: "/h5web/{itemId}",
-    idField: "value",
-    multi: false,
-    priority: 0,
-  },
-  {
     id: "h5web",
     kind: "route",
     label: "h5web",
@@ -230,12 +213,25 @@ export function viewerMultiHref(viewer, items) {
   return `${viewer.route}?${qs.toString()}`;
 }
 
-// Resolve the viewers applicable to a specific item, each with its concrete href.
-// External viewers whose href is null (requires failed / missing placeholder) are dropped.
-export function resolveViewersForItem(item) {
-  return viewersForType(item?.type)
+function resolveWithViewers(viewers, item) {
+  return viewers
     .map((viewer) => ({ viewer, href: viewerHref(viewer, item), external: isExternal(viewer) }))
     .filter((r) => r.href != null);
+}
+
+// Resolve the viewers applicable to a specific item, each with its concrete href.
+// External viewers whose href is null (requires failed / missing placeholder) are dropped.
+// viewersForType only omits the "*" default when some OTHER viewer is directly
+// registered for the type -- it can't know per-item whether that direct viewer
+// will actually resolve (e.g. rruff's requires rejecting a non-RRUFF-shaped id).
+// So when direct-match viewers exist but none of them resolve for this specific
+// item, fall back to the "*" viewers (h5web) rather than leaving the item with
+// no action at all.
+export function resolveViewersForItem(item) {
+  const resolved = resolveWithViewers(viewersForType(item?.type), item);
+  if (resolved.length) return resolved;
+  const fallback = VIEWERS.filter((v) => v.enabled !== false && v.types.includes("*"));
+  return resolveWithViewers(fallback, item);
 }
 
 export function compatibleItemsForViewer(viewer, items) {
