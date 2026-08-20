@@ -88,7 +88,7 @@ export default function Expander({ children, title, status, data, icon }) {
         <div style={{ display: "flex", alignItems: "center", gap: "26px" }}>
           {title == "Search Results" && (
             <>
-              <Notification>Description goes here</Notification>
+              <Notification>Records matching your search and filters.</Notification>
               <div
                 style={{
                   display: "flex",
