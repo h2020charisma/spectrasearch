@@ -15,6 +15,8 @@ A viewer entry in `src/viewers.js` is one of two kinds:
 
 Internal route viewers open in the current tab by default so they retain the active SpectraSearch OIDC context. External viewers open in a new tab with `rel="noreferrer"` and do not receive the SpectraSearch access token.
 
+RRUFF is one such external viewer: `study`/`substance` results whose `id` looks like an RRUFF sample id (e.g. `R250095`, from Solr `id`— see `pipeline_nexus/tasks/read_rruff.py`) link to `https://www.rruff.net/{name}`. The mineral's human-readable name lives in `name_s`.
+
 Current route viewers:
 
 | Viewer | Package | Route | Page |

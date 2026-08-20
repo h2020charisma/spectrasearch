@@ -246,7 +246,11 @@ export default function UploadFile({
                       justifyContent: "space-between",
                     }}
                   >
-                    <span className="fileNameStr">{fileName}</span>
+                    <span className="fileNameStr" title={fileName}>
+                      {fileName.length > 40
+                        ? fileName.substring(0, 40) + "..."
+                        : fileName}
+                    </span>
 
                     <div
                       className="closeBtn"

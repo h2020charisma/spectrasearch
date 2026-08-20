@@ -82,6 +82,36 @@ const VIEWERS = [
     priority: 4,
   },
   {
+    // name_s/name_hs (surfaced as item.text) is now the human-readable
+    // mineral name, not the RRUFF id -- see pipeline_nexus/tasks/
+    // read_rruff.py's _substance (name/publicname swap). The RRUFF id
+    // instead lives in the Solr id itself: build_papp sets
+    // papp.uuid = "RRUF_{rruf_id}_{pairing_key}", and solr_writer's
+    // entry2solr appends "/{effect_index}" (e.g.
+    // "RRUF_R250095_Abellaite__R250095-1__.../1", surfaced as item.id).
+    // A bare id-shaped scan (first match anywhere in the string) is
+    // fragile -- pairing_key repeats the id again later (as "R250095-1")
+    // and embeds the mineral name, either of which could shift what
+    // "first" means if the format ever changes. Anchor to the literal
+    // "RRUF_" prefix instead so only the id segment right after it can
+    // match, no matter what follows later in the string. RRUFF ids aren't
+    // all "R" + digits -- the real corpus also has D-, X-, and RS-prefixed
+    // ids (e.g. rruff.net/D120001, rruff.net/X050089), so match any
+    // uppercase-letter prefix, not just "R". Sample page:
+    // https://www.rruff.net/R250095.
+    id: "rruff",
+    kind: "external",
+    label: "RRUFF",
+    icon: "fa6/FaFlask",
+    types: ["study", "substance"],
+    url: "https://www.rruff.net",
+    link: { _default: "/{rruffId}" },
+    transform: { rruffId: { from: "id", extract: "(?<=^RRUF_)[A-Z]+\\d+" } },
+    requires: { field: "id", match: "^RRUF_[A-Z]+\\d+" },
+    enabled: true,
+    priority: 5,
+  },
+  {
     id: "h5web",
     kind: "route",
     label: "h5web",
@@ -183,12 +213,25 @@ export function viewerMultiHref(viewer, items) {
   return `${viewer.route}?${qs.toString()}`;
 }
 
-// Resolve the viewers applicable to a specific item, each with its concrete href.
-// External viewers whose href is null (requires failed / missing placeholder) are dropped.
-export function resolveViewersForItem(item) {
-  return viewersForType(item?.type)
+function resolveWithViewers(viewers, item) {
+  return viewers
     .map((viewer) => ({ viewer, href: viewerHref(viewer, item), external: isExternal(viewer) }))
     .filter((r) => r.href != null);
+}
+
+// Resolve the viewers applicable to a specific item, each with its concrete href.
+// External viewers whose href is null (requires failed / missing placeholder) are dropped.
+// viewersForType only omits the "*" default when some OTHER viewer is directly
+// registered for the type -- it can't know per-item whether that direct viewer
+// will actually resolve (e.g. rruff's requires rejecting a non-RRUFF-shaped id).
+// So when direct-match viewers exist but none of them resolve for this specific
+// item, fall back to the "*" viewers (h5web) rather than leaving the item with
+// no action at all.
+export function resolveViewersForItem(item) {
+  const resolved = resolveWithViewers(viewersForType(item?.type), item);
+  if (resolved.length) return resolved;
+  const fallback = VIEWERS.filter((v) => v.enabled !== false && v.types.includes("*"));
+  return resolveWithViewers(fallback, item);
 }
 
 export function compatibleItemsForViewer(viewer, items) {
