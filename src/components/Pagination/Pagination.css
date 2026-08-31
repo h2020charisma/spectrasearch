@@ -16,12 +16,12 @@
 }
 
 .current-page {
-  color: #2b2b2b !important;
+  color: light-dark(#2d2d2d, #ebebeb) !important;
   width: 40px;
   height: 40px;
   display: flex;
   text-align: center;
-  background: aliceblue;
+  background: light-dark(#f0f8ff, #3d3d3d);
   margin: 0 10px;
   border-radius: 50%;
   justify-content: center;
@@ -80,8 +80,8 @@
 }
 
 .next-page-btn:disabled {
-  color: light-dark(#999, #555);
-  background-color: #fff;
-  border: 1px solid light-dark(#ccc, #555);
+  color: light-dark(#999, #373737);
+  background-color: light-dark(#fff, #555);
+  border: 1px solid light-dark(#ccc, #adadad);
   cursor: not-allowed;
 }
