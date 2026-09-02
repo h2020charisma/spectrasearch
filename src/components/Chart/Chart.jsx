@@ -76,7 +76,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
       // read_solr_study4dataset found no study doc for this domain, or the one
       // it found carried no vector to plot (it appends a null entry for that).
       return data.annotation?.length
-        ? "No preview chart for this study: the search index holds no plottable vector for it. To see the measured data, use the ⋮ menu on the result and open it in a viewer."
+        ? "No preview chart for this study. To see the measured data, use the ⋮ menu on the result and open it in a viewer."
         : "No indexed data was found for this domain. To see the measured data, use the ⋮ menu on the result and open it in a viewer.";
     }
     const active = datasets.find((k) => k.key === dataset);
