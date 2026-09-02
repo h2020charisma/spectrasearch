@@ -63,12 +63,34 @@ export default function Chart({ imageSelected, isNexusFile }) {
     setValuesY([...active.value[1]]);
   }, [data, datasets, dataset, isNexusFile]);
 
+  // Why there is no chart, when there isn't one. The cases are distinguishable
+  // from the response, and saying which one applies beats an empty panel that
+  // reads as a broken preview.
+  const noChartReason = useMemo(() => {
+    if (isNexusFile || !data || loading) return null;
+    if (error) return null; // the error itself is already reported below
+    if (datasets.length === 0) {
+      // read_solr_study4dataset found no study doc for this domain, or the one
+      // it found carried no vector to plot (it appends a null entry for that).
+      return data.annotation?.length
+        ? "This study is indexed, but carries no plottable signal — only the metadata below."
+        : "No indexed data was found for this domain.";
+    }
+    const active = datasets.find((k) => k.key === dataset);
+    if (!active) return null;
+    if (!active.value?.[0] || !active.value?.[1]) {
+      return "This dataset has no values to plot.";
+    }
+    return null;
+  }, [data, datasets, dataset, isNexusFile, loading, error]);
+
   useEffect(() => {
     if (!data) return;
     if (isNexusFile) return;
 
     const active = datasets.find((k) => k.key === dataset);
     if (!active || valuesX.length === 0 || valuesY.length === 0) return;
+    if (noChartReason) return; // the container isn't rendered in that case
 
     // Pair the x/y columns into rows. Passing the raw arrays as both data and
     // channel values makes Plot fall back on index order, which draws a line
@@ -122,7 +144,16 @@ export default function Chart({ imageSelected, isNexusFile }) {
     return () => {
       plot.remove();
     };
-  }, [data, datasets, valuesX, valuesY, imageSelected, dataset, isNexusFile]);
+  }, [
+    data,
+    datasets,
+    valuesX,
+    valuesY,
+    imageSelected,
+    dataset,
+    isNexusFile,
+    noChartReason,
+  ]);
 
   return (
     <div className="chartWrap">
@@ -258,7 +289,11 @@ export default function Chart({ imageSelected, isNexusFile }) {
       </div>
       {!isNexusFile && (
         <>
-          <div className="chart" ref={containerRef} />
+          {noChartReason ? (
+            <div className="chartUnavailable">{noChartReason}</div>
+          ) : (
+            <div className="chart" ref={containerRef} />
+          )}
           {/* <div className="shiftLabel">
             Raman shift (cm<sup>&ndash;1</sup>)
           </div> */}
