@@ -63,9 +63,12 @@ export default function Chart({ imageSelected, isNexusFile }) {
     setValuesY([...active.value[1]]);
   }, [data, datasets, dataset, isNexusFile]);
 
-  // Why there is no chart, when there isn't one. The cases are distinguishable
-  // from the response, and saying which one applies beats an empty panel that
-  // reads as a broken preview.
+  // Why there is no chart, when there isn't one. The preview plots the vectors
+  // Solr indexes for search; the measurement itself lives in the file and stays
+  // reachable through the result's viewers (the ResultActions ⋮ menu). So a
+  // missing preview chart says nothing about whether there is data -- send the
+  // user to the viewers rather than leaving an empty panel that reads as a
+  // broken preview.
   const noChartReason = useMemo(() => {
     if (isNexusFile || !data || loading) return null;
     if (error) return null; // the error itself is already reported below
@@ -73,13 +76,13 @@ export default function Chart({ imageSelected, isNexusFile }) {
       // read_solr_study4dataset found no study doc for this domain, or the one
       // it found carried no vector to plot (it appends a null entry for that).
       return data.annotation?.length
-        ? "This study is indexed, but carries no plottable signal — only the metadata below."
-        : "No indexed data was found for this domain.";
+        ? "No preview chart for this study: the search index holds no plottable vector for it. To see the measured data, use the ⋮ menu on the result and open it in a viewer."
+        : "No indexed data was found for this domain. To see the measured data, use the ⋮ menu on the result and open it in a viewer.";
     }
     const active = datasets.find((k) => k.key === dataset);
     if (!active) return null;
     if (!active.value?.[0] || !active.value?.[1]) {
-      return "This dataset has no values to plot.";
+      return "This dataset has no values to preview. To see the measured data, use the ⋮ menu on the result and open it in a viewer.";
     }
     return null;
   }, [data, datasets, dataset, isNexusFile, loading, error]);
