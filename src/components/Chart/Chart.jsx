@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import * as Plot from "@observablehq/plot";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryStringSourcesParams } from "../../utils/useQueryStringSourcesParams";
 import useFetch from "../../utils/useFetch";
 import { apiUrl } from "../../config";
@@ -9,6 +9,10 @@ import { latexToUnicode } from "../../utils/latexToUnicode";
 import "katex/dist/katex.min.css";
 
 // import ErrorComp from "../UI/ErrorComp";
+
+// Mirrors SPARSE_NONZERO_MAX in the backend's convertor_service.py, which
+// applies the same line-vs-points rule when rendering thumbnails.
+const SPARSE_NONZERO_MAX = 50;
 
 export default function Chart({ imageSelected, isNexusFile }) {
   const containerRef = useRef();
@@ -29,28 +33,59 @@ export default function Chart({ imageSelected, isNexusFile }) {
   const [valuesX, setValuesX] = useState([]);
   const [valuesY, setValuesY] = useState([]);
 
+  // The backend appends a null entry for a study doc with no plottable vector
+  // (read_solr_study4dataset sets dataset = None but still appends it), and
+  // returns datasets: [] for a domain it can't resolve -- so every access here
+  // has to tolerate both.
+  const datasets = useMemo(
+    () => (data?.datasets ?? []).filter(Boolean),
+    [data],
+  );
+
   useEffect(() => {
     if (isNexusFile) return;
 
-    data && imageSelected && setDataset(data?.datasets[0]?.key);
-  }, [data, imageSelected, isNexusFile]);
+    data && imageSelected && setDataset(datasets[0]?.key ?? null);
+  }, [data, datasets, imageSelected, isNexusFile]);
 
   useEffect(() => {
     if (isNexusFile) return;
 
-    data &&
-      !isNexusFile &&
-      data?.datasets.map((k) => {
-        if (dataset === k.key) {
-          setValuesX([...k.value[0]]);
-          setValuesY([...k.value[1]]);
-        }
-      });
-  }, [data, dataset, isNexusFile]);
+    const active = datasets.find((k) => k.key === dataset);
+    // A dataset entry carries `value` only when the request asked for values
+    // and the doc had them; without it there is nothing to plot.
+    if (!active?.value?.[0] || !active?.value?.[1]) {
+      setValuesX([]);
+      setValuesY([]);
+      return;
+    }
+    setValuesX([...active.value[0]]);
+    setValuesY([...active.value[1]]);
+  }, [data, datasets, dataset, isNexusFile]);
 
   useEffect(() => {
-    if (data === undefined) return;
+    if (!data) return;
     if (isNexusFile) return;
+
+    const active = datasets.find((k) => k.key === dataset);
+    if (!active || valuesX.length === 0 || valuesY.length === 0) return;
+
+    // Pair the x/y columns into rows. Passing the raw arrays as both data and
+    // channel values makes Plot fall back on index order, which draws a line
+    // that has nothing to do with the values.
+    const points = valuesX
+      .map((x, i) => ({ x, y: valuesY[i] }))
+      .filter((p) => p.y !== undefined);
+
+    // Same rule the thumbnails apply in the backend's doc2spectrum: the dense
+    // vectors hold either a resampled spectrum (hundreds of nonzero samples)
+    // or a sparse dose-response curve padded into the fixed-length field. Only
+    // the former has meaningful continuity between neighbouring samples, so a
+    // sparse curve is drawn as points -- a connecting line would invent a
+    // trajectory through padding that isn't part of the measurement.
+    const nonzero = points.reduce((n, p) => (p.y !== 0 ? n + 1 : n), 0);
+    const sparse = nonzero <= SPARSE_NONZERO_MAX;
+    const series = sparse ? points.filter((p) => p.y !== 0) : points;
 
     const plot = Plot.plot({
       // caption: dataset,
@@ -59,30 +94,35 @@ export default function Chart({ imageSelected, isNexusFile }) {
       stroke: "#454545",
       marks: [
         Plot.axisY({
-          label: `${latexToUnicode(data?.datasets[0]?.ytitle)}`,
+          label: `${latexToUnicode(active?.ytitle)}`,
           labelAnchor: "center",
           marginLeft: 60,
         }),
         Plot.axisX({
-          label: `${latexToUnicode(data?.datasets[0]?.xtitle)}`,
+          label: `${latexToUnicode(active?.xtitle)}`,
           labelAnchor: "center",
           marginTop: 60,
         }),
         Plot.ruleY([0], { stroke: "gray" }),
-        Plot.lineX(valuesX, {
-          x: valuesX,
-          y: valuesY,
-          stroke: "steelblue",
-        }),
+        sparse
+          ? Plot.dot(series, {
+              x: "x",
+              y: "y",
+              fill: "steelblue",
+              r: Math.max(2, Math.min(4, 4 - nonzero / 40)),
+            })
+          : Plot.line(series, { x: "x", y: "y", stroke: "steelblue" }),
       ],
     });
 
-    data && dataset & containerRef.current.append(plot);
+    // containerRef is null whenever the chart div isn't rendered (isNexusFile),
+    // and on the first pass before the ref attaches.
+    containerRef.current?.append(plot);
 
     return () => {
       plot.remove();
     };
-  }, [data, valuesX, valuesY, imageSelected, dataset, isNexusFile]);
+  }, [data, datasets, valuesX, valuesY, imageSelected, dataset, isNexusFile]);
 
   return (
     <div className="chartWrap">
@@ -122,7 +162,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
       {/* this section not displayed */}
       {data &&
         !isNexusFile &&
-        data.annotation.map((ann, k) => (
+        (data.annotation ?? []).filter(Boolean).map((ann, k) => (
           <div key={k} className="metadataSection">
             {/* <h3 className="metadataTitle">Metadata</h3> */}
             <div className="annotationInfo">
@@ -204,7 +244,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
         {/* {imageSelected && <span className="fileName">Datasets</span>} */}
         {data &&
           !isNexusFile &&
-          data?.datasets.map((k, i) => (
+          datasets.map((k, i) => (
             <div
               className={`${dataset == k.key ? "datasetActive" : "dataset"}`}
               key={i}
@@ -212,7 +252,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
                 setDataset(k.key);
               }}
             >
-              {k.key.replace(/_/g, " ")}
+              {(k.key ?? "").replace(/_/g, " ")}
             </div>
           ))}
       </div>
