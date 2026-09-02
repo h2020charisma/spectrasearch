@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { AuthProvider, useAuth } from "react-oidc-context";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -13,6 +13,38 @@ import SubstancePage from "./pages/SubstancePage.jsx";
 import { loadRuntimeConfig, getRuntimeConfig } from "./config.js";
 
 import "./index.css";
+
+let serviceWorkerAuth = {
+  token: "",
+  apiOrigin: "",
+};
+
+function postServiceWorkerAuth(worker) {
+  worker?.postMessage({
+    type: "TOKEN",
+    ...serviceWorkerAuth,
+  });
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.addEventListener("message", (event) => {
+    if (event.data?.type !== "TOKEN_REQUEST") return;
+
+    const replyPort = event.ports?.[0];
+    if (!replyPort) return;
+
+    if (event.source !== navigator.serviceWorker.controller) {
+      replyPort.close();
+      return;
+    }
+
+    replyPort.postMessage({
+      type: "TOKEN_RESPONSE",
+      ...serviceWorkerAuth,
+    });
+    replyPort.close();
+  });
+}
 
 const oidcConfig = {
   authority: "https://iam.ideaconsult.net/auth/realms/nano",
@@ -68,9 +100,6 @@ export const Main = () => {
 
   const token = auth.user?.access_token;
 
-  // The SW attaches the bearer token to <img> requests, which browsers never
-  // send an Authorization header for. It needs the API origin to know which
-  // image requests are ours, since that host varies per deployment.
   const apiOrigin = (() => {
     try {
       return new URL(getRuntimeConfig().apiBaseUrl).origin;
@@ -79,38 +108,50 @@ export const Main = () => {
     }
   })();
 
-  const registerServiceWorker = async () => {
-    if ("serviceWorker" in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register(
-          "/search/serviceWorker.js",
-          {
-            scope: "/search/",
-          }
-        );
-
-        await registration.active.postMessage({
-          type: "TOKEN",
-          token: token,
-          apiOrigin: apiOrigin,
-        });
-      } catch (error) {
-        console.log(`Registration failed with ${error}`);
-      }
-    }
-  };
-
-  registerServiceWorker();
+  useLayoutEffect(() => {
+    serviceWorkerAuth = {
+      token: typeof token === "string" ? token : "",
+      apiOrigin,
+    };
+    postServiceWorkerAuth(navigator.serviceWorker?.controller);
+  }, [token, apiOrigin]);
 
   useEffect(() => {
-    if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type: "TOKEN",
-        token: token,
-        apiOrigin: apiOrigin,
+    if (!("serviceWorker" in navigator)) return undefined;
+
+    let cancelled = false;
+    const handleControllerChange = () => {
+      postServiceWorkerAuth(navigator.serviceWorker.controller);
+    };
+
+    navigator.serviceWorker.addEventListener(
+      "controllerchange",
+      handleControllerChange,
+    );
+
+    navigator.serviceWorker
+      .register("/search/serviceWorker.js", { scope: "/search/" })
+      .then(() => navigator.serviceWorker.ready)
+      .then((registration) => {
+        if (!cancelled) {
+          postServiceWorkerAuth(
+            navigator.serviceWorker.controller || registration.active,
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(`Registration failed with ${error}`);
       });
-    }
-  }, [token, apiOrigin]);
+
+    return () => {
+      cancelled = true;
+      navigator.serviceWorker.removeEventListener(
+        "controllerchange",
+        handleControllerChange,
+      );
+    };
+  }, []);
+
   return <></>;
 };
 
