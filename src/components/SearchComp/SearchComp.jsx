@@ -63,11 +63,7 @@ export default function SearchComp() {
   const [smiles, setSmiles] = useSessionStorage("SMILES", "");
 
   const sorcesUrl = "db/query/sources";
-  const {
-    data: allDataSources,
-    loading: sourcesLoading,
-    error: sourcesError,
-  } = useFetch(sorcesUrl);
+  const { data: allDataSources } = useFetch(sorcesUrl);
 
   const defaultSource = localStorage.getItem("defaultSource") || "";
 
@@ -155,19 +151,11 @@ export default function SearchComp() {
   // selected. Querying earlier sends no data_source at all, so the backend
   // answers with its own default collection -- results that then get thrown
   // away and refetched once the real selection is known.
-  const sourcesResolved = Boolean(allDataSources) && params.has("data_source");
+  const sourcesResolved = Boolean(allDataSources) && sources?.length > 0;
 
   const url = sourcesResolved ? `db/query?${queryString}` : null;
 
-  const {
-    data: searchData,
-    loading: searchLoading,
-    error: searchError,
-  } = useFetch(url);
-  const data = sourcesResolved ? searchData : null;
-  const loading =
-    sourcesLoading || (!sourcesError && (!sourcesResolved || searchLoading));
-  const error = sourcesError || (sourcesResolved ? searchError : null);
+  const { data, loading, error } = useFetch(url);
 
   return (
     <div className="main">

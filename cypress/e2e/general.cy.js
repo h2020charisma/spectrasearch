@@ -195,64 +195,6 @@ function setThumbnailImageIntercepts() {
   );
 }
 
-describe("Search source discovery", () => {
-  beforeEach(() => {
-    setConfigIntercept();
-    setGenericImageIntercepts();
-    setThumbnailImageIntercepts();
-  });
-
-  it("waits for discovery and includes a source in the first query", () => {
-    const queryUrls = [];
-
-    cy.intercept("GET", `${baseURL}/db/query/sources`, {
-      fixture: "json/bk_rcapi_sources_generated.json",
-      delay: 300,
-    }).as("getDelayedSources");
-    cy.intercept(
-      "GET",
-      new RegExp(`^${escapedBaseURL}/db/query\\?`),
-      (request) => {
-        queryUrls.push(request.url);
-        request.reply({ fixture: "json/bk_rcapi_samples_generated.json" });
-      }
-    ).as("getFirstSearch");
-
-    cy.visit(testURLRoot);
-    cy.wait("@getDelayedSources");
-    cy.wait("@getFirstSearch").then(({ request }) => {
-      const url = new URL(request.url);
-      expect(url.searchParams.getAll("data_source")).to.deep.equal([
-        "charisma",
-      ]);
-      expect(queryUrls).to.have.length(1);
-    });
-  });
-
-  it("shows a discovery failure without making a source-less query", () => {
-    let queryCount = 0;
-
-    cy.intercept("GET", `${baseURL}/db/query/sources`, {
-      statusCode: 503,
-      body: {},
-    }).as("getFailedSources");
-    cy.intercept("GET", new RegExp(`^${escapedBaseURL}/db/query\\?`), () => {
-      queryCount += 1;
-    });
-
-    cy.visit(testURLRoot);
-    cy.wait("@getFailedSources");
-    cy.contains(
-      ".ToastTitle",
-      "There is a problem connecting to the data backend server."
-    ).should("be.visible");
-    cy.get(".imagePlaceholderWrap").should("not.exist");
-    cy.then(() => {
-      expect(queryCount).to.equal(0);
-    });
-  });
-});
-
 describe("General site functionality", () => {
   beforeEach(() => {
     setConfigIntercept();
