@@ -377,6 +377,19 @@ h1 {
   background-color: light-dark(#fff, #242424);
 }
 
+/* Shown in place of .chart when there is nothing to plot, so an empty panel
+   isn't mistaken for a broken preview. */
+.chartUnavailable {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  border: 1px dashed light-dark(#d8d8d8, #3a3a3a);
+  border-radius: 4px;
+  background-color: light-dark(#fafafa, #202020);
+  color: light-dark(#5a6472, #999);
+  font-size: 0.9rem;
+}
+
 .domainInfo {
   display: flex;
   align-items: baseline;

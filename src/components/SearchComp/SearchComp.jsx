@@ -147,7 +147,13 @@ export default function SearchComp() {
 
   const queryString = params.toString().replace(/\+/g, "%20");
 
-  const url = `db/query?${queryString}`;
+  // Hold the search until discovery has resolved and a data source is actually
+  // selected. Querying earlier sends no data_source at all, so the backend
+  // answers with its own default collection -- results that then get thrown
+  // away and refetched once the real selection is known.
+  const sourcesResolved = Boolean(allDataSources) && sources?.length > 0;
+
+  const url = sourcesResolved ? `db/query?${queryString}` : null;
 
   const { data, loading, error } = useFetch(url);
 
