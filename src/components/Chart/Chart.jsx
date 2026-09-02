@@ -63,29 +63,22 @@ export default function Chart({ imageSelected, isNexusFile }) {
     setValuesY([...active.value[1]]);
   }, [data, datasets, dataset, isNexusFile]);
 
-  // Why there is no chart, when there isn't one. The preview plots the vectors
-  // Solr indexes for search; the measurement itself lives in the file and stays
-  // reachable through the result's viewers (the ResultActions ⋮ menu). So a
-  // missing preview chart says nothing about whether there is data -- send the
-  // user to the viewers rather than leaving an empty panel that reads as a
-  // broken preview.
-  const noChartReason = useMemo(() => {
-    if (isNexusFile || !data || loading) return null;
-    if (error) return null; // the error itself is already reported below
-    if (datasets.length === 0) {
-      // read_solr_study4dataset found no study doc for this domain, or the one
-      // it found carried no vector to plot (it appends a null entry for that).
-      return data.annotation?.length
-        ? "No preview chart for this study. To see the measured data, use the ⋮ menu on the result and open it in a viewer."
-        : "No indexed data was found for this domain. To see the measured data, use the ⋮ menu on the result and open it in a viewer.";
-    }
+  // True when there is nothing to draw. The preview plots only the vectors Solr
+  // indexes for search, so it knows nothing about what the file holds -- it can
+  // say a preview isn't available, never that data is missing. Every case
+  // (no doc, a doc with no vector, a dataset with no values) is the same
+  // statement to the user, so they share one message.
+  const noChart = useMemo(() => {
+    if (isNexusFile || !data || loading) return false;
+    if (error) return false; // the error itself is already reported below
+    if (datasets.length === 0) return true;
     const active = datasets.find((k) => k.key === dataset);
-    if (!active) return null;
-    if (!active.value?.[0] || !active.value?.[1]) {
-      return "This dataset has no values to preview. To see the measured data, use the ⋮ menu on the result and open it in a viewer.";
-    }
-    return null;
+    if (!active) return false;
+    return !active.value?.[0] || !active.value?.[1];
   }, [data, datasets, dataset, isNexusFile, loading, error]);
+
+  const noChartMessage =
+    "No preview available here. To see the data, use the ⋮ menu on the result and open it in a viewer.";
 
   useEffect(() => {
     if (!data) return;
@@ -93,7 +86,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
 
     const active = datasets.find((k) => k.key === dataset);
     if (!active || valuesX.length === 0 || valuesY.length === 0) return;
-    if (noChartReason) return; // the container isn't rendered in that case
+    if (noChart) return; // the container isn't rendered in that case
 
     // Pair the x/y columns into rows. Passing the raw arrays as both data and
     // channel values makes Plot fall back on index order, which draws a line
@@ -155,7 +148,7 @@ export default function Chart({ imageSelected, isNexusFile }) {
     imageSelected,
     dataset,
     isNexusFile,
-    noChartReason,
+    noChart,
   ]);
 
   return (
@@ -292,8 +285,8 @@ export default function Chart({ imageSelected, isNexusFile }) {
       </div>
       {!isNexusFile && (
         <>
-          {noChartReason ? (
-            <div className="chartUnavailable">{noChartReason}</div>
+          {noChart ? (
+            <div className="chartUnavailable">{noChartMessage}</div>
           ) : (
             <div className="chart" ref={containerRef} />
           )}
