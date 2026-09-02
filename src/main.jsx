@@ -10,7 +10,7 @@ import PredictionsPage from "./pages/PredictionsPage.jsx";
 import CollectionPage from "./pages/CollectionPage.jsx";
 import CallbackPage from "./pages/CallbackPage.jsx";
 import SubstancePage from "./pages/SubstancePage.jsx";
-import { loadRuntimeConfig } from "./config.js";
+import { loadRuntimeConfig, getRuntimeConfig } from "./config.js";
 
 import "./index.css";
 
@@ -68,6 +68,17 @@ export const Main = () => {
 
   const token = auth.user?.access_token;
 
+  // The SW attaches the bearer token to <img> requests, which browsers never
+  // send an Authorization header for. It needs the API origin to know which
+  // image requests are ours, since that host varies per deployment.
+  const apiOrigin = (() => {
+    try {
+      return new URL(getRuntimeConfig().apiBaseUrl).origin;
+    } catch {
+      return "";
+    }
+  })();
+
   const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
       try {
@@ -81,6 +92,7 @@ export const Main = () => {
         await registration.active.postMessage({
           type: "TOKEN",
           token: token,
+          apiOrigin: apiOrigin,
         });
       } catch (error) {
         console.log(`Registration failed with ${error}`);
@@ -95,9 +107,10 @@ export const Main = () => {
       navigator.serviceWorker.controller.postMessage({
         type: "TOKEN",
         token: token,
+        apiOrigin: apiOrigin,
       });
     }
-  }, [token]);
+  }, [token, apiOrigin]);
   return <></>;
 };
 
