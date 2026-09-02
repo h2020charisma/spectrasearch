@@ -33,6 +33,7 @@ function rememberClientAuth(clientId, data) {
     authByClient.delete(clientId);
   }
 
+  pendingAuthByClient.get(clientId)?.settle(auth);
   return auth;
 }
 
@@ -40,8 +41,9 @@ self.addEventListener("install", () => {
   console.log("SW installed, waiting for activation...");
 });
 
-self.addEventListener("activate", () => {
+self.addEventListener("activate", (event) => {
   console.log("SW activated");
+  event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("message", (event) => {
@@ -86,25 +88,39 @@ function getClientAuth(clientId) {
   if (knownAuth) return Promise.resolve(knownAuth);
 
   const pendingAuth = pendingAuthByClient.get(clientId);
-  if (pendingAuth) return pendingAuth;
+  if (pendingAuth) return pendingAuth.promise;
 
   // Worker globals are disposable, so recover auth from the requesting tab.
   const authRevision = authRevisionByClient.get(clientId) || 0;
+  let settlePendingAuth;
+  const proactiveAuth = new Promise((resolve) => {
+    settlePendingAuth = resolve;
+  });
+  let pendingEntry;
   const authRequest = (async () => {
     const client = await self.clients.get(clientId);
     if (!client) return null;
 
-    const response = await requestClientAuth(client);
+    const response = await Promise.race([
+      requestClientAuth(client),
+      proactiveAuth,
+    ]);
     if ((authRevisionByClient.get(clientId) || 0) !== authRevision) {
       return authByClient.get(clientId) || null;
     }
 
     return rememberClientAuth(clientId, response);
   })().finally(() => {
-    pendingAuthByClient.delete(clientId);
+    if (pendingAuthByClient.get(clientId) === pendingEntry) {
+      pendingAuthByClient.delete(clientId);
+    }
   });
 
-  pendingAuthByClient.set(clientId, authRequest);
+  pendingEntry = {
+    promise: authRequest,
+    settle: settlePendingAuth,
+  };
+  pendingAuthByClient.set(clientId, pendingEntry);
   return authRequest;
 }
 
