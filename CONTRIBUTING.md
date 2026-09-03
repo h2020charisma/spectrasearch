@@ -132,6 +132,32 @@ The Dockerfile `FROM node:x.y.z-slim AS build-stage` line is the source of truth
 
 Use a compatible local Node.js version for development. When changing the Docker Node.js version, update this file, `AGENTS.md`, Docker, and CI together.
 
+On native Windows, prefer pnpm's integrated Node.js management rather than the
+official Node.js MSI. Read the current version from the Dockerfile, then install
+that version globally through pnpm. For the version currently pinned here:
+
+```powershell
+pnpm runtime set node 24.18.0 -g
+```
+
+`pnpm env use --global` is the deprecated predecessor of `pnpm runtime set`.
+The `packageManager` field pins pnpm, not Node.js. The Node.js MSI adds its own
+installation directory to `PATH` and can take precedence over pnpm's managed
+runtime, so avoid the MSI when pnpm is intended to own Node.js. Verify the
+active tools in a new terminal with:
+
+```powershell
+where.exe node
+where.exe pnpm
+node --version
+pnpm --version
+```
+
+If `C:\Program Files\nodejs` takes precedence, remove the conflicting MSI
+installation or deliberately correct `PATH`. Do not run `pnpm runtime set node`
+without `-g` for workstation setup: non-global runtime selection records
+project metadata and updates the lockfile.
+
 ## Backend API expectations
 
 - `apiBaseUrl` in frontend runtime config must point to a `ramanchada-api` deployment and should end with `/`.
@@ -146,92 +172,38 @@ Use a compatible local Node.js version for development. When changing the Docker
 
 ## Embedded viewers
 
-Result viewer dispatch is configured in `src/viewers.js` and documented in `docs/VIEWERS.md`.
+Result viewer dispatch is configured in `src/viewers.js` and documented in
+`docs/VIEWERS.md`. The package-development contract and complete integration
+checklist are in `docs/ADDING_VIEWERS.md`.
+
+Before scaffolding a new publishable viewer, read `docs/ADDING_VIEWERS.md`. If
+you use an AI coding agent, give it that guide before it chooses dependencies
+or designs the component API. The guide contains a copyable prompt that tells
+an agent to fetch the current version directly from GitHub when this repository
+is absent or its local checkout may be stale.
+
+Until SpectraSearch PR #104 and ramanchada-api PR #134 merge, the viewer
+documentation describes their `viewers` and `viewers_support` branches as if
+already merged. Remove this temporary note after both merges.
 
 Use `kind: "external"` for viewers that can be represented as links built from result fields. External viewers usually require only one registry entry.
 
 Use `kind: "route"` for embedded React viewers. A route viewer should have a props-driven component, a page under `src/pages/`, a route in `src/main.jsx`, and a registry entry in `src/viewers.js`.
 
-The qu-bounds viewer is imported as [`@ideaconsult/qubounds-viewer`](https://github.com/ideaconsult/qubounds-viewer). The substance/study viewer is imported as [`@ideaconsult/jtoxkit-react`](https://github.com/ideaconsult/jtoxkit-react). Treat local `file:` dependencies as development-only; when a viewer package version or embedding props change, update package metadata, imports, Vite dependency optimization, lockfile, and docs together.
+The qu-bounds viewer is imported as [`@ideaconsult/qubounds-viewer`](https://github.com/ideaconsult/qubounds-viewer). The substance/study viewer is imported as [`@ideaconsult/jtoxkit-react`](https://github.com/ideaconsult/jtoxkit-react). Keep committed dependencies on npm semver versions; when a viewer package version or embedding props change, update package metadata, imports, Vite dependency optimization, lockfile, and docs together.
 
 When changing viewer registry behavior, routes, viewer package names, or embedding props, update `docs/VIEWERS.md` in the same pull request.
 
 ### Local viewer package development
 
-Keep committed viewer dependencies as semver npm packages. For local debugging, prefer
-`pnpm link` so package overrides stay in `node_modules` instead of `package.json` and
-`pnpm-lock.yaml`.
+Use a watched library build plus `pnpm link` for the daily development loop.
+Use a packed tarball in a disposable checkout for the release-quality consumer
+test. The canonical commands, rationale, React peer requirements, Vite cache
+behavior, unlink verification, Windows path guidance, and alternatives are in
+[Develop A Viewer And Host Together](docs/ADDING_VIEWERS.md#develop-a-viewer-and-host-together).
 
-Viewer packages expose built `dist/` files, not their `src/` files. Keep the relevant
-library build running in watch mode while this app is running.
-
-For jtoxkit-react:
-
-```sh
-# terminal 1, in ../jtoxkit-react
-pnpm build:lib -- --watch
-```
-
-```sh
-# terminal 2, in this repo
-pnpm link ../jtoxkit-react
-pnpm dev -- --force
-```
-
-For qubounds-viewer:
-
-```sh
-# terminal 1, in ../qubounds-viewer
-pnpm build:lib -- --watch
-```
-
-```sh
-# terminal 2, in this repo
-pnpm link ../qubounds-viewer
-pnpm dev -- --force
-```
-
-If both local viewers are needed, link both before starting the dev server:
-
-```sh
-pnpm link ../jtoxkit-react
-pnpm link ../qubounds-viewer
-pnpm dev -- --force
-```
-
-Because `vite.config.js` prebundles both viewer packages through `optimizeDeps.include`, a
-library rebuild may not appear until Vite re-optimizes dependencies. Restart the dev server
-with `pnpm dev -- --force` whenever updates are not picked up.
-
-To return to registry packages:
-
-```sh
-pnpm unlink @ideaconsult/jtoxkit-react
-pnpm unlink @ideaconsult/qubounds-viewer
-pnpm install --frozen-lockfile
-pnpm dev -- --force
-```
-
-Use packed tarballs for package-consumer smoke tests, not everyday live debugging. In the
-viewer repo:
-
-```sh
-pnpm build:lib
-pnpm pack --pack-destination /tmp/viewer-packs
-```
-
-Then install the tarball in this repo, preferably on a throwaway branch:
-
-```sh
-pnpm add /tmp/viewer-packs/ideaconsult-jtoxkit-react-0.1.0.tgz
-# or:
-pnpm add /tmp/viewer-packs/ideaconsult-qubounds-viewer-0.1.0.tgz
-pnpm dev -- --force
-```
-
-Tarball installs intentionally modify `package.json` and `pnpm-lock.yaml`. Restore the
-normal semver dependency before committing. Do not commit local `file:` or `.tgz` viewer
-dependencies unless the pull request is explicitly about temporary local integration.
+Do not commit `link:`, `file:`, tarball, temporary override, or other local
+viewer dependency state.
 
 ## Dependency updates
 
@@ -294,4 +266,4 @@ Keep Vite base path, Docker/nginx behavior, and Traefik routing assumptions sync
 
 ## Documentation maintenance
 
-Update `AGENTS.md` and this file whenever install commands, scripts, test tooling, deployment assumptions, or backend API expectations change. Update `docs/VIEWERS.md` whenever viewer dispatch, routes, package names, or embedding assumptions change.
+Update `AGENTS.md` and this file whenever install commands, scripts, test tooling, deployment assumptions, or backend API expectations change. Update `docs/VIEWERS.md` whenever viewer dispatch, routes, package names, or embedding assumptions change. Update `docs/ADDING_VIEWERS.md` whenever the reusable package contract, local integration workflow, or viewer definition of done changes.

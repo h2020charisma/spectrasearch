@@ -1,10 +1,21 @@
 # Viewer dispatch: embedding React viewers per result type
 
+> [!NOTE]
+> This reference describes SpectraSearch
+> [PR #104](https://github.com/h2020charisma/spectrasearch/pull/104) and the
+> companion ramanchada-api
+> [PR #134](https://github.com/h2020charisma/ramanchada-api/pull/134) as if they
+> were merged. Until then, their `viewers` and `viewers_support` branches are the
+> corresponding sources of truth.
+
 ## Why
 
 Search results (`/db/query`) each carry a result type (`type`). Viewer dispatch maps each result to one or more actions without hard-coding viewer links in result components.
 
 The default route viewer is h5web. Prediction and chemical results can also open the qu-bounds prediction viewer, and substance results can open the jtoxkit substance/study viewer. External website actions, such as AOP mapper or AOP-Wiki, use the same registry but render as normal external links.
+
+For the package-development contract and an end-to-end integration checklist,
+see [Adding and Developing Viewers](ADDING_VIEWERS.md).
 
 ## Viewer Kinds
 
@@ -48,7 +59,10 @@ import "@ideaconsult/qubounds-viewer/style.css";
 />
 ```
 
-The viewer package scopes its CSS under `.qubounds-root`, so importing its CSS should not leak globals into the search app.
+The viewer package uses `.qubounds-root` for package-level styles and CSS
+Modules for component-local selectors. Its stylesheet currently imports Google
+Fonts, so deployments with strict CSP or offline requirements must account for
+`fonts.googleapis.com` and `fonts.gstatic.com` or replace that dependency.
 
 `PredictionsPage` accepts either a path id or repeatable query parameters:
 
@@ -78,39 +92,43 @@ import "@ideaconsult/jtoxkit-react/style.css";
 `SubstancePage` accepts query parameters built from search result fields:
 
 - `/substance?substanceId=...` opens the substance UUID surfaced from `s_uuid_hs` as `item.uuid`.
-- `/substance?substanceId=...&dbtag=...` can use `dbtag_hss[0]` when available.
+- `/substance?substanceId=...&dbtag=...` accepts an explicitly supplied database tag, but registry-generated result links currently contain only `substanceId`.
 
-`apiBase` is derived from `dbtag` or the substance UUID prefix through `src/utils/tagdbs.js`. If the tag is not mapped, `SubstancePage` falls back to runtime config `ambitUrl`, which defaults to `https://apps.ideaconsult.net/nanoreg1/`. `convertBase` is derived from runtime config `apiBaseUrl` and is used only for the ramanchada-api dose-response conversion endpoint.
+ramanchada-api PR #134 normalizes `s_uuid_hs` to the optional result field
+`uuid`; it does not return `dbtag_hss`. `apiBase` is derived from an explicit
+`dbtag` or the substance UUID prefix through `src/utils/tagdbs.js`. If the tag
+is not mapped, `SubstancePage` falls back to runtime config `ambitUrl`, which
+defaults to `https://apps.ideaconsult.net/nanoreg1/`. `convertBase` is derived
+from runtime config `apiBaseUrl` and is used only for the ramanchada-api
+dose-response conversion endpoint.
 
-The viewer package scopes its CSS under `.jtoxkit-root`, so importing its CSS should not leak globals into the search app.
+The viewer package scopes its selectors beneath `.jtoxkit-root`. Its stylesheet
+currently imports Google Fonts, so deployments with strict CSP or offline
+requirements must account for `fonts.googleapis.com` and `fonts.gstatic.com` or
+replace that dependency.
+
+The current package also statically imports `@observablehq/plot` while declaring
+it as an optional peer. SpectraSearch installs Plot directly in `package.json`;
+other hosts must currently do the same if they consume the main entrypoint.
 
 ## Local Viewer Development
 
-For local debugging of [`@ideaconsult/qubounds-viewer`](https://github.com/ideaconsult/qubounds-viewer) or [`@ideaconsult/jtoxkit-react`](https://github.com/ideaconsult/jtoxkit-react), prefer `pnpm link` over committed `file:` dependencies.
+For local debugging of
+[`@ideaconsult/qubounds-viewer`](https://github.com/ideaconsult/qubounds-viewer)
+or
+[`@ideaconsult/jtoxkit-react`](https://github.com/ideaconsult/jtoxkit-react),
+use a watched library build plus `pnpm link` for the daily development loop.
+Use a packed tarball in a disposable checkout to test the actual npm consumer
+artifact. Keep committed dependencies on npm semver versions.
 
-The viewer packages expose built `dist/` files, so run the library build in watch mode:
-
-```sh
-# in ../qubounds-viewer or ../jtoxkit-react
-pnpm build:lib -- --watch
-```
-
-Then link the package in this repo and force Vite dependency optimization:
-
-```sh
-pnpm link ../qubounds-viewer
-# or:
-pnpm link ../jtoxkit-react
-pnpm dev -- --force
-```
-
-If updates are not picked up after a viewer rebuild, restart `pnpm dev -- --force`. Return to registry packages with `pnpm unlink <package>`, then `pnpm install --frozen-lockfile`.
-
-Use `pnpm pack` tarballs only for package-consumer smoke tests. Tarball installs modify `package.json` and `pnpm-lock.yaml`, so do them on a throwaway branch or restore the normal semver dependencies before committing.
+The complete workflow, including Vite cache behavior, cleanup, React peer
+handling, Windows paths, and tarball verification, is in
+[Develop A Viewer And Host Together](ADDING_VIEWERS.md#develop-a-viewer-and-host-together).
 
 ## Registry And Dispatch
 
-`src/viewers.js` exports an ordered array of viewer definitions. Higher `priority` entries are shown first.
+`src/viewers.js` defines an ordered array of viewer definitions and exports the
+dispatch helpers that consume it. Higher `priority` entries are shown first.
 
 ```js
 const VIEWERS = [
@@ -152,13 +170,30 @@ const VIEWERS = [
 ];
 ```
 
-Important fields:
+Common fields:
 
-- `types`: result types served by the viewer; `"*"` is the default only when no direct viewer matches.
-- `idField`: result field used to build the route or query parameter.
-- `mode`: for route viewers, maps result type to `item` or `compound` query parameter names.
-- `multi`: enables collection-level links that open many stored results in one viewer.
+- `id`: stable registry identifier.
+- `kind`: `"route"` or `"external"`.
+- `label`: user-facing action label.
+- `types`: exact, case-sensitive result types served by the viewer; `"*"` is the default only when no direct viewer matches.
 - `priority`: controls primary action ordering when several viewers apply.
+- `enabled: false`: hides a configured viewer from normal per-item dispatch.
+- `icon`: reserved icon metadata; the current result action components do not render it.
+
+Route fields:
+
+- `route`: internal route; `{itemId}` is the only supported path placeholder.
+- `idField`: normalized result field used to build the route or query parameter.
+- `paramName`: explicit query parameter for a single item.
+- `mode`: maps a result type to `compound`; all other values use `item`.
+- `multi`: enables collection-level links that open many stored results in one viewer.
+
+External fields:
+
+- `url`: external site base.
+- `link`: result-type or `_default` path/query templates.
+- `requires`: one field and regular-expression applicability check.
+- `transform`: derives a placeholder from another field with optional regular-expression extraction.
 
 Dispatch helpers:
 
@@ -175,9 +210,24 @@ Rendering entrypoints:
 - `src/components/ViewerLink/ViewerLink.jsx` renders a simpler primary viewer link for secondary link locations.
 - `src/pages/CollectionPage.jsx` renders multi-item viewer actions from stored collection items.
 
+### Current Dispatch Limits
+
+- A direct type registration suppresses the `"*"` fallback even when every
+  direct viewer later lacks a required field and resolves to no action.
+- Collection persistence keeps only `id`, `type`, `text`, `value`, and
+  `imageLink`. A multi-viewer that needs another field requires a coordinated
+  change in `src/store/collection.js`.
+- `viewerMultiHref` currently serializes every supplied collection item rather
+  than filtering to the viewer's types. Verify mixed collections before adding
+  another multi-viewer.
+- `multiViewersForItems` currently reads the registry directly and does not
+  apply the normal `enabled: false` filtering.
+
 ## External-link Viewers
 
-External viewers use `url` plus `link` templates. Placeholders in `{braces}` are read from result fields and `encodeURIComponent`-escaped.
+External viewers use `url` plus `link` templates. Placeholders in `{braces}` are
+read from result fields and `encodeURIComponent`-escaped. Placeholder names may
+contain only letters, digits, and underscores.
 
 ```js
 {
@@ -199,14 +249,16 @@ Optional external fields:
 - `transform`: derives a placeholder value from another field, for example extracting digits from an id.
 - `enabled: false`: keeps a configured viewer hidden without deleting it.
 
-Adding an external viewer usually requires only one registry entry in `src/viewers.js`; no route, component, package, or backend change is needed.
+Adding an external viewer usually requires only one registry entry in
+`src/viewers.js` when all placeholders already exist in the normalized result.
+No route or package is needed; add backend normalization when the required
+semantic value is not already returned.
 
 ## Adding A Route Viewer
 
-1. Add the viewer package or component.
-2. Create a page under `src/pages/` that passes route/query params, auth token, and backend config to the viewer.
-3. Register the route in `src/main.jsx`.
-4. Add a `kind: "route"` entry in `src/viewers.js`.
-5. Update this document and the relevant agent/contributor instructions.
-
-Route viewers should be props-driven and keep their CSS scoped under a package-specific root class.
+Follow [Adding and Developing Viewers](ADDING_VIEWERS.md) before creating the
+package, then use its
+[embedded route viewer checklist](ADDING_VIEWERS.md#embedded-route-viewer) for
+the SpectraSearch integration. Route viewers must be props-driven, receive host
+auth and runtime configuration explicitly, and keep CSS scoped under a
+package-specific root class.
