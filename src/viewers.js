@@ -112,28 +112,28 @@ const VIEWERS = [
     priority: 5,
   },
   {
-    // Curated per-file NeXus view (materials, investigation prose, default
-    // plot per NXentry) -- reads the same HSDS domain as h5web via
-    // src/pages/NexusOverviewPage.jsx. Shares h5web's `*` fallback slot but
-    // ranks above it, so it is the primary action for any untyped result
-    // while h5web stays available as a secondary action for the full tree.
-    id: "nexus-overview",
-    kind: "route",
-    label: "NeXus overview",
-    icon: "fa6/FaTableList",
-    types: ["*"],
-    route: "/nexus-overview/{itemId}",
-    idField: "value",
-    multi: false,
-    priority: 1,
-  },
-  {
     id: "h5web",
     kind: "route",
     label: "h5web",
     icon: "fa6/FaWaveSquare",
     types: ["*"], // default for every type with no registered viewer
     route: "/h5web/{itemId}",
+    idField: "value",
+    multi: false,
+    priority: 0,
+  },
+  {
+    // Curated per-file NeXus view (materials, investigation prose, default
+    // plot per NXentry) -- reads the same HSDS domain as h5web via
+    // src/pages/NexusOverviewPage.jsx. Shares h5web's `*` fallback slot as a
+    // secondary action: same priority, listed after h5web, so the stable
+    // sort in viewersForType keeps h5web primary and this follows it.
+    id: "nexus-overview",
+    kind: "route",
+    label: "NeXus overview",
+    icon: "fa6/FaTableList",
+    types: ["*"],
+    route: "/nexus-overview/{itemId}",
     idField: "value",
     multi: false,
     priority: 0,
