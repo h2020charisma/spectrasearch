@@ -53,10 +53,10 @@ export const ModeSelect = ({
       backgroundColor: state.isSelected
         ? "#00ace1" // selected option color
         : state.isFocused
-          ? "light-dark(white, #3d3d3d)" // hover/focused color
-          : "light-dark(white, #3d3d3d)", // default background
+          ? "light-dark(white, #ccc)" // hover/focused color
+          : "light-dark(white, #2d2d2d)", // default background
       color: state.isSelected
-        ? "light-dark(white, #a1a1a1)"
+        ? "light-dark(white, #3d3d3d)"
         : "light-dark(white, #a1a1a1)", // text color
       fontSize: "1rem",
       fontWeight: "500",
