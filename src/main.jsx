@@ -6,6 +6,7 @@ import ReactDOM from "react-dom/client";
 import HitPage from "./pages/HitPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import H5webPage from "./pages/H5webPage.jsx";
+import NexusOverviewPage from "./pages/NexusOverviewPage.jsx";
 import PredictionsPage from "./pages/PredictionsPage.jsx";
 import CollectionPage from "./pages/CollectionPage.jsx";
 import CallbackPage from "./pages/CallbackPage.jsx";
@@ -66,6 +67,10 @@ const router = createBrowserRouter(
     {
       path: "/h5web/:domain/*",
       Component: H5webPage,
+    },
+    {
+      path: "/nexus-overview/:domain/*",
+      Component: NexusOverviewPage,
     },
     {
       path: "/predictions",

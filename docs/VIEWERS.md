@@ -32,6 +32,7 @@ Current route viewers:
 
 | Viewer | Package | Route | Page |
 |---|---|---|---|
+| NeXus overview | host-only (HSDS REST + `@observablehq/plot`) | `/nexus-overview/:domain/*` | `src/pages/NexusOverviewPage.jsx` |
 | h5web default | `@h5web/app` | `/h5web/:domain/*` | `src/pages/H5webPage.jsx` |
 | predictions | `@ideaconsult/qubounds-viewer` | `/predictions`, `/predictions/:id/*` | `src/pages/PredictionsPage.jsx` |
 | substance/study | `@ideaconsult/jtoxkit-react` | `/substance` | `src/pages/SubstancePage.jsx` |
@@ -111,6 +112,46 @@ The current package also statically imports `@observablehq/plot` while declaring
 it as an optional peer. SpectraSearch installs Plot directly in `package.json`;
 other hosts must currently do the same if they consume the main entrypoint.
 
+## NeXus Overview Embedding
+
+`NexusOverviewPage` embeds `src/components/NexusOverview/NexusOverview.jsx`, a
+curated per-file view of a written NeXus (`.nxs`) file: the materials the file
+carries (test items and the controls / vehicles / blanks alongside them), the
+shared investigation's title and free-text description, and the default plot
+per NXentry. It renders the same facts the `nanodata` import_pipeline
+`corpus_overview` task produces in Python, read here straight from HSDS.
+
+```jsx
+import { createBasicFetcher } from "@h5web/app";
+import NexusOverview from "../components/NexusOverview/NexusOverview";
+
+<NexusOverview
+  domain={domain}          // HSDS filepath of the .nxs
+  hsdsUrl="https://hsds-kc.ideaconsult.net"
+  fetcher={fetcher}        // carries Authorization: Bearer <token> or Basic
+/>
+```
+
+The reusable component is props-driven and never reads a token, env var, or
+storage: `NexusOverviewPage` owns route parsing, the OIDC token, the anonymous
+`system-public-user` Basic identity, the HSDS URL, and the route-level error
+boundary. `src/components/NexusOverview/nexus.js` is a framework-free port of
+the reading half of `pyambit.nexus_plot` over `@h5web/app`'s
+`DataProviderApi`; it walks NXentry groups, resolves the investigation label
+by field-or-attribute and by `collection_identifier`, and reduces a default
+NXdata signal to a 1-D (optionally replicate-aware) series. Higher-dimensional
+signals and the full tree are left to the h5web viewer.
+
+Styles are scoped under `.nexus-overview-root`. `@observablehq/plot` is already
+a direct SpectraSearch dependency (also used by `src/components/Chart`).
+
+This is currently a **host-only** viewer (see
+[Before Starting A New Viewer Project](ADDING_VIEWERS.md#before-starting-a-new-viewer-project)):
+it is coupled to SpectraSearch's HSDS deployment and result contract and has no
+separate public component API. If a second host needs it, extract it to an
+independent props-driven package following that guide, as h5web and
+jtoxkit-react were.
+
 ## Local Viewer Development
 
 For local debugging of
@@ -157,6 +198,17 @@ const VIEWERS = [
     priority: 10,
   },
   {
+    id: "nexus-overview",
+    kind: "route",
+    label: "NeXus overview",
+    icon: "fa6/FaTableList",
+    types: ["*"],
+    route: "/nexus-overview/{itemId}",
+    idField: "value",
+    multi: false,
+    priority: 1,
+  },
+  {
     id: "h5web",
     kind: "route",
     label: "h5web",
@@ -169,6 +221,11 @@ const VIEWERS = [
   },
 ];
 ```
+
+`nexus-overview` and `h5web` share the `"*"` fallback slot. Both apply only
+when no viewer is directly registered for the result type; `nexus-overview`
+ranks first (primary action) and `h5web` follows as a secondary action for
+the full tree.
 
 Common fields:
 
