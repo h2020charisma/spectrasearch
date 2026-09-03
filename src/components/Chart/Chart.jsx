@@ -105,6 +105,18 @@ export default function Chart({ imageSelected, isNexusFile }) {
     const sparse = nonzero <= SPARSE_NONZERO_MAX;
     const series = sparse ? points.filter((p) => p.y !== 0) : points;
 
+    // Axis titles come from the backend (db/dataset). It knows the quantities
+    // only for a resampled Raman spectrum; for any other indexed vector
+    // (dose-response, calibration, ...) it sends an empty title. Render a
+    // label only when a specific one is supplied -- `label: null` tells Plot
+    // to draw no label, rather than mislabel the axis.
+    const axisLabel = (title) => {
+      const text = latexToUnicode(title).trim();
+      return text || null;
+    };
+    const yLabel = axisLabel(active?.ytitle);
+    const xLabel = axisLabel(active?.xtitle);
+
     const plot = Plot.plot({
       // caption: dataset,
       grid: true,
@@ -112,12 +124,12 @@ export default function Chart({ imageSelected, isNexusFile }) {
       stroke: "#454545",
       marks: [
         Plot.axisY({
-          label: `${latexToUnicode(active?.ytitle)}`,
+          label: yLabel,
           labelAnchor: "center",
           marginLeft: 60,
         }),
         Plot.axisX({
-          label: `${latexToUnicode(active?.xtitle)}`,
+          label: xLabel,
           labelAnchor: "center",
           marginTop: 60,
         }),
