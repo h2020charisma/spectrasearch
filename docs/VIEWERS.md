@@ -32,6 +32,7 @@ Current route viewers:
 
 | Viewer | Package | Route | Page |
 |---|---|---|---|
+| NeXus overview | host-only (HSDS REST + `@observablehq/plot`) | `/nexus-overview/:domain/*` | `src/pages/NexusOverviewPage.jsx` |
 | h5web default | `@h5web/app` | `/h5web/:domain/*` | `src/pages/H5webPage.jsx` |
 | predictions | `@ideaconsult/qubounds-viewer` | `/predictions`, `/predictions/:id/*` | `src/pages/PredictionsPage.jsx` |
 | substance/study | `@ideaconsult/jtoxkit-react` | `/substance` | `src/pages/SubstancePage.jsx` |
@@ -111,6 +112,57 @@ The current package also statically imports `@observablehq/plot` while declaring
 it as an optional peer. SpectraSearch installs Plot directly in `package.json`;
 other hosts must currently do the same if they consume the main entrypoint.
 
+## NeXus Overview Embedding
+
+`NexusOverviewPage` embeds `src/components/NexusOverview/NexusOverview.jsx`, a
+curated per-file view of a written NeXus (`.nxs`) file: the materials the file
+carries (test items and the controls / vehicles / blanks alongside them), the
+shared investigation's title and free-text description, and the default plot
+per NXentry. It renders the same facts the `nanodata` import_pipeline
+`corpus_overview` task produces in Python, read here straight from HSDS.
+
+```jsx
+import NexusOverview from "../components/NexusOverview/NexusOverview";
+
+<NexusOverview
+  domain={domain}          // HSDS filepath of the .nxs
+  hsdsUrl="https://hsds-kc.ideaconsult.net"
+  authHeader={authHeader}  // "Bearer <token>" or "Basic <base64>"
+  focusEntry={focusEntry}  // NXentry name from the link's #-fragment, or null
+  focusPath={focusPath}    // fragment path below the entry, used as a plot hint
+  onClearFocus={fn}        // host navigation back to the whole-file view
+/>
+```
+
+The reusable component is props-driven and never reads a token, env var, or
+storage: `NexusOverviewPage` owns route parsing, the OIDC token, the anonymous
+`system-public-user` Basic identity, the HSDS URL, the `#/<entry>/<path>`
+fragment, and the route-level error boundary.
+
+Data access is a small **direct HSDS REST client**
+(`src/components/NexusOverview/hsdsClient.js`), shaped as the
+`{ getEntity, getValue, getAttrValues }` object the reader expects.
+`@h5web/app`'s data layer is reachable only through React-suspense hooks
+(`useEntity`, `useDatasetValue`), which cannot drive a recursive tree walk, so
+it is not used here. `src/components/NexusOverview/nexus.js` is a
+framework-free port of the reading half of `pyambit.nexus_plot` over that
+client: it walks NXentry groups, lists the `substance` group, resolves the
+investigation label by field-or-attribute and by `collection_identifier`,
+follows the NeXus `@default` chain (with a first-NXdata fallback for files
+that omit it), and reduces the signal to a series, a replicate-aware
+mean ± SD series, or a heatmap. Scalar and >=3-D signals are left to the
+h5web viewer, as in the Python.
+
+Styles are scoped under `.nexus-overview-root`. Plots use `@observablehq/plot`,
+already a direct SpectraSearch dependency (also used by `src/components/Chart`).
+
+This is currently a **host-only** viewer (see
+[Before Starting A New Viewer Project](ADDING_VIEWERS.md#before-starting-a-new-viewer-project)):
+it is coupled to SpectraSearch's HSDS deployment and result contract and has no
+separate public component API. If a second host needs it, extract it to an
+independent props-driven package following that guide, as h5web and
+jtoxkit-react were.
+
 ## Local Viewer Development
 
 For local debugging of
@@ -167,8 +219,25 @@ const VIEWERS = [
     multi: false,
     priority: 0,
   },
+  {
+    id: "nexus-overview",
+    kind: "route",
+    label: "NeXus overview",
+    icon: "fa6/FaTableList",
+    types: ["*"],
+    route: "/nexus-overview/{itemId}",
+    idField: "value",
+    multi: false,
+    priority: 0,
+  },
 ];
 ```
+
+`h5web` and `nexus-overview` share the `"*"` fallback slot. Both apply only
+when no viewer is directly registered for the result type; they have equal
+priority and `h5web` is listed first, so the stable sort in `viewersForType`
+keeps `h5web` the primary action and `nexus-overview` follows it as a
+secondary action.
 
 Common fields:
 
