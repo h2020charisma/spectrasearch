@@ -34,26 +34,31 @@ export const ModeSelect = ({
       ...base,
       borderColor: state.isFocused ? "#00ace1" : "#ced4da",
       boxShadow: state.isFocused ? "0 0 0 1px #00ace1" : "none",
-      backgroundColor: state.isSelected ? "#ced4da" : "white",
+      backgroundColor: state.isSelected
+        ? "#ced4da"
+        : "light-dark(white, #3d3d3d)", // default background
       fontSize: "0.9rem",
       fontWeight: "500",
       "&:active": {
-        borderColor: "#00ace1",
         border: "1px solid #00ace1",
       },
       "&:hover": {
-        backgroundColor: "#f8f9fa",
+        backgroundColor: "light-dark(white, #3d3d3d)",
         borderColor: state.isFocused ? "#00ace1" : "#ced4da",
       },
     }),
     option: (provided, state) => ({
       ...provided,
       backgroundColor: state.isSelected
-        ? "#00ace1" // selected option color
+        ? "#00ace1"
         : state.isFocused
-          ? "#f3fcffff" // hover/focused color
-          : "white", // default background
-      color: state.isSelected ? "white" : "#575757ff",
+          ? "light-dark(#f3fcff, #ccc)" // light: distinct focused bg restored
+          : "light-dark(white, #2d2d2d)",
+      color: state.isSelected
+        ? "light-dark(white, white)"
+        : state.isFocused
+          ? "light-dark(#575757, #2d2d2d)" // dark: #2d2d2d on #ccc has strong contrast
+          : "light-dark(#575757, #a1a1a1)", // light: #575757 restored, visible on white
       fontSize: "1rem",
       fontWeight: "500",
       padding: "10px 15px",
