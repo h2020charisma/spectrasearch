@@ -28,6 +28,18 @@ export default function DisplaySearchFilters({
   return (
     <div style={{ textAlign: "right", paddingTop: "0.4rem" }}>
       <Link
+        to="/imports"
+        className="sourcesBtn"
+        style={{
+          marginRight: 8,
+          textDecoration: "none",
+          display: "inline-block",
+        }}
+        title="What has been imported into the selected data sources, and whether it looks right"
+      >
+        Data imports
+      </Link>
+      <Link
         to="/collection"
         className="sourcesBtn"
         style={{

@@ -11,6 +11,7 @@ import PredictionsPage from "./pages/PredictionsPage.jsx";
 import CollectionPage from "./pages/CollectionPage.jsx";
 import CallbackPage from "./pages/CallbackPage.jsx";
 import SubstancePage from "./pages/SubstancePage.jsx";
+import ImportsPage from "./pages/ImportsPage.jsx";
 import { loadRuntimeConfig, getRuntimeConfig } from "./config.js";
 
 import "./index.css";
@@ -87,6 +88,10 @@ const router = createBrowserRouter(
     {
       path: "/collection",
       Component: CollectionPage,
+    },
+    {
+      path: "/imports",
+      Component: ImportsPage,
     },
     {
       path: "/hits/:hitId/*",

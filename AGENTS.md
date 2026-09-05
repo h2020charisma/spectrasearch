@@ -35,6 +35,7 @@
 - Search requests use `GET /db/query` with `page`, `pagesize`, optional `q`, optional `query_type`, optional `ann`, optional `vector_field`, and repeated `data_source` parameters.
 - Dynamic field filters for direct `/db/query` GET requests use backend field names as returned by `/db/query/sources`; qdynamic fields must be sent as `qdynamic.<field>=value`.
 - Static field values use `GET /db/query/field?name=<field>`; live autocomplete uses `GET /db/query/field/terms?name=<field>&prefix=<term>&limit=25`.
+- The import report uses `GET /db/query/summary` with repeated `metrics` and `data_source` parameters. It returns one entry per data source: `provenance` (how many documents populate each candidate field), `group_by` (the field the backend chose), `numFound`, and `rows`. Which provenance field a source is grouped by is a backend decision derived from the index — do not infer a source's kind in the frontend, and do not assume two sources are grouped by the same field.
 - Similarity search uploads use `POST /db/download?what=knnquery` with multipart form field `files`; the response may include `cdf`, `imageLink`, and `vector_field`.
 - Chart previews use `GET /db/dataset?domain=<domain>&values=True`.
 - HDF5 downloads use `GET /db/download?what=h5&domain=<domain>`.

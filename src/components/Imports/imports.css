@@ -1,0 +1,287 @@
+/* Import report. Palette matches the rest of the app (see resultActions.css):
+   #1a1d26 ink, #5b5b5b muted, #dde1e9 hairline, #f0f2f5 tint. */
+
+.im-page {
+  padding: 20px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.im-back {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.im-h1 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  color: #1a1d26;
+}
+
+.im-dek {
+  margin: 0 0 18px;
+  color: #5b5b5b;
+  max-width: 68ch;
+}
+
+.im-status,
+.im-note,
+.im-empty {
+  color: #5b5b5b;
+  margin: 12px 0;
+}
+
+.im-note {
+  border-left: 3px solid #dde1e9;
+  padding-left: 10px;
+}
+
+.im-error {
+  color: #8a2f22;
+  background: #fbeeec;
+  border-left: 3px solid #8a2f22;
+  padding: 9px 12px;
+  margin: 12px 0;
+  border-radius: 0 4px 4px 0;
+}
+
+/* --- jump list across sources ------------------------------------------ */
+.im-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+
+.im-jumpitem {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 6px 12px;
+  border: 1px solid #dde1e9;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #1a1d26;
+  font-size: 13px;
+}
+.im-jumpitem:hover {
+  background: #f0f2f5;
+}
+.im-jumpitem span {
+  color: #5b5b5b;
+  font-size: 12px;
+}
+
+/* --- section ------------------------------------------------------------ */
+.im-section {
+  margin: 0 0 34px;
+}
+
+.im-sectionhead {
+  border-bottom: 1px solid #dde1e9;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.im-h2 {
+  margin: 0;
+  font-size: 17px;
+  color: #1a1d26;
+}
+
+.im-sub {
+  margin: 3px 0 0;
+  color: #5b5b5b;
+  font-size: 13px;
+}
+.im-sub code {
+  background: #f0f2f5;
+  border-radius: 3px;
+  padding: 0 4px;
+}
+
+/* --- findings ----------------------------------------------------------- */
+.im-findings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.im-finding {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: #f0f2f5;
+  color: #1a1d26;
+}
+.im-finding:hover {
+  border-color: #9aa3b2;
+}
+.im-finding[aria-pressed="true"] {
+  border-color: #1a1d26;
+}
+.im-finding .im-n {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.im-clear {
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid #dde1e9;
+  background: none;
+  color: #5b5b5b;
+}
+
+/* Severity, shared by the finding buttons and the row chips. */
+.im-critical {
+  background: #fbeeec;
+  color: #8a2f22;
+}
+.im-warn {
+  background: #fdf3e0;
+  color: #7a5510;
+}
+.im-info {
+  background: #eef2fb;
+  color: #2f4a8c;
+}
+.im-ok {
+  background: #eef5ef;
+  color: #33603f;
+}
+
+/* --- table -------------------------------------------------------------- */
+.im-tablewrap {
+  overflow-x: auto;
+  border: 1px solid #dde1e9;
+  border-radius: 6px;
+}
+
+.im-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 720px;
+  font-size: 13px;
+}
+
+.im-table th {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5b5b5b;
+  background: #f7f8fa;
+  padding: 8px 12px;
+  border-bottom: 1px solid #dde1e9;
+  white-space: nowrap;
+}
+
+.im-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eef0f4;
+  vertical-align: top;
+  color: #1a1d26;
+}
+
+.im-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.im-table tbody tr:hover td {
+  background: #f7f8fa;
+}
+
+.im-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* .im-table th is more specific than .im-num, so a numeric column's header
+   would otherwise sit left while its values sit right. */
+.im-table th.im-num {
+  text-align: right;
+}
+
+.im-key {
+  min-width: 240px;
+}
+
+.im-name {
+  display: block;
+  word-break: break-word;
+}
+
+.im-missing {
+  display: block;
+  color: #8a2f22;
+  font-style: italic;
+}
+
+.im-inv {
+  display: block;
+  margin-top: 2px;
+  color: #5b5b5b;
+  font-size: 12px;
+  /* an investigation title can be an entire paragraph -- that is one of the
+     defects this report exists to show, so clamp it rather than let one row
+     push the table off the screen */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.im-inv-bad {
+  color: #7a5510;
+}
+
+.im-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.im-chip {
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.im-inspect {
+  white-space: nowrap;
+  text-decoration: none;
+  font-size: 12px;
+  padding: 3px 9px;
+  border: 1px solid #dde1e9;
+  border-radius: 4px;
+  color: #2f4a8c;
+}
+.im-inspect:hover {
+  background: #f0f2f5;
+  border-color: #9aa3b2;
+}
+
+.im-noview {
+  color: #9aa3b2;
+}
+
+.im-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
