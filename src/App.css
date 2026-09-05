@@ -108,10 +108,43 @@ h1 {
 .imageSelectWrap {
   padding: 1rem 0;
   display: flex;
-  justify-content: space-between;
+  /* flex-start, not space-between: the cards are now all one width, so
+     space-between would shove a two-card final row to opposite edges of the
+     page instead of leaving it aligned with the rows above it. */
+  justify-content: flex-start;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 6px;
+  height: auto;
+}
+
+/* One hit in the results grid.
+   The card used to have no width of its own -- its outer element was an
+   unclassed div -- so as a flex item it sized to max-content. The caption is
+   `white-space: nowrap`, which makes its max-content width the full untruncated
+   name, so one long name ("organic pigment Red 254 transparent,
+   diketopyrrolopyrrole, 43nm, hydrophobic") stretched its card across half the
+   row and pushed the whole grid down to two cards per row. The ellipsis never
+   fired either: the caption's `width: 100%` had nothing definite to resolve
+   against anywhere up the chain.
+   The width is the thumbnail (rendered at 170px in ImageItem.jsx) plus
+   .imageNonSelected's 0.8rem padding and 2px border on each side. */
+.resultCard {
+  --result-thumb: 170px;
+  flex: 0 0 auto;
+  width: calc(var(--result-thumb) + 1.6rem + 4px);
+  min-width: 0;
+}
+
+/* Both states share the card's width so the box does not resize on hover. */
+.imageNonSelected,
+.imageNonSelectedHover {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.imgSelected {
+  max-width: 100%;
   height: auto;
 }
 
@@ -160,17 +193,23 @@ h1 {
   gap: 10px;
   text-align: center;
   margin-top: 0.2rem;
+  /* A flex item's min-width is auto -- here the caption's max-content width,
+     which would defeat the caption's own overflow rules below. */
+  min-width: 0;
+  max-width: 100%;
 }
 .imgDescription > span {
   font-size: 0.8rem;
   font-weight: 500;
   color: light-dark(#202020, #05ace1);
-  width: 180px;
+  /* Bounded by the card, so a long name ellipsises instead of widening it.
+     The full text is still readable: hovering the card shows .descriptionHover. */
+  max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 100%;
 }
+
 .descriptionHover {
   position: absolute;
   background-color: #00ace1;
