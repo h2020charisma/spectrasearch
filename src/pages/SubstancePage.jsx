@@ -28,10 +28,13 @@ export default function SubstancePage() {
   const studyId = params.get("studyId") || undefined;
 
   // Derive apiBase: prefer explicit dbtag param, else extract from UUID prefix.
-  const apiBase =
-    substance2server(dbtag || substanceId) ||
-    config.ambitUrl ||
-    "";
+  const resolved = substance2server(dbtag || substanceId);
+  const apiBase = resolved || config.ambitUrl || "";
+  // An unrecognised prefix falls back to the configured default server, which
+  // then answers "substance not found" for a substance that exists perfectly
+  // well somewhere else. That reads like an authentication problem and costs
+  // real debugging time, so say what actually happened.
+  const unknownTag = Boolean(substanceId) && !resolved;
 
   // ramanchada-api base — used only for the dose-response conversion endpoint
   // (POST /dataset/convert?format=effectarray). Everything-except-AMBIT goes here.
@@ -43,6 +46,24 @@ export default function SubstancePage() {
       <div style={{ padding: "6px 16px", borderBottom: "1px solid #eaecf0" }}>
         <Link to="/">← Back to search</Link>
       </div>
+      {unknownTag && (
+        <p
+          role="status"
+          style={{
+            margin: 0,
+            padding: "9px 16px",
+            background: "#fdf3e0",
+            color: "#7a5510",
+            borderBottom: "1px solid #eaecf0",
+            fontSize: 13,
+          }}
+        >
+          <b>{String(dbtag || substanceId).split("-")[0]}</b> is not a known AMBIT
+          database prefix, so this is being looked up on the default server (
+          {apiBase}). If the substance is not found, it is most likely stored
+          elsewhere — add the prefix to <code>src/utils/tagdbs.js</code>.
+        </p>
+      )}
       <div style={{ flex: 1, minHeight: 0, overflow: "auto" }}>
         <ErrorBoundary
           fallbackRender={({ error }) => (

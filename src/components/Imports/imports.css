@@ -273,6 +273,32 @@
   border-color: #9aa3b2;
 }
 
+/* A link that opens one member of the row rather than the whole row. Dashed,
+   because the difference matters: the reader is getting an example. */
+.im-inspect-partial {
+  border-style: dashed;
+  color: #7a5510;
+}
+
+/* Provider band: the level the rows are grouped under. */
+.im-grouprow td {
+  background: #f0f2f5;
+  font-weight: 600;
+  font-size: 12px;
+  color: #1a1d26;
+  border-bottom: 1px solid #dde1e9;
+  padding: 6px 12px;
+}
+.im-grouprow td span {
+  float: right;
+  font-weight: 400;
+  color: #5b5b5b;
+}
+.im-grouprow td em {
+  font-weight: 400;
+  color: #5b5b5b;
+}
+
 .im-noview {
   color: #9aa3b2;
 }

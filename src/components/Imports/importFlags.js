@@ -13,10 +13,10 @@
 export const METRICS = [
   "studies",
   "materials",
+  // requested for the "+N more" tail on the method list, not as a column
   "methods",
   "endpoints",
   "effects",
-  "spectra",
 ];
 
 // A title this long is prose, not a name. Investigation titles in real corpora have
