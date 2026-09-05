@@ -1,4 +1,9 @@
-import { useParams, useSearchParams, Link } from "react-router-dom";
+import {
+  useParams,
+  useSearchParams,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { useAuth } from "react-oidc-context";
 import { ErrorBoundary } from "react-error-boundary";
 import PredictionViewer from "@ideaconsult/qubounds-viewer";
@@ -12,8 +17,14 @@ import { getRuntimeConfig } from "../config";
 export default function PredictionsPage() {
   const { id } = useParams();
   const [params] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const auth = useAuth();
   const config = getRuntimeConfig();
+
+  // Same as the other viewer pages: return where the visitor came from, since
+  // this is reachable from search, from a collection and from the import report.
+  const hasHistory = location.key !== "default";
 
   const token = auth?.user?.access_token;
   const dataSource =
@@ -44,7 +55,16 @@ export default function PredictionsPage() {
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <Header />
       <div style={{ padding: "6px 16px", borderBottom: "1px solid #eaecf0" }}>
-        <Link to="/">← Back to search</Link>
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            if (hasHistory) navigate(-1);
+            else navigate("/");
+          }}
+        >
+          {hasHistory ? "← Back" : "← Back to search"}
+        </a>
       </div>
       <div style={{ flex: 1, minHeight: 0 }}>
         <ErrorBoundary

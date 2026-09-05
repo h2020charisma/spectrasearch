@@ -43,6 +43,23 @@ study (see [Substance/Study Embedding](#substancestudy-embedding)).
 
 When a viewer package version or embedding props change, update `package.json`, imports, `vite.config.js` dependency optimization, packaged runtime configs, and this document together.
 
+### Registry consumers other than the result list
+
+The registry is not only for search results. The import report (`/imports`,
+`src/pages/ImportsPage.jsx`) builds one representative item per row —
+`{type, uuid, substance_uuid, value}` from `/db/query/summary` — and hands it to
+`resolveViewersForItem` for its "Inspect" action, exactly as `ResultActions` does
+for a hit. It deliberately hardcodes no route: a NeXus-backed row reaches the
+NeXus viewers because its `value` is a `.nxs#` domain, and an AMBIT-backed row
+reaches the study viewer because it is not, and both facts live in the registry.
+
+Note `resolveViewersForItem` returns `{viewer, href, external}` — resolved
+hrefs, not viewers. Calling `viewerHref` on one of those results yields `null`
+and the item silently renders as "nothing to open".
+
+A new registry consumer needs no registry change; a new *backend* does, and then
+every consumer picks it up at once.
+
 ## Qu-bounds Embedding
 
 `PredictionsPage` embeds the viewer as a React component and passes the existing OIDC access token for fetch-based query and JSON data requests. The viewer keeps synthesized thumbnail URLs independent of authentication state; do not put tokens in prediction viewer URLs.
