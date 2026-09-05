@@ -12,6 +12,8 @@ import { getRuntimeConfig } from "../config";
 // URL params (produced by viewers.js viewerHref via the Solr doc fields):
 //   ?substanceId=<s_uuid_hs>            e.g. NNRG-2cb3446e-c9c4-...
 //   ?dbtag=<dbtag_hss[0]>               e.g. NNRG  (optional — UUID prefix is sufficient)
+//   ?studyId=<document_uuid_s>          a study hit: open that one study inside the
+//                                       substance instead of the whole study list
 //
 // apiBase is derived from the substance UUID prefix via TAG_DBS (no manual env var needed).
 // Falls back to runtime config ambitUrl if the prefix is not in the table (unlikely).
@@ -23,6 +25,7 @@ export default function SubstancePage() {
   const token = auth?.user?.access_token;
   const substanceId = params.get("substanceId") || undefined;
   const dbtag = params.get("dbtag") || undefined;
+  const studyId = params.get("studyId") || undefined;
 
   // Derive apiBase: prefer explicit dbtag param, else extract from UUID prefix.
   const apiBase =
@@ -50,6 +53,7 @@ export default function SubstancePage() {
         >
           <SubstanceStudyViewer
             substanceId={substanceId}
+            documentUuid={studyId}
             apiBase={apiBase}
             convertBase={convertBase}
             token={token}
