@@ -1,4 +1,4 @@
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "react-oidc-context";
 import { ErrorBoundary } from "react-error-boundary";
 import SubstanceStudyViewer from "@ideaconsult/jtoxkit-react";
@@ -19,8 +19,16 @@ import { getRuntimeConfig } from "../config";
 // Falls back to runtime config ambitUrl if the prefix is not in the table (unlikely).
 export default function SubstancePage() {
   const [params] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const auth = useAuth();
   const config = getRuntimeConfig();
+
+  // A study can be opened from search results or from the import report, so a
+  // fixed "back to search" sent half the visitors somewhere they had not been.
+  // location.key is "default" only for the first entry in the history stack --
+  // a pasted or bookmarked link, where there is nothing to go back to.
+  const hasHistory = location.key !== "default";
 
   const token = auth?.user?.access_token;
   const substanceId = params.get("substanceId") || undefined;
@@ -44,7 +52,16 @@ export default function SubstancePage() {
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <Header />
       <div style={{ padding: "6px 16px", borderBottom: "1px solid #eaecf0" }}>
-        <Link to="/">← Back to search</Link>
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            if (hasHistory) navigate(-1);
+            else navigate("/");
+          }}
+        >
+          {hasHistory ? "← Back" : "← Back to search"}
+        </a>
       </div>
       {unknownTag && (
         <p

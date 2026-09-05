@@ -27,18 +27,9 @@ export default function DisplaySearchFilters({
   const collectionCount = useCollection((s) => s.items.length);
   return (
     <div style={{ textAlign: "right", paddingTop: "0.4rem" }}>
-      <Link
-        to="/imports"
-        className="sourcesBtn"
-        style={{
-          marginRight: 8,
-          textDecoration: "none",
-          display: "inline-block",
-        }}
-        title="What has been imported into the selected data sources, and whether it looks right"
-      >
-        Data imports
-      </Link>
+      {/* The import report is reached from inside the sources dialog, next to
+          the selection it reports on. As a toolbar button here it sat beside
+          the upload control and read as "upload data". */}
       <Link
         to="/collection"
         className="sourcesBtn"
