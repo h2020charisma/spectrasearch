@@ -37,6 +37,10 @@ Current route viewers:
 | predictions | `@ideaconsult/qubounds-viewer` | `/predictions`, `/predictions/:id/*` | `src/pages/PredictionsPage.jsx` |
 | substance/study | `@ideaconsult/jtoxkit-react` | `/substance` | `src/pages/SubstancePage.jsx` |
 
+`/substance` serves two result types: a `substance` result opens the substance
+with all its studies; a `study` result opens the same page narrowed to that one
+study (see [Substance/Study Embedding](#substancestudy-embedding)).
+
 When a viewer package version or embedding props change, update `package.json`, imports, `vite.config.js` dependency optimization, packaged runtime configs, and this document together.
 
 ## Qu-bounds Embedding
@@ -83,6 +87,7 @@ import "@ideaconsult/jtoxkit-react/style.css";
 
 <SubstanceStudyViewer
   substanceId={substanceId}
+  documentUuid={studyId}
   apiBase={apiBase}
   convertBase={convertBase}
   token={token}
@@ -94,6 +99,35 @@ import "@ideaconsult/jtoxkit-react/style.css";
 
 - `/substance?substanceId=...` opens the substance UUID surfaced from `s_uuid_hs` as `item.uuid`.
 - `/substance?substanceId=...&dbtag=...` accepts an explicitly supplied database tag, but registry-generated result links currently contain only `substanceId`.
+- `/substance?substanceId=...&studyId=...` opens one study inside its substance.
+  `studyId` is passed as the viewer's `documentUuid` prop (jtoxkit-react >= the
+  version that added it; older versions ignore the prop and show the whole
+  study list).
+
+### Opening one study
+
+A `study` result is one protocol application, identified by AMBIT's
+`document_uuid`. The viewer loads a *substance* and then focuses a study within
+it, so a study result needs both ids, and ramanchada-api surfaces both:
+
+| Result field | Solr field | Meaning |
+|---|---|---|
+| `item.uuid` | `document_uuid_s` | the study itself — becomes `studyId` |
+| `item.substance_uuid` | `s_uuid_s` | its parent substance — becomes `substanceId` |
+
+Do not reconstruct the parent by splitting the Solr `id`: its shape differs per
+collection (`{s_uuid}/{n}` in plastic, `{s_uuid}/a/{assay_uuid}` in momentum).
+
+Given `documentUuid`, the viewer resolves which topcategory tab holds that study
+on its own (`studysummary` only counts studies per topcategory, so the tab is
+not known until its studies are fetched), then narrows to that study's category
+group and row, offering "Show all" back to the whole tab.
+
+**NeXus-backed studies are excluded from this viewer.** They carry a
+`document_uuid_s` too, but it is not an AMBIT record and the link would lead
+nowhere. They are recognised by the `.nxs#` in `value` (the Solr `textValue_s`
+is an HSDS `"<file>.nxs#<path>"` domain rather than a plain value) and keep
+h5web / NeXus overview as their viewers instead.
 
 ramanchada-api PR #134 normalizes `s_uuid_hs` to the optional result field
 `uuid`; it does not return `dbtag_hss`. `apiBase` is derived from an explicit
@@ -197,6 +231,20 @@ const VIEWERS = [
     priority: 10,
   },
   {
+    id: "ambit-study",
+    kind: "route",
+    label: "Study data",
+    icon: "fa6/FaFlask",
+    types: ["study"],
+    route: "/substance",
+    idField: "uuid",                            // document_uuid_s
+    paramName: "studyId",
+    params: { substanceId: "substance_uuid" },  // s_uuid_s
+    excludes: { field: "value", match: "\\.nxs#" },
+    multi: false,
+    priority: 9,
+  },
+  {
     id: "predictions",
     kind: "route",
     label: "Predictions",
@@ -254,20 +302,32 @@ Route fields:
 - `route`: internal route; `{itemId}` is the only supported path placeholder.
 - `idField`: normalized result field used to build the route or query parameter.
 - `paramName`: explicit query parameter for a single item.
+- `params`: extra query parameters as `{queryParam: resultField}`, for viewers that
+  need more than one id (a study is opened inside its substance). A result missing
+  any of these fields resolves to no href, so the viewer is not offered for it.
 - `mode`: maps a result type to `compound`; all other values use `item`.
 - `multi`: enables collection-level links that open many stored results in one viewer.
+
+Applicability fields (both kinds):
+
+- `requires`: one field and regular-expression check; the viewer applies only on a match.
+- `excludes`: the inverse — the viewer does not apply when the field matches. Used to
+  keep the AMBIT study viewer off NeXus-backed studies, whose `document_uuid` is not an
+  AMBIT record.
+
+Both are evaluated by `viewerApplies(viewer, item)` for route and external viewers alike.
 
 External fields:
 
 - `url`: external site base.
 - `link`: result-type or `_default` path/query templates.
-- `requires`: one field and regular-expression applicability check.
 - `transform`: derives a placeholder from another field with optional regular-expression extraction.
 
 Dispatch helpers:
 
 - `viewersForType(type)` returns enabled viewers for a result type, sorted by priority.
-- `viewerHref(viewer, item)` builds one concrete route or external URL for a result. Route viewers are omitted when their `idField` is missing. H5Web route values are normalized to one separator while preserving internal slashes and the `#` initial-path fragment.
+- `viewerApplies(viewer, item)` evaluates `requires`/`excludes` for either kind.
+- `viewerHref(viewer, item)` builds one concrete route or external URL for a result. Route viewers are omitted when `viewerApplies` fails, when their `idField` is missing, or when any field named in `params` is missing. H5Web route values are normalized to one separator while preserving internal slashes and the `#` initial-path fragment.
 - `viewerMultiHref(viewer, items)` builds a multi-item route using only items whose type and identifier are supported by the viewer.
 - `resolveViewersForItem(item)` returns applicable viewer actions and drops external links that cannot be built.
 - `compatibleItemsForViewer(viewer, items)` returns the collection items a viewer can open.
@@ -281,8 +341,13 @@ Rendering entrypoints:
 
 ### Current Dispatch Limits
 
-- A direct type registration suppresses the `"*"` fallback even when every
-  direct viewer later lacks a required field and resolves to no action.
+- `viewersForType` alone suppresses the `"*"` fallback as soon as any viewer is
+  directly registered for the type. `resolveViewersForItem` compensates: when no
+  direct viewer resolves for a specific item, it falls back to the `"*"` viewers.
+  Two registrations now depend on that — RRUFF (`requires` rejects a non-RRUFF id)
+  and `ambit-study` (`excludes` rejects a NeXus-backed study), both of which must
+  still leave h5web / NeXus overview available. Code paths that call
+  `viewersForType` directly do not get this fallback.
 - Collection persistence keeps only `id`, `type`, `text`, `value`, and
   `imageLink`. A multi-viewer that needs another field requires a coordinated
   change in `src/store/collection.js`.
