@@ -25,6 +25,11 @@ export default function NexusOverviewPage() {
       : location.pathname.replace(/^\/+/, ""),
   );
 
+  // Reached from search results and from the import report alike, so return
+  // where the visitor came from. location.key is "default" only for the first
+  // history entry -- a pasted link, with nothing behind it to go back to.
+  const hasHistory = location.key !== "default";
+
   const token = auth.user?.access_token;
   const authHeader = useMemo(
     () => (token ? `Bearer ${token}` : `Basic ${btoa(`${PUBLIC_USER}:${PUBLIC_USER}`)}`),
@@ -57,9 +62,12 @@ export default function NexusOverviewPage() {
     <>
       <Header />
       <div style={{ padding: "12px 20px" }}>
-        <div className="backArrow" onClick={() => navigate("/")}>
+        <div
+          className="backArrow"
+          onClick={() => (hasHistory ? navigate(-1) : navigate("/"))}
+        >
           <BackArrow />
-          <p>Back to Home page</p>
+          <p>{hasHistory ? "Back" : "Back to Home page"}</p>
         </div>
       </div>
       <ErrorBoundary

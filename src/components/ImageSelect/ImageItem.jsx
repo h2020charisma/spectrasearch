@@ -8,15 +8,10 @@ import ResultActions from "../ResultActions/ResultActions";
 export default function ImageItem({ img, i, setImageSelectedStore }) {
   const [show, setShow] = useState(false);
 
-  function breakLine(str) {
-    return str.length > 40
-      ? str.slice(0, 20) + "<br>" + str.slice(0, 20) + "<br>" + str.slice(40)
-      : str;
-  }
-
   return (
     <div
       key={i}
+      className="resultCard"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >

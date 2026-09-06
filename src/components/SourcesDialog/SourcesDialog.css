@@ -93,6 +93,37 @@
   stroke: #262626;
 }
 
+.DialogFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 25px;
+  padding-top: 14px;
+  border-top: 1px solid light-dark(#ececec, #3d3d3d);
+}
+
+/* Quieter than .sourcesBtn: choosing the sources is the dialog's job, and this
+   is the way out of it -- it should not compete with the list above. */
+.importsLink {
+  font-size: 13px;
+  font-weight: 600;
+  color: #366000;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+}
+
+.importsLink:hover {
+  background-color: light-dark(#f3ffe8, #3d3d3d);
+  border: 1px solid #366000;
+}
+
+.importsLink:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #9aff6c;
+}
+
 .dataSourcesCaption {
   color: #366000;
   font-weight: 600;

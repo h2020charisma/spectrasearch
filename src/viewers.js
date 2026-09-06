@@ -10,6 +10,13 @@
 //
 // External viewers are declarative: `url` (the site) + `link` (path/query per result type, with
 // {placeholders} from the result item) + optional `requires`/`transform`. Edit URLs here.
+//
+// Applicability, checked for route AND external viewers (a viewer that doesn't apply to an
+// item resolves to no href, and so is simply not offered for it):
+//   `requires` {field, match} — the item field must match this pattern.
+//   `excludes` {field, match} — the item field must NOT match it.
+//   `params`   {queryParam: itemField} — extra query params beyond idField; a viewer
+//              needing a field the item lacks does not apply.
 
 const VIEWERS = [
   // Solr doc shape: { type_s:"substance", s_uuid_hs:"NNRG-...", dbtag_hss:["NNRG"], ... }
@@ -26,6 +33,29 @@ const VIEWERS = [
     paramName: "substanceId",
     multi: false,
     priority: 10,
+  },
+  {
+    // A study hit is one protocol application. ramanchada-api surfaces its own
+    // document_uuid_s as item.uuid and its parent s_uuid_s as item.substance_uuid; the
+    // AMBIT viewer opens the substance and focuses the study inside it (jtoxkit-react's
+    // documentUuid prop), so both are needed and a hit missing either isn't offered this.
+    //
+    // NeXus-backed studies are excluded: they carry a document_uuid_s too, but it is not
+    // an AMBIT record, so the link would lead nowhere. Their `value` (the Solr
+    // textValue_s) is a "<file>.nxs#<path>" HSDS domain rather than a plain value —
+    // which is also why h5web/NeXus overview are the right viewers for those instead.
+    id: "ambit-study",
+    kind: "route",
+    label: "Study data",
+    icon: "fa6/FaFlask",
+    types: ["study"],
+    route: "/substance",
+    idField: "uuid",              // document_uuid_s — the study itself
+    paramName: "studyId",
+    params: { substanceId: "substance_uuid" }, // s_uuid_s — the substance to open it in
+    excludes: { field: "value", match: "\\.nxs#" },
+    multi: false,
+    priority: 9,
   },
   {
     id: "predictions",
@@ -174,13 +204,25 @@ function resolvePlaceholderValue(name, item, transform) {
   return item?.[name] != null ? String(item[name]) : undefined;
 }
 
+// Whether a viewer applies to an item at all: its `requires` matched and its `excludes`
+// didn't. Kind-agnostic — a route viewer can be inapplicable for the same reasons an
+// external one can (an AMBIT study link on a NeXus-backed study leads nowhere).
+export function viewerApplies(viewer, item) {
+  if (viewer.requires) {
+    const val = item?.[viewer.requires.field];
+    if (!val || !new RegExp(viewer.requires.match).test(String(val))) return false;
+  }
+  if (viewer.excludes) {
+    const val = item?.[viewer.excludes.field];
+    if (val && new RegExp(viewer.excludes.match).test(String(val))) return false;
+  }
+  return true;
+}
+
 // Build the external URL for an item, or null if it doesn't apply (requires
 // failed, or a needed placeholder is missing) — null hides the action.
 export function buildExternalHref(viewer, item) {
-  if (viewer.requires) {
-    const val = item?.[viewer.requires.field];
-    if (!val || !new RegExp(viewer.requires.match).test(String(val))) return null;
-  }
+  if (!viewerApplies(viewer, item)) return null;
   const tmpl = viewer.link?.[item?.type] || viewer.link?._default;
   if (!tmpl) return null;
 
@@ -207,6 +249,7 @@ function paramFor(viewer, item) {
 // href/route for opening one item in a viewer (kind-aware).
 export function viewerHref(viewer, item) {
   if (isExternal(viewer)) return buildExternalHref(viewer, item);
+  if (!viewerApplies(viewer, item)) return null;
   const idVal = item?.[viewer.idField];
   if (idVal == null || idVal === "") return null;
   if (viewer.route.includes("{itemId}")) {
@@ -217,6 +260,13 @@ export function viewerHref(viewer, item) {
   }
   const qs = new URLSearchParams();
   qs.append(paramFor(viewer, item), idVal);
+  // Extra params the viewer needs (a study is opened inside its substance). Missing one
+  // means the viewer can't do anything useful with this item, so it isn't offered.
+  for (const [param, field] of Object.entries(viewer.params || {})) {
+    const val = item?.[field];
+    if (val == null || val === "") return null;
+    qs.append(param, val);
+  }
   return `${viewer.route}?${qs.toString()}`;
 }
 
@@ -255,7 +305,12 @@ export function compatibleItemsForViewer(viewer, items) {
     const supportsType =
       viewer.types.includes(item?.type) || viewer.types.includes("*");
     const idVal = item?.[viewer.idField];
-    return supportsType && idVal != null && idVal !== "";
+    return (
+      supportsType &&
+      idVal != null &&
+      idVal !== "" &&
+      viewerApplies(viewer, item)
+    );
   });
 }
 

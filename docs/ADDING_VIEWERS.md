@@ -560,6 +560,13 @@ pnpm build:lib -- --watch
 entrypoint also exposes built `dist/` files rather than `src/`, so source edits
 do not reach SpectraSearch until the library watcher rebuilds them.
 
+Check whether the viewer's app build and library build share an output
+directory. In `jtoxkit-react` both write to `dist/` with `emptyOutDir: true`, so
+running its `pnpm build` or `pnpm preview` deletes the library bundle the link
+resolves to, and the host then fails to import it until the next `build:lib`.
+A viewer repository in that shape cannot serve its own standalone preview while
+a host is linked to it.
+
 ### Link From SpectraSearch
 
 In the SpectraSearch checkout:

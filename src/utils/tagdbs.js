@@ -26,6 +26,10 @@ const TAG_DBS = {
   PATS: { server: "https://apps.ideaconsult.net/patrols/" },
   CRMA: { server: "https://apps.ideaconsult.net/charisma/" },
   POLY: { server: "https://apps.ideaconsult.net/polyrisk/" },
+  // MOMENTUM. Absent from the 11ty table this was ported from, so a momentum
+  // substance silently fell through to the ambitUrl default (nanoreg1) and came
+  // back "substance not found" -- which reads like an auth problem and is not one.
+  MNTM: { server: "https://apps.ideaconsult.net/momentum/" },
   PLFT: { server: "https://apps.ideaconsult.net/plasticfate/" },
   HEAL: { server: "https://apps.ideaconsult.net/plasticheal/" },
   AMT3: { server: "https://apps.ideaconsult.net/polyrisk/solr/ambitlri/" },
