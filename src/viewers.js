@@ -42,8 +42,15 @@ const VIEWERS = [
     //
     // NeXus-backed studies are excluded: they carry a document_uuid_s too, but it is not
     // an AMBIT record, so the link would lead nowhere. Their `value` (the Solr
-    // textValue_s) is a "<file>.nxs#<path>" HSDS domain rather than a plain value —
+    // textValue_s) names a "<file>.nxs" HSDS domain rather than a plain value —
     // which is also why h5web/NeXus overview are the right viewers for those instead.
+    //
+    // Match ".nxs" anywhere, not ".nxs#": the fragment is not guaranteed to be
+    // present. A plain search hit carries the full "<file>.nxs#<path>", but the
+    // imports report (ImportSection.jsx) rewrites `value` to the whole-file
+    // domain before dispatch — dropping the "#<path>" — and the assay index's
+    // split_textvalue option writes the bare "<file>.nxs". Keying on the "#" let
+    // both of those NeXus studies fall through to this AMBIT viewer.
     id: "ambit-study",
     kind: "route",
     label: "Study data",
@@ -53,7 +60,7 @@ const VIEWERS = [
     idField: "uuid",              // document_uuid_s — the study itself
     paramName: "studyId",
     params: { substanceId: "substance_uuid" }, // s_uuid_s — the substance to open it in
-    excludes: { field: "value", match: "\\.nxs#" },
+    excludes: { field: "value", match: "\\.nxs" },
     multi: false,
     priority: 9,
   },
