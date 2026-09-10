@@ -439,14 +439,18 @@ registry are source-time configuration and require rebuilding SpectraSearch.
 5. Pass ordinary props to the package and wrap it in a route-level error
    boundary.
 6. Give the viewer a correctly sized host container.
-7. Register the route in `src/main.jsx` under the existing `/search/` basename.
-8. Add a `kind: "route"` definition in `src/viewers.js`.
-9. Add runtime-config defaults, validation, every packaged profile, and Cypress
+7. Add the route and representative direct shell URLs to
+   `src/route-contract.json` under the existing `/search/` basename.
+8. Map the contract ID to the page component in `src/main.jsx` and add the
+   matching explicit route to the Quarkus SPA allowlist.
+9. Add a `kind: "route"` definition in `src/viewers.js`.
+10. Add runtime-config defaults, validation, every packaged profile, and Cypress
    interception values if the viewer introduces configuration.
-10. Update Vite dependency optimization and React deduplication deliberately.
-11. Add the package to pnpm's release-age exclusion only for a reviewed
-   first-party package that is expected to integrate immediately after release.
-12. Add dispatch, route, prop, auth, config, and failure tests.
+11. Update Vite dependency optimization and React deduplication deliberately.
+12. Add the package to pnpm's release-age exclusion only for a reviewed
+    first-party package that is expected to integrate immediately after release.
+13. Add dispatch, route, prop, auth, config, and failure tests. JUnit and
+    Playwright automatically exercise every shell URL in the route contract.
 
 A typical host page owns the adaptation:
 

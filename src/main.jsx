@@ -13,6 +13,7 @@ import CallbackPage from "./pages/CallbackPage.jsx";
 import SubstancePage from "./pages/SubstancePage.jsx";
 import ImportsPage from "./pages/ImportsPage.jsx";
 import { loadRuntimeConfig, getRuntimeConfig } from "./config.js";
+import routeContract from "./route-contract.json";
 
 import "./index.css";
 
@@ -59,49 +60,31 @@ const oidcConfig = {
   loadUserInfo: true,
 };
 
+const routeComponents = {
+  home: HomePage,
+  h5web: H5webPage,
+  "nexus-overview": NexusOverviewPage,
+  predictions: PredictionsPage,
+  prediction: PredictionsPage,
+  substance: SubstancePage,
+  collection: CollectionPage,
+  imports: ImportsPage,
+  hit: HitPage,
+  callback: CallbackPage,
+};
+
+const routeIds = routeContract.map(({ id }) => id);
+const configuredRouteIds = new Set(routeIds);
+if (
+  configuredRouteIds.size !== routeIds.length ||
+  routeIds.some((id) => !routeComponents[id]) ||
+  Object.keys(routeComponents).some((id) => !configuredRouteIds.has(id))
+) {
+  throw new Error("Route contract and component map are inconsistent");
+}
+
 const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      Component: HomePage,
-    },
-    {
-      path: "/h5web/:domain/*",
-      Component: H5webPage,
-    },
-    {
-      path: "/nexus-overview/:domain/*",
-      Component: NexusOverviewPage,
-    },
-    {
-      path: "/predictions",
-      Component: PredictionsPage,
-    },
-    {
-      path: "/predictions/:id/*",
-      Component: PredictionsPage,
-    },
-    {
-      path: "/substance",
-      Component: SubstancePage,
-    },
-    {
-      path: "/collection",
-      Component: CollectionPage,
-    },
-    {
-      path: "/imports",
-      Component: ImportsPage,
-    },
-    {
-      path: "/hits/:hitId/*",
-      Component: HitPage,
-    },
-    {
-      path: "/callback",
-      Component: CallbackPage,
-    },
-  ],
+  routeContract.map(({ id, path }) => ({ path, Component: routeComponents[id] })),
   { basename: "/search/" }
 );
 

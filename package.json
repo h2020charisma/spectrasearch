@@ -2,16 +2,20 @@
   "name": "spectra-search",
   "private": true,
   "version": "0.0.0",
-  "packageManager": "pnpm@11.4.0",
+  "packageManager": "pnpm@11.26.0",
   "type": "module",
   "scripts": {
     "build": "node scripts/select-config.mjs --ensure && rimraf dist && vite build",
     "build-docker": "node scripts/select-config.mjs spectra && rimraf dist && vite build",
     "build-serve": "node scripts/select-config.mjs spectra && rimraf dist && vite build --outDir dist/search && http-server -a 127.0.0.1 -p 50722 dist",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist target",
     "dev": "node scripts/select-config.mjs --ensure && vite",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
+    "shell:build": "pnpm build && ./mvnw clean package -DskipTests",
+    "shell:serve": "node scripts/serve-quarkus.mjs",
+    "shell:verify": "pnpm build && ./mvnw clean verify",
+    "test:playwright": "playwright test",
     "select-config": "node scripts/select-config.mjs"
   },
   "dependencies": {
@@ -44,6 +48,7 @@
     "zustand": "^5.0.4"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",

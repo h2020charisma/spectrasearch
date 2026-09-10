@@ -2,7 +2,7 @@
 
 ## Sources
 
-- Prefer `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `vite.config.js`, `cypress.config.js`, `.eslintrc.cjs`, `Dockerfile`, `.dockerignore`, `docker/nginx/default.conf`, `.github/workflows/ci.yml`, and `.github/dependabot.yml` for current tooling behavior.
+- Prefer `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `pom.xml`, `.mvn/wrapper/maven-wrapper.properties`, `src/route-contract.json`, `src/main/resources/application.properties`, `vite.config.js`, `cypress.config.js`, `playwright.config.js`, `.eslintrc.cjs`, `Dockerfile`, `.dockerignore`, `.github/workflows/ci.yml`, and `.github/dependabot.yml` for current tooling behavior.
 - `docs/VIEWERS.md` documents result viewer dispatch; keep it aligned with `src/viewers.js`, route pages, and viewer package imports.
 - `docs/ADDING_VIEWERS.md` is the required contract for creating a viewer package or adding a viewer integration. Read it before scaffolding a viewer or changing its public package boundary.
 - `README.md` is intentionally short and is not enough to understand development, testing, or deployment.
@@ -13,7 +13,9 @@
 ## Project Shape
 
 - This is a single-package React 18 SPA built with Vite and plain JavaScript/JSX.
-- The app is served under `/search/`; `vite.config.js` sets `base: "/search/"` and `src/main.jsx` creates a React Router browser router with basename `/search/`.
+- The app is served under `/search/`; `vite.config.js` sets `base: "/search/"` and `src/main.jsx` creates a React Router browser router with basename `/search/` from `src/route-contract.json`.
+- The production runtime is a Java 25 Quarkus application. Traefik strips external `/search/` before forwarding, so Quarkus owns internal `/`, `/assets/**`, `/config.json`, and `/health`; direct internal `/search/**` is intentionally unsupported.
+- SPA fallback is an explicit allowlist in `src/main/java/net/ideaconsult/spectrasearch/SpaResource.java`, not a generic extensionless catch-all. `src/route-contract.json` drives React routing and provides deep-link examples consumed by JUnit and Playwright; update the contract, component map, and Java allowlist together.
 - The main app entrypoint is `src/main.jsx`; the main search page is `src/pages/HomePage.jsx`; the core search orchestration is `src/components/SearchComp/SearchComp.jsx`.
 - Dynamic sidebar filters are rendered from backend-provided field metadata in `src/components/Sidebar/Sidebar.jsx`, `src/components/Widget/Widget.jsx`, `src/components/Widget/WidgetLiveSearch.jsx`, and `src/components/UI/SearchLiveSelect.jsx`.
 - Similarity mode selection is rendered from backend-provided metadata in `src/components/UI/Select.jsx` and used by `src/components/UploadFile/UploadFile.jsx`.
@@ -28,6 +30,7 @@
 ## Backend Contract
 
 - Frontend config profiles are tracked in `public/configs/*.json`. `public/config.json` is generated, git-ignored, and used by local builds.
+- The packaged Quarkus runtime excludes generated `public/config.json`. Its `/config.json` endpoint selects and validates a packaged profile from `SPECTRASEARCH_CONFIG_FILE`, defaulting to `spectra.json`, and fails startup for invalid or missing profiles.
 - Runtime config must include `apiBaseUrl`; keep the value ending in `/`.
 - Runtime config `ambitUrl` is the fallback AMBIT base URL for unmapped substance UUID/dbtag values; the default is `https://apps.ideaconsult.net/nanoreg1/`.
 - Discover backend-driven UI metadata with `GET /db/query/sources`; do not hard-code source names, field names, application names, or similarity modes unless there is an explicit compatibility requirement.
@@ -56,6 +59,7 @@
 ## Commands
 
 - Use pnpm, not npm or yarn; the pnpm version is pinned by `packageManager` in `package.json`.
+- Quarkus builds require Java 25. Use the committed Maven Wrapper, which pins and checksum-verifies Maven 3.9.16; Unix systems also need `unzip` for its first download. Do not rely on a workstation Maven version.
 - The Dockerfile build-stage image is the source of truth for Node.js. On native Windows, prefer pnpm-managed Node installed with `pnpm runtime set node <Dockerfile-version> -g`; avoid an MSI-installed Node taking precedence in `PATH`.
 - Install reproducibly: `pnpm install --frozen-lockfile`.
 - `pnpm-workspace.yaml` enforces a 24-hour strict minimum release age, excludes first-party viewer packages from that age gate, ignores missing publish-time metadata, disables side-effects cache, and allowlists build scripts for Cypress and esbuild.
@@ -66,12 +70,19 @@
 - Lint: `pnpm lint`.
 - Build production assets: `pnpm build`.
 - Build a local `/search/` tree and serve it for Cypress: `pnpm build-serve`.
+- Build the frontend and Quarkus runtime: `pnpm shell:build`.
+- Build and run all JVM shell tests: `pnpm shell:verify`.
+- Serve an already-built Quarkus artifact through the local prefix-strip harness: `pnpm shell:serve`.
+- Install the Playwright Chromium binary: `pnpm exec playwright install chromium`.
+- Run focused runtime-shell browser tests: `pnpm test:playwright`.
 - Run Cypress E2E tests against the local build server: `pnpm exec cypress run`.
 - Clean generated build output: `pnpm clean`.
 
 ## Testing And Quality
 
-- There is currently no `pnpm test` script; Cypress is the configured browser test runner.
+- There is no aggregate `pnpm test` script. Cypress remains the existing SPA browser suite; Playwright contains only focused Quarkus runtime-shell checks.
+- Quarkus/JUnit tests live under `src/test/java/` and require a Vite build first. `pnpm shell:verify` performs both steps and checks every route example in `src/route-contract.json`.
+- Playwright tests live under `playwright/e2e/`; `playwright.config.js` builds and starts the shell automatically. The prefix-strip harness preserves raw request targets so malformed-path checks exercise Quarkus rather than Node URL normalization.
 - Cypress E2E tests live in `cypress/e2e/`; fixtures live in `cypress/fixtures/`.
 - Cypress loads `.env` through `cypress-dotenv` for an optional test-only `API_BASE_URL`; it intercepts runtime config before the app starts and must not contact production APIs.
 - Cypress fixtures for `/db/query/sources` should mirror the backend discovery response, including `application_name`, `fields`, and `similarity` when tests exercise dynamic sidebar or similarity behavior.
@@ -84,15 +95,15 @@
 - CI runs `pnpm install --frozen-lockfile` before Cypress validation. Existing ESLint debt is not yet a required CI gate.
 - The Dockerfile `FROM node:x.y.z-slim AS build-stage` line is the source of truth for the Node.js version used by CI; update `.github/workflows/ci.yml` if that line format changes.
 - Docker builds one generic frontend image with packaged configs under `public/configs/`; select one at container startup with `SPECTRASEARCH_CONFIG_FILE`. The `test.json` profile targets `api-test.ramanchada.ideaconsult.net` for viewer integration testing.
-- Docker builds generate a deterministic `spectra.json` active config before Vite runs; the container entrypoint replaces only `config.json` at startup.
+- Docker builds generate a deterministic `spectra.json` active config before Vite runs, but exclude that generated file from Quarkus static resources. The runtime endpoint selects the configured packaged profile without modifying application files.
 - Same-repo PRs publish mutable and immutable preview images; fork PRs run validation only and do not build or publish Docker images.
 - Only `push` events to `main` publish production tags and sign images with cosign.
-- Docker uses Corepack with pnpm in the Node build stage and `nginxinc/nginx-unprivileged` at runtime.
+- Docker uses Corepack with pnpm in the Node build stage, Maven and a Java 25 JDK in the Quarkus build stage, and only a Java 25 JRE at runtime.
 - `.dockerignore` intentionally keeps Docker context narrow; update it if new build inputs are added.
-- Checked-in nginx config lives in `docker/nginx/default.conf`; the runtime container listens on port `8080`.
-- Docker startup scripts live in `docker/entrypoint.d/`; the config selector copies `/usr/share/nginx/html/configs/$SPECTRASEARCH_CONFIG_FILE` to `/usr/share/nginx/html/config.json`, defaulting to `spectra.json`.
-- The app expects browser URLs under `/search/`. Current deployment uses Traefik `PathPrefix('/search')` plus prefix stripping before requests reach nginx.
-- The production container serves static Vite output with nginx. Keep Docker, nginx, Vite base path, and Traefik assumptions in sync.
+- The Quarkus runtime container listens on port `8080`, runs as UID `1001`, and starts with an exec-form `java -jar quarkus-run.jar` entrypoint. Packaged application files remain root-owned and non-writable by the runtime user.
+- The app expects browser URLs under `/search/`. Current deployment uses Traefik `PathPrefix('/search')` plus prefix stripping before requests reach the container.
+- The current Traefik configuration redirects bare `/search` to `/search/` and strips `/search/` before requests reach Quarkus. Keep Docker, Quarkus, Vite base path, and Traefik assumptions in sync.
+- Dependabot does not currently cover Maven. Do not assume Quarkus dependency updates are automated.
 - Dependabot covers GitHub Actions, pnpm-managed npm dependencies, and Docker base images. Docker updates intentionally ignore Node versions `>=25` while the project is pinned to Node 24.
 - Do not add secrets to packaged frontend config, the image build context, or checked-in environment files. Frontend runtime config is public browser data.
 

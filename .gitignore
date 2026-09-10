@@ -26,3 +26,6 @@ public/config.json
 *.sln
 *.sw?
 cypress/downloads/
+playwright-report/
+test-results/
+target/
