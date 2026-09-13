@@ -5,17 +5,21 @@ import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Base64;
+import java.util.Comparator;
 
 import io.quarkus.oidc.AccessTokenCredential;
 import io.quarkus.oidc.IdTokenCredential;
 import io.quarkus.oidc.OidcSession;
+import io.quarkus.oidc.RefreshToken;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -61,11 +65,17 @@ public class AuthResource {
     public Response diagnostics() {
         AccessTokenCredential accessToken = securityIdentity.getCredential(AccessTokenCredential.class);
         IdTokenCredential idToken = securityIdentity.getCredential(IdTokenCredential.class);
+        RefreshToken refreshToken = securityIdentity.getCredential(RefreshToken.class);
         JsonObject body = Json.createObjectBuilder()
                 .add("accessTokenBytes", tokenBytes(accessToken))
                 .add("idTokenBytes", tokenBytes(idToken))
+                .add("refreshTokenBytes", tokenBytes(refreshToken))
                 .add("roleCount", jwtArraySize(accessToken, "roles"))
                 .add("allowedOriginCount", jwtArraySize(accessToken, "allowed-origins"))
+                .add("accessTokenIssuedAt", jwtLongClaim(accessToken, "iat"))
+                .add("accessTokenExpiresAt", jwtLongClaim(accessToken, "exp"))
+                .add("accessTokenClaims", jwtClaimShape(accessToken == null ? null : accessToken.getToken()))
+                .add("idTokenClaims", jwtClaimShape(idToken == null ? null : idToken.getToken()))
                 .build();
         return json(body, Response.Status.OK);
     }
@@ -110,6 +120,52 @@ public class AuthResource {
         return token == null ? 0 : token.getToken().getBytes(StandardCharsets.UTF_8).length;
     }
 
+    private static int tokenBytes(RefreshToken token) {
+        return token == null ? 0 : token.getToken().getBytes(StandardCharsets.UTF_8).length;
+    }
+
+    private static JsonArrayBuilder jwtClaimShape(String token) {
+        var summary = Json.createArrayBuilder();
+        if (token == null) {
+            return summary;
+        }
+        String[] segments = token.split("\\.");
+        if (segments.length < 2) {
+            return summary;
+        }
+        String payload = new String(Base64.getUrlDecoder().decode(segments[1]), StandardCharsets.UTF_8);
+        try (var reader = Json.createReader(new StringReader(payload))) {
+            JsonObject claims = reader.readObject();
+            claims.entrySet().stream()
+                    .sorted(Comparator.comparing(java.util.Map.Entry::getKey))
+                    .forEach(entry -> summary.add(Json.createObjectBuilder()
+                            .add("name", entry.getKey())
+                            .add("type", entry.getValue().getValueType().name().toLowerCase())
+                            .add("cardinality", cardinality(entry.getValue()))
+                            .add("nestedValues", nestedValues(entry.getValue()))
+                            .add("jsonBytes", entry.getValue().toString().getBytes(StandardCharsets.UTF_8).length)));
+        }
+        return summary;
+    }
+
+    private static int cardinality(JsonValue value) {
+        return switch (value.getValueType()) {
+            case ARRAY -> value.asJsonArray().size();
+            case OBJECT -> value.asJsonObject().size();
+            case NULL -> 0;
+            default -> 1;
+        };
+    }
+
+    private static int nestedValues(JsonValue value) {
+        return switch (value.getValueType()) {
+            case ARRAY -> value.asJsonArray().stream().mapToInt(AuthResource::nestedValues).sum();
+            case OBJECT -> value.asJsonObject().values().stream().mapToInt(AuthResource::nestedValues).sum();
+            case NULL -> 0;
+            default -> 1;
+        };
+    }
+
     private static int jwtArraySize(AccessTokenCredential credential, String claim) {
         if (credential == null) {
             return 0;
@@ -122,6 +178,20 @@ public class AuthResource {
         try (var reader = Json.createReader(new StringReader(payload))) {
             var array = reader.readObject().getJsonArray(claim);
             return array == null ? 0 : array.size();
+        }
+    }
+
+    private static long jwtLongClaim(AccessTokenCredential credential, String claim) {
+        if (credential == null) {
+            return 0;
+        }
+        String[] segments = credential.getToken().split("\\.");
+        if (segments.length < 2) {
+            return 0;
+        }
+        String payload = new String(Base64.getUrlDecoder().decode(segments[1]), StandardCharsets.UTF_8);
+        try (var reader = Json.createReader(new StringReader(payload))) {
+            return reader.readObject().getJsonNumber(claim).longValue();
         }
     }
 
