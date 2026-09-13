@@ -69,7 +69,7 @@ function AuthProbe() {
 
   return (
     <main>
-      <p className="eyebrow">Phase 2 auth boundary</p>
+      <p className="eyebrow">Trusted-tier auth boundary</p>
       <h1>Encrypted session probe</h1>
       <p className="lede">
         This isolated page exercises Quarkus OIDC without loading the legacy browser token client.

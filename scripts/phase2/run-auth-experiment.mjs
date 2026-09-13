@@ -2,19 +2,20 @@ import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import { spawn } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
-import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import http from "node:http";
 import https from "node:https";
 import net from "node:net";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "@playwright/test";
+import { serializeProperties } from "./serialize-properties.mjs";
 
 const mode = process.argv[2];
-if (!new Set(["stateless", "valkey"]).has(mode)) {
-  throw new Error("Usage: node scripts/phase2/run-auth-experiment.mjs <stateless|valkey>");
+if (!new Set(["deployment", "stateless", "valkey"]).has(mode)) {
+  throw new Error("Usage: node scripts/phase2/run-auth-experiment.mjs <deployment|stateless|valkey>");
 }
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -26,6 +27,7 @@ const temporaryDirectory = path.join(os.tmpdir(), `spectrasearch-phase2-${runId}
 const certificatePath = path.join(temporaryDirectory, "phase2.crt");
 const privateKeyPath = path.join(temporaryDirectory, "phase2.key");
 const trustStorePath = path.join(temporaryDirectory, "phase2-truststore.p12");
+const oidcSecretConfigPath = path.join(temporaryDirectory, "spectrasearch_oidc.properties");
 const reportDirectory = path.join(root, "phase2-results");
 const reportPath = path.join(reportDirectory, `${mode}-${runId}.json`);
 const keycloakImage = "quay.io/keycloak/keycloak@sha256:ff4257d0d64efbe99ed1ddfaf07765cc3c36dc7518bf8324d41961327f441c54";
@@ -52,7 +54,7 @@ const secrets = {
   adminPassword: randomBytes(32).toString("hex"),
   clientSecret: randomBytes(32).toString("hex"),
   encryptionSecret: randomBytes(32).toString("hex"),
-  stateSecret: randomBytes(32).toString("hex"),
+  stateSecret: `${randomBytes(24).toString("hex")}${"${unresolved-expression-must-remain-literal}"}`,
   testUserPassword: randomBytes(24).toString("hex"),
   valkeyPassword: randomBytes(32).toString("hex"),
   valkeyAdminPassword: randomBytes(32).toString("hex"),
@@ -118,6 +120,21 @@ function secretEnvironment(extra = {}) {
     PHASE2_TEST_USER_PASSWORD: secrets.testUserPassword,
     ...extra,
   };
+}
+
+async function writeOidcSecretConfig({ encryptionSecret, omitSecret } = {}) {
+  const properties = {
+    "quarkus.oidc.credentials.secret": secrets.clientSecret,
+    "quarkus.oidc.authentication.state-secret": secrets.stateSecret,
+    "quarkus.oidc.token-state-manager.encryption-secret": encryptionSecret ?? secrets.encryptionSecret,
+  };
+  delete properties[omitSecret];
+  await writeFile(
+    oidcSecretConfigPath,
+    serializeProperties(properties),
+    { mode: 0o600 },
+  );
+  assert.equal((await stat(oidcSecretConfigPath)).mode & 0o777, 0o600);
 }
 
 async function run(command, args, options = {}) {
@@ -336,7 +353,7 @@ function startApplicationProxy(tls) {
     delete requestHeaders.connection;
     delete requestHeaders["content-length"];
     requestHeaders.host = `127.0.0.1:${ports.quarkus}`;
-    requestHeaders["x-forwarded-host"] = `127.0.0.1:${ports.app}`;
+    requestHeaders["x-forwarded-host"] = request.headers.host ?? `127.0.0.1:${ports.app}`;
     requestHeaders["x-forwarded-prefix"] = "/search/";
     requestHeaders["x-forwarded-proto"] = "https";
 
@@ -537,18 +554,51 @@ async function waitForValkey() {
   throw new Error("Valkey did not become ready after restart");
 }
 
-function quarkusEnvironment({ splitTokens = false, refreshCacheTtl = "5S", encryptionSecret, logoutMode = "query" } = {}) {
-  const environment = {
-    ...process.env,
-    QUARKUS_PROFILE: "phase2",
-    PHASE2_OIDC_AUTH_SERVER_URL: `${urls.keycloakRelay}/realms/spectrasearch-phase2`,
-    PHASE2_OIDC_CLIENT_SECRET: secrets.clientSecret,
-    PHASE2_OIDC_ENCRYPTION_SECRET: encryptionSecret ?? secrets.encryptionSecret,
-    PHASE2_OIDC_STATE_SECRET: secrets.stateSecret,
-    PHASE2_REFRESH_CACHE_TTL: refreshCacheTtl,
-    PHASE2_SPLIT_TOKENS: String(splitTokens),
-    PHASE2_LOGOUT_MODE: logoutMode,
-  };
+function quarkusEnvironment({
+  exposeDiagnostics = mode !== "deployment",
+  logoutMode = "form-post",
+  omitSetting,
+  oidcEnabled = true,
+  proxyAddressForwarding = true,
+  refreshCacheTtl = "5S",
+  splitTokens = false,
+} = {}) {
+  const environment = { ...process.env, QUARKUS_PROFILE: "prod" };
+  for (const name of [
+    "QUARKUS_CONFIG_LOCATIONS",
+    "QUARKUS_HTTP_AUTH_PERMISSION_AUTH_DIAGNOSTICS_POLICY",
+    "QUARKUS_HTTP_HOST_VALIDATION_ALLOWED_HOSTS",
+    "QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING",
+    "QUARKUS_HTTP_PROXY_TRUSTED_PROXIES",
+    "QUARKUS_OIDC_AUTH_SERVER_URL",
+    "QUARKUS_OIDC_AUTHENTICATION_STATE_SECRET",
+    "QUARKUS_OIDC_CLIENT_ID",
+    "QUARKUS_OIDC_CREDENTIALS_SECRET",
+    "QUARKUS_OIDC_LOGOUT_LOGOUT_MODE",
+    "QUARKUS_OIDC_TENANT_ENABLED",
+    "QUARKUS_OIDC_TOKEN_REFRESH_TOKEN_CACHE_TIME_TO_LIVE",
+    "QUARKUS_OIDC_TOKEN_STATE_MANAGER_ENCRYPTION_SECRET",
+    "QUARKUS_OIDC_TOKEN_STATE_MANAGER_SPLIT_TOKENS",
+  ]) delete environment[name];
+
+  if (!oidcEnabled) return environment;
+
+  Object.assign(environment, {
+    QUARKUS_CONFIG_LOCATIONS: pathToFileURL(oidcSecretConfigPath).href,
+    QUARKUS_HTTP_HOST_VALIDATION_ALLOWED_HOSTS: "127.0.0.1,spectra-dev.adma.ai",
+    QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: String(proxyAddressForwarding),
+    QUARKUS_HTTP_PROXY_TRUSTED_PROXIES: "127.0.0.1",
+    QUARKUS_OIDC_AUTH_SERVER_URL: `${urls.keycloakRelay}/realms/spectrasearch-phase2`,
+    QUARKUS_OIDC_CLIENT_ID: "spectrasearch-phase2",
+    QUARKUS_OIDC_LOGOUT_LOGOUT_MODE: logoutMode,
+    QUARKUS_OIDC_TENANT_ENABLED: "true",
+    QUARKUS_OIDC_TOKEN_REFRESH_TOKEN_CACHE_TIME_TO_LIVE: refreshCacheTtl,
+    QUARKUS_OIDC_TOKEN_STATE_MANAGER_SPLIT_TOKENS: String(splitTokens),
+  });
+  if (omitSetting) delete environment[omitSetting];
+  if (exposeDiagnostics) {
+    environment.QUARKUS_HTTP_AUTH_PERMISSION_AUTH_DIAGNOSTICS_POLICY = "authenticated";
+  }
   if (mode === "valkey") {
     environment.PHASE2_VALKEY_URI = `redis://phase2:${secrets.valkeyPassword}@127.0.0.1:${ports.valkey}`;
     environment.QUARKUS_REDIS_HOSTS = environment.PHASE2_VALKEY_URI;
@@ -561,6 +611,11 @@ function quarkusEnvironment({ splitTokens = false, refreshCacheTtl = "5S", encry
 
 async function startQuarkus(options = {}, timeout = 30_000) {
   assert.equal(quarkusProcess, undefined, "Quarkus is already running");
+  const logStart = quarkusLogs.length;
+  if (options.oidcEnabled !== false) {
+    await rm(oidcSecretConfigPath, { force: true });
+    if (!options.missingSecretFile) await writeOidcSecretConfig(options);
+  }
   const jar = path.join(root, "target/quarkus-app/quarkus-run.jar");
   quarkusProcess = spawn("java", [
     `-Dquarkus.http.host=127.0.0.1`,
@@ -577,7 +632,15 @@ async function startQuarkus(options = {}, timeout = 30_000) {
   quarkusProcess.stdout.on("data", (chunk) => quarkusLogs.push(chunk.toString("utf8")));
   quarkusProcess.stderr.on("data", (chunk) => quarkusLogs.push(chunk.toString("utf8")));
   try {
-    await waitForUrl(urls.quarkusHealth, timeout);
+    await Promise.race([
+      waitForUrl(urls.quarkusHealth, timeout),
+      new Promise((resolve, reject) => quarkusProcess.once("exit", (code) => {
+        if (code === 0) resolve();
+        else reject(new Error(`Quarkus exited with code ${code}`));
+      })),
+    ]);
+    assert.equal(quarkusProcess.exitCode, null, "Quarkus exited before becoming healthy");
+    assert.match(quarkusLogs.slice(logStart).join(""), /Profile prod activated\./);
   } catch (error) {
     const exited = quarkusProcess.exitCode !== null;
     await stopQuarkus();
@@ -852,6 +915,137 @@ async function anonymousChecks() {
   assert.ok(!cookies.some(({ name }) => name.startsWith("q_session")));
   await context.close();
   report.checks.anonymous = "pass";
+}
+
+async function requestThroughApplicationProxy(host, requestPath) {
+  return new Promise((resolve, reject) => {
+    const request = https.request({
+      host: "127.0.0.1",
+      port: ports.app,
+      path: requestPath,
+      method: "GET",
+      rejectUnauthorized: false,
+      headers: { host },
+    }, (response) => {
+      const chunks = [];
+      response.on("data", (chunk) => chunks.push(chunk));
+      response.on("end", () => resolve({
+        status: response.statusCode,
+        headers: response.headers,
+        body: Buffer.concat(chunks).toString("utf8"),
+      }));
+    });
+    request.on("error", reject);
+    request.end();
+  });
+}
+
+async function forwardedHostContractCheck() {
+  const accepted = await requestThroughApplicationProxy("spectra-dev.adma.ai", "/search/api/auth/login");
+  assert.ok(new Set([302, 303]).has(accepted.status));
+  const authorizationUrl = new URL(accepted.headers.location);
+  assert.equal(
+    authorizationUrl.searchParams.get("redirect_uri"),
+    "https://spectra-dev.adma.ai/search/api/auth/callback",
+  );
+
+  const rejected = await requestThroughApplicationProxy("attacker.invalid", "/search/api/auth/login");
+  assert.equal(rejected.status, 400);
+  report.observations.forwardedHostContract = {
+    acceptedHost: "spectra-dev.adma.ai",
+    callbackUrl: authorizationUrl.searchParams.get("redirect_uri"),
+    disallowedHostStatus: rejected.status,
+    trustedDirectProxy: "127.0.0.1 (test only)",
+  };
+  report.checks.trustedForwarding = "pass";
+}
+
+async function enabledConfigurationFailureChecks() {
+  const cases = [
+    { name: "missing-client-secret", options: { omitSecret: "quarkus.oidc.credentials.secret" } },
+    { name: "missing-state-secret", options: { omitSecret: "quarkus.oidc.authentication.state-secret" } },
+    {
+      name: "missing-token-state-secret",
+      options: { omitSecret: "quarkus.oidc.token-state-manager.encryption-secret" },
+    },
+    { name: "missing-secret-file", options: { missingSecretFile: true } },
+    { name: "missing-issuer", options: { omitSetting: "QUARKUS_OIDC_AUTH_SERVER_URL" } },
+    { name: "missing-client-id", options: { omitSetting: "QUARKUS_OIDC_CLIENT_ID" } },
+    {
+      name: "missing-trusted-proxies",
+      options: { omitSetting: "QUARKUS_HTTP_PROXY_TRUSTED_PROXIES" },
+    },
+    {
+      name: "missing-allowed-hosts",
+      options: { omitSetting: "QUARKUS_HTTP_HOST_VALIDATION_ALLOWED_HOSTS" },
+    },
+    { name: "forwarding-disabled", options: { proxyAddressForwarding: false } },
+  ];
+  report.observations.enabledConfigurationFailures = [];
+  for (const testCase of cases) {
+    const logStart = quarkusLogs.length;
+    let failure;
+    try {
+      await startQuarkus(testCase.options, 15_000);
+    } catch (error) {
+      failure = error;
+    } finally {
+      await stopQuarkus();
+    }
+    assert.ok(failure, `${testCase.name} unexpectedly started`);
+    const logs = quarkusLogs.slice(logStart).join("");
+    for (const secret of Object.values(secrets)) assert.equal(logs.includes(secret), false);
+    report.observations.enabledConfigurationFailures.push({
+      case: testCase.name,
+      failedStartup: true,
+      secretsLogged: false,
+    });
+  }
+  report.checks.enabledConfigurationFailsClosed = "pass";
+}
+
+async function deploymentSessionContractCheck(context, page) {
+  assert.deepEqual(await fetchSession(page), {
+    status: 200,
+    body: { authenticated: true, name: "phase2-user" },
+  });
+  const diagnosticsStatus = await page.evaluate(async () => (await fetch("/search/api/auth/diagnostics", {
+    credentials: "same-origin",
+    headers: { "X-Requested-With": "JavaScript" },
+  })).status);
+  assert.equal(diagnosticsStatus, 403);
+
+  const cookies = await context.cookies(`${urls.app}auth-probe.html`);
+  const sessionState = cookies
+    .filter(({ name }) => name.startsWith("q_session"))
+    .sort((left, right) => left.name.localeCompare(right.name, undefined, { numeric: true }))
+    .map(({ value }) => value)
+    .join("");
+  assert.ok(sessionState.length > 0);
+  const protectedHeader = jweProtectedHeader(sessionState);
+  assert.equal(protectedHeader.alg, "A256GCMKW");
+  assert.equal(protectedHeader.enc, "A256GCM");
+
+  const browser = await browserState(page);
+  const leakScan = scanForLeaks(browser);
+  assert.deepEqual(leakScan.leaks, []);
+  assert.equal(leakScan.jwtShapedBrowserReadableValue, false);
+  const frontendConfig = await page.evaluate(async () => (await fetch("/search/config.json")).text());
+  const publicSurfaces = `${frontendConfig}\n${JSON.stringify(await fetchSession(page))}\n${quarkusLogs.join("")}`;
+  for (const secret of Object.values(secrets)) assert.equal(publicSurfaces.includes(secret), false);
+
+  report.observations.deploymentSessionContract = {
+    sessionProjectionKeys: ["authenticated", "name"],
+    diagnosticsStatus,
+    encryptedSession: { alg: protectedHeader.alg, enc: protectedHeader.enc },
+    secretFileMode: "0600",
+    secretsInFrontendConfigSessionOrLogs: false,
+    jwtShapedBrowserReadableValue: false,
+  };
+  report.checks.fileMountedSecrets = "pass";
+  report.checks.encryptedStatelessSession = "pass";
+  report.checks.productionDiagnosticsDenied = "pass";
+  report.checks.secretSafety = "pass";
 }
 
 async function keycloakRuntimeOutageCheck() {
@@ -1445,13 +1639,55 @@ async function finalLeakScan() {
   const accessOrRefreshInKeycloakLogs = [...keycloakRelay.accessTokens, ...keycloakRelay.refreshTokens]
     .some((token) => combinedKeycloakLogs.includes(token));
   assert.equal(accessOrRefreshInKeycloakLogs, false);
+  const idTokenInQuarkusLogs = [...keycloakRelay.idTokens].some((token) => quarkusLogs.join("").includes(token));
+  assert.equal(idTokenInQuarkusLogs, false);
   report.observations.finalLeakScan = {
     ...scan,
     keycloakLogsContainAccessOrRefreshToken: false,
-    quarkusLogsContainIdToken: [...keycloakRelay.idTokens].some((token) => quarkusLogs.join("").includes(token)),
+    quarkusLogsContainIdToken: false,
   };
   await context.close();
   report.checks.finalLeakScan = "pass";
+}
+
+async function runDeploymentContract() {
+  const tls = await createCertificate();
+  await startKeycloakRelay(tls);
+  await startApplicationProxy(tls);
+  browser = await chromium.launch();
+
+  await startQuarkus({ oidcEnabled: false });
+  await anonymousChecks();
+  assert.deepEqual(keycloakRelay.grants, { authorization_code: 0, refresh_token: 0, other: 0 });
+  assert.equal(browserRequests.some((url) => url.startsWith(urls.keycloakRelay)), false);
+  assert.equal(await stat(oidcSecretConfigPath).then(() => true, () => false), false);
+  report.observations.defaultRuntime = {
+    profile: "prod",
+    oidcTenantEnabled: false,
+    secretFileRequired: false,
+    providerRequests: 0,
+  };
+  report.checks.defaultAnonymousRuntime = "pass";
+  await stopQuarkus();
+
+  await startKeycloak();
+  await enabledConfigurationFailureChecks();
+  await startQuarkus();
+  await forwardedHostContractCheck();
+
+  const context = await browser.newContext({ ignoreHTTPSErrors: true });
+  const page = await login(context);
+  await deploymentSessionContractCheck(context, page);
+  await stableRestartCheck(page);
+  assert.equal((await fetchSession(page)).body?.authenticated, true);
+  await localLogoutAndRevocabilityCheck(context, page);
+  await context.close();
+
+  await formPostLogoutCheck();
+  await finalLeakScan();
+  report.measurements.setCookieHeaders = setCookieMeasurements();
+  report.finishedAt = new Date().toISOString();
+  report.result = "pass";
 }
 
 async function runExperiment() {
@@ -1463,6 +1699,11 @@ async function runExperiment() {
   const libraries = await readdir(path.join(root, "target/quarkus-app/lib/main"));
   const hasValkeyManager = libraries.some((name) => name.includes("oidc-redis-token-state-manager"));
   assert.equal(hasValkeyManager, mode === "valkey", `The built artifact does not match ${mode} mode`);
+
+  if (mode === "deployment") {
+    await runDeploymentContract();
+    return;
+  }
 
   const tls = await createCertificate();
   await startKeycloakRelay(tls);

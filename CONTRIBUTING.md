@@ -148,12 +148,22 @@ Cypress intercepts runtime config and API startup requests before visiting the a
 
 Cypress fixtures for `/db/query/sources` should mirror the backend discovery response, including `application_name`, `fields`, and `similarity` when tests exercise dynamic sidebar or similarity behavior.
 
-### Phase 2 authentication experiment
+### Trusted-tier authentication
 
-The Phase 2 probe is intentionally separate from the main SPA authentication and
-resource traffic. It exercises a confidential Quarkus OIDC client against a
-disposable local Keycloak realm; the ordinary production build keeps the Quarkus
-OIDC tenant disabled.
+The trusted-tier probe remains intentionally separate from the main SPA
+authentication and resource traffic. The normal production artifact supports
+both default anonymous operation and explicitly enabled confidential Quarkus
+OIDC. The runtime environment, file-mounted secret, callback, and trusted-proxy
+contract are documented in `docs/TRUSTED_TIER_DEPLOYMENT.md`.
+
+Build and run the bounded deployment-contract test against disposable local
+Keycloak. It checks the ordinary `prod` artifact in disabled and enabled modes,
+file-mounted secrets, fail-closed configuration, stable-secret restart behavior,
+trusted forwarding, session projection, and logout:
+
+```sh
+pnpm oidc:verify:deployment
+```
 
 Docker and the Playwright Chromium binary are required. Run the stock stateless
 encrypted-cookie mode first; the test command builds its matching artifact:
@@ -174,8 +184,10 @@ The harness owns uniquely labelled loopback-only containers, one Quarkus process
 local TLS material, and generated credentials. It removes those resources on exit
 and writes sanitized metadata and numeric evidence under the ignored
 `phase2-results/` directory, separate from Playwright's cleaned output directory.
-Never configure this fixture to contact a shared, staging, or production identity
-service.
+Never configure this disposable fixture to contact a shared, staging, or
+production identity service. The separate real-provider compatibility harness is
+fixed to the authorized development issuer and requires explicit local test-only
+inputs; it is not part of normal CI.
 
 The supported experiment boundary is one Quarkus instance. A positive short
 process-local refresh cache is required with strict refresh-token rotation; the

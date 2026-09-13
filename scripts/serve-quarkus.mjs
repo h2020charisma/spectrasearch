@@ -37,6 +37,9 @@ const proxy = http.createServer((request, response) => {
   }
 
   const headers = { ...request.headers };
+  for (const name of Object.keys(headers)) {
+    if (name === "forwarded" || name.startsWith("x-forwarded-")) delete headers[name];
+  }
   delete headers.connection;
   delete headers["content-length"];
   headers.host = `${internalHost}:${internalPort}`;

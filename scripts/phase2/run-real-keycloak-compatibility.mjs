@@ -9,16 +9,20 @@ import net from "node:net";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "@playwright/test";
+import { serializeProperties } from "./serialize-properties.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const runMode = process.argv[2] ?? "full";
+assert.ok(new Set(["full", "smoke"]).has(runMode), "Usage: run-real-keycloak-compatibility.mjs [full|smoke]");
 const runId = `${Date.now()}-${process.pid}`;
 const temporaryDirectory = path.join(os.tmpdir(), `spectrasearch-phase2c-${runId}`);
 const certificatePath = path.join(temporaryDirectory, "phase2c.crt");
 const privateKeyPath = path.join(temporaryDirectory, "phase2c.key");
+const oidcSecretConfigPath = path.join(temporaryDirectory, "spectrasearch_oidc.properties");
 const reportDirectory = path.join(root, "phase2-results");
-const reportPath = path.join(reportDirectory, `real-keycloak-${runId}.json`);
+const reportPath = path.join(reportDirectory, `real-keycloak-${runMode}-${runId}.json`);
 
 const issuer = "https://id.adma.ai/realms/enm";
 const discoveryUrl = `${issuer}/.well-known/openid-configuration`;
@@ -40,7 +44,7 @@ const secrets = {
 };
 
 const report = {
-  phase: "2C",
+  phase: runMode === "smoke" ? "2C-runtime-smoke" : "2C",
   runId,
   startedAt: new Date().toISOString(),
   source: {},
@@ -291,31 +295,44 @@ async function waitForHealth(timeout = 30_000) {
 }
 
 async function startQuarkus() {
+  await writeFile(oidcSecretConfigPath, serializeProperties({
+    "quarkus.oidc.credentials.secret": secrets.clientSecret,
+    "quarkus.oidc.authentication.state-secret": secrets.stateSecret,
+    "quarkus.oidc.token-state-manager.encryption-secret": secrets.encryptionSecret,
+  }), { mode: 0o600 });
+  assert.equal((await stat(oidcSecretConfigPath)).mode & 0o777, 0o600);
   const jar = path.join(root, "target/quarkus-app/quarkus-run.jar");
+  const environment = { ...process.env };
+  for (const name of [
+    "QUARKUS_OIDC_AUTHENTICATION_STATE_SECRET",
+    "QUARKUS_OIDC_CREDENTIALS_SECRET",
+    "QUARKUS_OIDC_TOKEN_STATE_MANAGER_ENCRYPTION_SECRET",
+  ]) delete environment[name];
+  Object.assign(environment, {
+    QUARKUS_CONFIG_LOCATIONS: pathToFileURL(oidcSecretConfigPath).href,
+    QUARKUS_HTTP_AUTH_PERMISSION_AUTH_DIAGNOSTICS_POLICY: "authenticated",
+    QUARKUS_HTTP_HOST_VALIDATION_ALLOWED_HOSTS: "127.0.0.1",
+    QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true",
+    QUARKUS_HTTP_PROXY_TRUSTED_PROXIES: "127.0.0.1",
+    QUARKUS_OIDC_AUTH_SERVER_URL: issuer,
+    QUARKUS_OIDC_CLIENT_ID: clientId,
+    QUARKUS_OIDC_TENANT_ENABLED: "true",
+    QUARKUS_PROFILE: "prod",
+  });
   quarkusProcess = spawn("java", [
     "-Dquarkus.http.host=127.0.0.1",
     `-Dquarkus.http.port=${ports.quarkus}`,
     "-jar", jar,
   ], {
     cwd: root,
-    env: {
-      ...process.env,
-      QUARKUS_PROFILE: "phase2",
-      PHASE2_OIDC_AUTH_SERVER_URL: issuer,
-      PHASE2_OIDC_CLIENT_ID: clientId,
-      PHASE2_OIDC_CLIENT_SECRET: secrets.clientSecret,
-      PHASE2_OIDC_ENCRYPTION_SECRET: secrets.encryptionSecret,
-      PHASE2_OIDC_STATE_SECRET: secrets.stateSecret,
-      PHASE2_REFRESH_CACHE_TTL: "5S",
-      PHASE2_SPLIT_TOKENS: "false",
-      PHASE2_LOGOUT_MODE: "form-post",
-    },
+    env: environment,
     stdio: ["ignore", "pipe", "pipe"],
   });
   quarkusProcess.stdout.on("data", (chunk) => quarkusLogs.push(chunk.toString("utf8")));
   quarkusProcess.stderr.on("data", (chunk) => quarkusLogs.push(chunk.toString("utf8")));
   try {
     await waitForHealth();
+    assert.match(quarkusLogs.join(""), /Profile prod activated\./);
   } catch (error) {
     throw new Error(`${error.message}; logs=${redact(quarkusLogs.join(""))}`);
   }
@@ -561,6 +578,18 @@ async function refreshChecks(context, page, initial) {
   const first = await measureSession(context, page, "afterFirstRefresh");
   assert.ok(first.diagnostics.accessTokenIssuedAt > initial.diagnostics.accessTokenIssuedAt);
   assert.equal((await fetchSession(page)).body?.authenticated, true);
+
+  if (runMode === "smoke") {
+    assert.notEqual(first.sessionState, initial.sessionState);
+    report.observations.refresh = {
+      sequentialRefreshCycles: 1,
+      firstCycleAuthenticated: true,
+      sessionCiphertextChanged: true,
+      processLocalRefreshCache: "5S",
+    };
+    report.checks.refresh = "pass";
+    return;
+  }
 
   const secondPage = await context.newPage();
   observePage(secondPage);
