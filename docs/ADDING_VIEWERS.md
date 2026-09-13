@@ -672,7 +672,8 @@ pnpm why react
 Then run the production-like server in one terminal:
 
 ```sh
-pnpm build-serve
+pnpm shell:build
+pnpm shell:serve
 ```
 
 Run Cypress in another terminal:

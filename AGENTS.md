@@ -70,26 +70,26 @@
 - Select a packaged local config: `pnpm select-config spectra`, `pnpm select-config nambit`, or `pnpm select-config test`.
 - Lint: `pnpm lint`.
 - Build production assets: `pnpm build`.
-- Build a local `/search/` tree and serve it for Cypress: `pnpm build-serve`.
 - Build the frontend and Quarkus runtime: `pnpm shell:build`.
 - Build and run all JVM shell tests: `pnpm shell:verify`.
 - Serve an already-built Quarkus artifact through the local prefix-strip harness: `pnpm shell:serve`.
 - Install the Playwright Chromium binary: `pnpm exec playwright install chromium`.
-- Run focused runtime-shell browser tests: `pnpm test:playwright`.
+- Build and run focused runtime-shell browser tests: `pnpm test:playwright`.
+- Run focused runtime-shell browser tests against an already-built artifact: `pnpm test:playwright:built`.
 - Build and run the bounded runtime OIDC deployment-contract test: `pnpm oidc:verify:deployment`.
 - Run the deployment-contract test against an already-built ordinary artifact: `pnpm oidc:test:deployment`.
 - Build the disposable stateless Phase 2 auth experiment: `pnpm phase2:build:stateless`.
 - Build and run the stateless Phase 2 auth experiment: `pnpm phase2:test:stateless`.
 - Build the bounded Valkey comparison artifact: `pnpm phase2:build:valkey`.
 - Build and run the Valkey comparison: `pnpm phase2:test:valkey`.
-- Run Cypress E2E tests against the local build server: `pnpm exec cypress run`.
+- Run Cypress E2E tests against `pnpm shell:serve`: `pnpm exec cypress run`.
 - Clean generated build output: `pnpm clean`.
 
 ## Testing And Quality
 
 - There is no aggregate `pnpm test` script. Cypress remains the existing SPA browser suite; Playwright contains only focused Quarkus runtime-shell checks.
 - Quarkus/JUnit tests live under `src/test/java/` and require a Vite build first. `pnpm shell:verify` performs both steps and checks every route example in `src/route-contract.json`.
-- Playwright tests live under `playwright/e2e/`; `playwright.config.js` builds and starts the shell automatically. The prefix-strip harness preserves raw request targets so malformed-path checks exercise Quarkus rather than Node URL normalization.
+- Playwright tests live under `playwright/e2e/`; `pnpm test:playwright` builds the artifact before Playwright starts the shell. `pnpm test:playwright:built` requires an existing artifact. The prefix-strip harness preserves raw request targets so malformed-path checks exercise Quarkus rather than Node URL normalization.
 - `scripts/phase2/run-auth-experiment.mjs` owns disposable loopback-only Keycloak and optional Valkey containers, generated secrets, local TLS, one Quarkus process, and its Playwright browser. It writes sanitized metadata and numeric reports under ignored `phase2-results/`, separate from Playwright's cleaned output directory, and must never be pointed at a shared or remote identity service.
 - Enabled OIDC requires the stock process-local refresh cache with a positive short TTL; the tested and baked value is 5 seconds for a single Quarkus instance. Cache-disabled hard-expired parallel refresh loses the session under strict refresh-token rotation.
 - The `valkey-token-state` Maven profile exists only for the bounded comparison and adds the preview Redis token-state extension at build time. The comparison currently fails parallel-refresh and bounded-outage gates; do not treat it as the selected runtime or add locks/CAS around it.
@@ -103,7 +103,7 @@
 ## CI And Container
 
 - GitHub Actions are under `.github/workflows/`; Dependabot configuration is `.github/dependabot.yml`.
-- CI runs `pnpm install --frozen-lockfile` before Cypress validation. Existing ESLint debt is not yet a required CI gate.
+- CI runs `pnpm install --frozen-lockfile`, JUnit, the bounded OIDC deployment contract, Playwright, and Cypress against one ordinary Quarkus artifact before any Docker publication job. Existing ESLint debt is not yet a required CI gate.
 - The Dockerfile `FROM node:x.y.z-slim AS build-stage` line is the source of truth for the Node.js version used by CI; update `.github/workflows/ci.yml` if that line format changes.
 - Docker builds one generic frontend image with packaged configs under `public/configs/`; select one at container startup with `SPECTRASEARCH_CONFIG_FILE`. The `test.json` profile targets `api-test.ramanchada.ideaconsult.net` for viewer integration testing.
 - Docker builds generate a deterministic `spectra.json` active config before Vite runs, but exclude that generated file from Quarkus static resources. The runtime endpoint selects the configured packaged profile without modifying application files.

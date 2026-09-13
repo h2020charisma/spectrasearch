@@ -87,10 +87,12 @@ pnpm shell:build
 
 The Maven step deliberately consumes an existing `dist/` tree. Use the pnpm command rather than invoking Maven alone after a clean checkout.
 
-Build and serve the app locally under `/search/`, matching the Cypress setup:
+Build the ordinary runtime and serve it locally under `/search/`, matching the
+Cypress setup:
 
 ```sh
-pnpm build-serve
+pnpm shell:build
+pnpm shell:serve
 ```
 
 Clean generated build output:
@@ -119,17 +121,23 @@ Build the frontend and run the Quarkus/JUnit shell matrix:
 pnpm shell:verify
 ```
 
-Install Chromium once, then run the focused Playwright shell tests. Playwright builds and starts the Quarkus shell through a controlled local `/search/` prefix-strip server:
+Install Chromium once, then run the focused Playwright shell tests. The normal
+command builds the artifact before Playwright starts the Quarkus shell through a
+controlled local `/search/` prefix-strip server:
 
 ```sh
 pnpm exec playwright install chromium
 pnpm test:playwright
 ```
 
+CI uses `pnpm test:playwright:built` to reuse the artifact already verified by
+`pnpm shell:verify`; that command requires an existing build.
+
 Run the production-like local server in one terminal:
 
 ```sh
-pnpm build-serve
+pnpm shell:build
+pnpm shell:serve
 ```
 
 Run Cypress E2E tests in another terminal:
@@ -204,7 +212,11 @@ POST anti-forgery boundary before adoption.
 After a Valkey build, run `pnpm shell:build` or another ordinary build before
 testing the default runtime artifact.
 
-To exercise the unchanged Cypress suite against Quarkus instead of the frontend-only `build-serve` server, first run `pnpm shell:build`, then run `pnpm shell:serve` in one terminal and `pnpm exec cypress run` in another. The shell launcher binds only to loopback, exposes `/search/` on port `50722`, and forwards stripped paths to Quarkus on port `50723`. It strips the prefix from the raw request target without URL canonicalization; this models the expected contract but does not replace a deployment-level Traefik check.
+The shell launcher used by Playwright and Cypress binds only to loopback,
+exposes `/search/` on port `50722`, and forwards stripped paths to Quarkus on
+port `50723`. It strips the prefix from the raw request target without URL
+canonicalization; this models the expected contract but does not replace a
+deployment-level Traefik check.
 
 ## Using specific Node.js versions
 
@@ -338,7 +350,14 @@ The SPA fallback is deliberately narrow. It serves only the route classes declar
 
 The `.dockerignore` file intentionally allowlists only Docker build inputs. Update it when new files become required for production builds.
 
-CI validates pull requests with Cypress before any Docker job. Same-repo pull requests publish one generic preview image. Fork pull requests run validation only and do not build or publish Docker images. Pushes to `main` publish `latest` and immutable `sha-*` production tags and sign images with cosign.
+CI installs with the frozen pnpm lockfile, verifies the Quarkus/JUnit runtime,
+runs the bounded OIDC deployment contract, and exercises Playwright and Cypress
+against that ordinary artifact before any Docker job. Same-repo pull requests
+publish one generic preview image. Fork pull requests run validation only and do
+not build or publish Docker images. Pushes to `main` publish `latest` and
+immutable `sha-*` production tags and sign images with cosign. The full
+adversarial Keycloak/Valkey matrices and real-provider smoke are deliberately
+excluded from normal CI.
 
 Dependabot covers GitHub Actions, pnpm-managed npm dependencies, and Docker base images. Docker updates intentionally ignore Node.js versions `>=25` while this project is pinned to Node 24. Maven dependencies are not yet covered.
 

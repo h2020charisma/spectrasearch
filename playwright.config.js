@@ -9,7 +9,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "pnpm shell:build && pnpm shell:serve",
+    command: "pnpm shell:serve",
     url: "http://127.0.0.1:50722/search/health",
     reuseExistingServer: false,
     timeout: 240_000,
