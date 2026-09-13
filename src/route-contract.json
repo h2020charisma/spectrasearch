@@ -1,0 +1,66 @@
+[
+  {
+    "id": "home",
+    "path": "/",
+    "shellExamples": ["/"]
+  },
+  {
+    "id": "h5web",
+    "path": "/h5web/:domain/*",
+    "shellExamples": [
+      "/h5web/example.h5",
+      "/h5web/%2Fbucket%2Fsample.2026.09.nxs/entry.1",
+      "/h5web/SANDBOX/spectra.csv/file.cha",
+      "/H5WEB/A/B.map/x.cha"
+    ]
+  },
+  {
+    "id": "nexus-overview",
+    "path": "/nexus-overview/:domain/*",
+    "shellExamples": [
+      "/nexus-overview/example.nxs",
+      "/nexus-overview/sample.v1.nxs/entry.1/plot.svg"
+    ]
+  },
+  {
+    "id": "predictions",
+    "path": "/predictions",
+    "shellExamples": ["/predictions", "/Predictions"]
+  },
+  {
+    "id": "prediction",
+    "path": "/predictions/:id/*",
+    "shellExamples": ["/predictions/mol.json", "/predictions/model.v2/metadata.json"]
+  },
+  {
+    "id": "substance",
+    "path": "/substance",
+    "shellExamples": ["/substance"]
+  },
+  {
+    "id": "collection",
+    "path": "/collection",
+    "shellExamples": ["/collection"]
+  },
+  {
+    "id": "imports",
+    "path": "/imports",
+    "shellExamples": ["/imports"]
+  },
+  {
+    "id": "hit",
+    "path": "/hits/:hitId/*",
+    "shellExamples": [
+      "/hits/example",
+      "/hits/S1/report.md",
+      "/hits/sample.xml",
+      "/hits/v1..2/spectrum",
+      "/hits/%2evidence/spectrum"
+    ]
+  },
+  {
+    "id": "callback",
+    "path": "/callback",
+    "shellExamples": ["/callback"]
+  }
+]

@@ -74,15 +74,34 @@ jobs:
           node-version: ${{ steps.node-version.outputs.version }}
           cache: pnpm
 
+      - name: Setup Java
+        uses: actions/setup-java@v6.0.1
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Verify Quarkus runtime
+        run: pnpm shell:verify
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Verify OIDC deployment contract
+        run: pnpm oidc:test:deployment
+
+      - name: Run Playwright
+        run: pnpm test:playwright:built
 
       - name: Run Cypress
         uses: cypress-io/github-action@v7.4.3
         with:
           install: false
-          start: pnpm build-serve
-          wait-on: http://127.0.0.1:50722/search/
+          start: pnpm shell:serve
+          wait-on: http://127.0.0.1:50722/search/health
 
   docker-pr-preview:
 
@@ -187,4 +206,4 @@ jobs:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
-        run: printf '%s\n' "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+        run: printf '%s\n' "${TAGS}" | xargs -I {} cosign sign --yes "{}@${DIGEST}"

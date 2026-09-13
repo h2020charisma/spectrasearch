@@ -26,7 +26,8 @@ git config --global pull.rebase true
 
 ## Tool requirements
 
-- Node.js and pnpm are required.
+- Node.js and pnpm are required for frontend development and builds.
+- Java 25 is required for the Quarkus runtime shell. Use the committed Maven Wrapper, which downloads and checksum-verifies Maven 3.9.16. Unix systems also need `unzip` for the wrapper's first download.
 - Use the committed `pnpm-lock.yaml` for reproducible installs.
 - Use `pnpm install --frozen-lockfile` for CI-like verification.
 - Use `pnpm install` only when intentionally updating dependencies and the lockfile.
@@ -78,10 +79,20 @@ Build production assets:
 pnpm build
 ```
 
-Build and serve the app locally under `/search/`, matching the Cypress setup:
+Build the Vite assets and package them into the Quarkus runtime:
 
 ```sh
-pnpm build-serve
+pnpm shell:build
+```
+
+The Maven step deliberately consumes an existing `dist/` tree. Use the pnpm command rather than invoking Maven alone after a clean checkout.
+
+Build the ordinary runtime and serve it locally under `/search/`, matching the
+Cypress setup:
+
+```sh
+pnpm shell:build
+pnpm shell:serve
 ```
 
 Clean generated build output:
@@ -102,12 +113,31 @@ Fix lint issues in code you touch. If unrelated existing lint debt blocks a chan
 
 ## Running the tests
 
-There is currently no `pnpm test` script. Cypress is the configured browser test runner.
+There is no aggregate `pnpm test` script. Cypress remains the existing SPA browser suite, while JUnit and Playwright cover the Quarkus runtime shell. The route examples in `src/route-contract.json` are exercised by both shell suites.
+
+Build the frontend and run the Quarkus/JUnit shell matrix:
+
+```sh
+pnpm shell:verify
+```
+
+Install Chromium once, then run the focused Playwright shell tests. The normal
+command builds the artifact before Playwright starts the Quarkus shell through a
+controlled local `/search/` prefix-strip server:
+
+```sh
+pnpm exec playwright install chromium
+pnpm test:playwright
+```
+
+CI uses `pnpm test:playwright:built` to reuse the artifact already verified by
+`pnpm shell:verify`; that command requires an existing build.
 
 Run the production-like local server in one terminal:
 
 ```sh
-pnpm build-serve
+pnpm shell:build
+pnpm shell:serve
 ```
 
 Run Cypress E2E tests in another terminal:
@@ -126,6 +156,68 @@ Cypress intercepts runtime config and API startup requests before visiting the a
 
 Cypress fixtures for `/db/query/sources` should mirror the backend discovery response, including `application_name`, `fields`, and `similarity` when tests exercise dynamic sidebar or similarity behavior.
 
+### Trusted-tier authentication
+
+The trusted-tier probe remains intentionally separate from the main SPA
+authentication and resource traffic. The normal production artifact supports
+both default anonymous operation and explicitly enabled confidential Quarkus
+OIDC. The runtime environment, file-mounted secret, callback, and trusted-proxy
+contract are documented in `docs/TRUSTED_TIER_DEPLOYMENT.md`.
+
+Build and run the bounded deployment-contract test against disposable local
+Keycloak. It checks the ordinary `prod` artifact in disabled and enabled modes,
+file-mounted secrets, fail-closed configuration, stable-secret restart behavior,
+trusted forwarding, session projection, and logout:
+
+```sh
+pnpm oidc:verify:deployment
+```
+
+Docker and the Playwright Chromium binary are required. Run the stock stateless
+encrypted-cookie mode first; the test command builds its matching artifact:
+
+```sh
+pnpm phase2:test:stateless
+```
+
+Run the independent Valkey comparison separately because the preview Redis
+token-state extension is selected at Quarkus build time. Its test command also
+builds first:
+
+```sh
+pnpm phase2:test:valkey
+```
+
+The harness owns uniquely labelled loopback-only containers, one Quarkus process,
+local TLS material, and generated credentials. It removes those resources on exit
+and writes sanitized metadata and numeric evidence under the ignored
+`phase2-results/` directory, separate from Playwright's cleaned output directory.
+Never configure this disposable fixture to contact a shared, staging, or
+production identity service. The separate real-provider compatibility harness is
+fixed to the authorized development issuer and requires explicit local test-only
+inputs; it is not part of normal CI.
+
+The supported experiment boundary is one Quarkus instance. A positive short
+process-local refresh cache is required with strict refresh-token rotation; the
+validated value is 5 seconds. The Valkey mode is comparison evidence, not a
+selected deployment mode: it currently fails parallel-refresh session-retention
+and bounded-outage-response gates. Do not add distributed locks, CAS, replication,
+backup, or failover machinery to make this bounded experiment pass.
+
+The probe measures stock RP-initiated logout, but that framework-owned path uses
+a state-changing GET and is not protected by the REST CSRF filter. It is evidence,
+not an accepted application endpoint design. Omit it or add a separately reviewed
+POST anti-forgery boundary before adoption.
+
+After a Valkey build, run `pnpm shell:build` or another ordinary build before
+testing the default runtime artifact.
+
+The shell launcher used by Playwright and Cypress binds only to loopback,
+exposes `/search/` on port `50722`, and forwards stripped paths to Quarkus on
+port `50723`. It strips the prefix from the raw request target without URL
+canonicalization; this models the expected contract but does not replace a
+deployment-level Traefik check.
+
 ## Using specific Node.js versions
 
 The Dockerfile `FROM node:x.y.z-slim AS build-stage` line is the source of truth for the Node.js version used by CI and Docker builds.
@@ -137,7 +229,7 @@ official Node.js MSI. Read the current version from the Dockerfile, then install
 that version globally through pnpm. For the version currently pinned here:
 
 ```powershell
-pnpm runtime set node 24.18.0 -g
+pnpm runtime set node 24.21.0 -g
 ```
 
 `pnpm env use --global` is the deprecated predecessor of `pnpm runtime set`.
@@ -188,7 +280,7 @@ already merged. Remove this temporary note after both merges.
 
 Use `kind: "external"` for viewers that can be represented as links built from result fields. External viewers usually require only one registry entry.
 
-Use `kind: "route"` for embedded React viewers. A route viewer should have a props-driven component, a page under `src/pages/`, a route in `src/main.jsx`, and a registry entry in `src/viewers.js`.
+Use `kind: "route"` for embedded React viewers. A route viewer should have a props-driven component, a page under `src/pages/`, an entry in `src/route-contract.json`, a component mapping in `src/main.jsx`, a matching Quarkus allowlist route, and a registry entry in `src/viewers.js`.
 
 The qu-bounds viewer is imported as [`@ideaconsult/qubounds-viewer`](https://github.com/ideaconsult/qubounds-viewer). The substance/study viewer is imported as [`@ideaconsult/jtoxkit-react`](https://github.com/ideaconsult/jtoxkit-react). Keep committed dependencies on npm semver versions; when a viewer package version or embedding props change, update package metadata, imports, Vite dependency optimization, lockfile, and docs together.
 
@@ -236,9 +328,9 @@ minimumReleaseAgeExclude:
 
 ## Docker and deployment
 
-The app is served under `/search/`. Current deployment uses Traefik with `PathPrefix('/search')` and prefix stripping before requests reach nginx.
+The app is served under `/search/`. Current deployment uses Traefik with `PathPrefix('/search')`, redirects bare `/search` to `/search/`, and strips `/search/` before requests reach the container. Quarkus therefore serves internal root paths and deliberately returns 404 for direct internal `/search/**` requests.
 
-Docker builds one generic frontend image. Packaged deployment configs live under `public/configs/*.json`, and the container selects one at startup with `SPECTRASEARCH_CONFIG_FILE`, defaulting to `spectra.json`. Use `test.json` for viewer integration against `https://api-test.ramanchada.ideaconsult.net/`.
+Docker builds one generic application image. Packaged deployment configs live under `public/configs/*.json`, and the Quarkus `/config.json` endpoint selects one at startup with `SPECTRASEARCH_CONFIG_FILE`, defaulting to `spectra.json`. Invalid or missing profile names fail startup, while successful startup logs the selected profile name without logging its contents. Use `test.json` for viewer integration against `https://api-test.ramanchada.ideaconsult.net/`.
 
 For example:
 
@@ -250,19 +342,26 @@ services:
       SPECTRASEARCH_CONFIG_FILE: test.json
 ```
 
-Docker uses Corepack with pnpm in the pinned Node.js build stage and `nginxinc/nginx-unprivileged` at runtime. The runtime container listens on port `8080`.
+Docker uses Corepack with pnpm in the pinned Node.js build stage, the Maven Wrapper with a Java 25 JDK in the Quarkus build stage, and only a Java 25 JRE at runtime. The runtime container listens on port `8080`, runs as UID `1001`, and starts Java directly as PID 1. Packaged application files are root-owned and readable but not writable by UID `1001`; `/tmp` remains writable.
 
-The deployed asset tree remains root-owned. Only `/usr/share/nginx/html/config.json` is writable by the unprivileged nginx user so the startup selector cannot modify application bundles.
+The Vite build is packaged into Quarkus classpath resources. Generated `public/config.json` is excluded so the runtime endpoint is its only owner. Vite hashed assets are immutable for one year; the runtime config is `no-store`; the service worker and app shell require revalidation.
 
-The checked-in nginx config lives at `docker/nginx/default.conf`. It provides the React Router fallback for routes served behind the `/search/` deployment path.
+The SPA fallback is deliberately narrow. It serves only the route classes declared in `src/route-contract.json` and implemented by the explicit Quarkus allowlist; dots and filename-like values are valid inside those routes. It does not absorb missing root/static-namespace files, `/api/**`, `/health/**`, Quarkus management paths, malformed paths, unsupported methods, or non-HTML requests. Internal `/health` is externally visible as `/search/health` after prefix stripping.
 
 The `.dockerignore` file intentionally allowlists only Docker build inputs. Update it when new files become required for production builds.
 
-CI validates pull requests with Cypress before any Docker job. Same-repo pull requests publish one generic preview image. Fork pull requests run validation only and do not build or publish Docker images. Pushes to `main` publish `latest` and immutable `sha-*` production tags and sign images with cosign.
+CI installs with the frozen pnpm lockfile, verifies the Quarkus/JUnit runtime,
+runs the bounded OIDC deployment contract, and exercises Playwright and Cypress
+against that ordinary artifact before any Docker job. Same-repo pull requests
+publish one generic preview image. Fork pull requests run validation only and do
+not build or publish Docker images. Pushes to `main` publish `latest` and
+immutable `sha-*` production tags and sign images with cosign. The full
+adversarial Keycloak/Valkey matrices and real-provider smoke are deliberately
+excluded from normal CI.
 
-Dependabot covers GitHub Actions, pnpm-managed npm dependencies, and Docker base images. Docker updates intentionally ignore Node.js versions `>=25` while this project is pinned to Node 24.
+Dependabot covers GitHub Actions, pnpm-managed npm dependencies, and Docker base images. Docker updates intentionally ignore Node.js versions `>=25` while this project is pinned to Node 24. Maven dependencies are not yet covered.
 
-Keep Vite base path, Docker/nginx behavior, and Traefik routing assumptions synchronized when changing deployment behavior.
+Keep Vite base path, Docker/Quarkus behavior, `src/route-contract.json`, the explicit SPA route allowlist, and Traefik routing assumptions synchronized when changing deployment behavior.
 
 ## Documentation maintenance
 

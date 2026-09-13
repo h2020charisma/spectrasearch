@@ -5,7 +5,12 @@
 !pnpm-lock.yaml
 !pnpm-workspace.yaml
 !index.html
+!auth-probe.html
 !vite.config.js
+!pom.xml
+!mvnw
+!.mvn/
+!.mvn/**
 
 !src/
 !src/**
@@ -14,8 +19,3 @@
 public/config.json
 !scripts/
 !scripts/select-config.mjs
-!docker/
-!docker/entrypoint.d/
-!docker/entrypoint.d/*.sh
-!docker/nginx/
-!docker/nginx/*.conf
