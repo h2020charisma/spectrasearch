@@ -250,7 +250,7 @@ async function createCertificate() {
     "-out", certificatePath,
     "-days", "1",
     "-subj", "/CN=127.0.0.1",
-    "-addext", "subjectAltName=IP:127.0.0.1",
+    "-addext", "subjectAltName=IP:127.0.0.1,DNS:spectra-dev.adma.ai,DNS:attacker.invalid",
   ]);
   await run("keytool", [
     "-importcert", "-noprompt", "-alias", "phase2-local",
@@ -918,13 +918,14 @@ async function anonymousChecks() {
 }
 
 async function requestThroughApplicationProxy(host, requestPath) {
+  const ca = await readFile(certificatePath);
   return new Promise((resolve, reject) => {
     const request = https.request({
       host: "127.0.0.1",
       port: ports.app,
       path: requestPath,
       method: "GET",
-      rejectUnauthorized: false,
+      ca,
       headers: { host },
     }, (response) => {
       const chunks = [];
@@ -1258,7 +1259,8 @@ async function flowIntegrityChecks() {
     returnPage.waitForURL(`${urls.app}auth-probe.html`, { timeout: 30_000 }),
     returnPage.locator("#kc-login").click(),
   ]);
-  assert.ok(!browserRequests.some((url) => url.startsWith("https://example.invalid")));
+  const rejectedReturnOrigin = new URL("https://example.invalid").origin;
+  assert.ok(!browserRequests.some((url) => new URL(url).origin === rejectedReturnOrigin));
   await returnContext.close();
 
   await tamperedAuthorizationCheck("nonce", "tampered-nonce");
