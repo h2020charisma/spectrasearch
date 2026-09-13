@@ -25,6 +25,7 @@
 - Result viewer dispatch is centralized in `src/viewers.js`; route viewers include h5web, predictions, and substance/study, and external viewers are declarative URL templates.
 - Prediction viewer embedding is handled by `src/pages/PredictionsPage.jsx`; substance/study viewer embedding is handled by `src/pages/SubstancePage.jsx`; result actions use `src/components/ResultActions/ResultActions.jsx`, simpler primary links use `src/components/ViewerLink/ViewerLink.jsx`, and multi-item viewer links are rendered by `src/pages/CollectionPage.jsx`.
 - Authentication uses `react-oidc-context`; bearer tokens are attached in `src/utils/useFetch.jsx` and passed to image requests through `public/serviceWorker.js`.
+- The isolated Phase 2 auth probe is a separate Vite entry at `auth-probe.html` and `src/auth-probe/`. It exercises Quarkus confidential OIDC without importing the legacy SPA OIDC client, registering a service worker, or migrating resource traffic. The ordinary runtime keeps the Quarkus OIDC tenant disabled.
 - Shared client state is a mix of React state, session/local storage hooks, and a small Zustand store in `src/store/store.js`.
 
 ## Backend Contract
@@ -75,6 +76,10 @@
 - Serve an already-built Quarkus artifact through the local prefix-strip harness: `pnpm shell:serve`.
 - Install the Playwright Chromium binary: `pnpm exec playwright install chromium`.
 - Run focused runtime-shell browser tests: `pnpm test:playwright`.
+- Build the disposable stateless Phase 2 auth experiment: `pnpm phase2:build:stateless`.
+- Build and run the stateless Phase 2 auth experiment: `pnpm phase2:test:stateless`.
+- Build the bounded Valkey comparison artifact: `pnpm phase2:build:valkey`.
+- Build and run the Valkey comparison: `pnpm phase2:test:valkey`.
 - Run Cypress E2E tests against the local build server: `pnpm exec cypress run`.
 - Clean generated build output: `pnpm clean`.
 
@@ -83,6 +88,10 @@
 - There is no aggregate `pnpm test` script. Cypress remains the existing SPA browser suite; Playwright contains only focused Quarkus runtime-shell checks.
 - Quarkus/JUnit tests live under `src/test/java/` and require a Vite build first. `pnpm shell:verify` performs both steps and checks every route example in `src/route-contract.json`.
 - Playwright tests live under `playwright/e2e/`; `playwright.config.js` builds and starts the shell automatically. The prefix-strip harness preserves raw request targets so malformed-path checks exercise Quarkus rather than Node URL normalization.
+- `scripts/phase2/run-auth-experiment.mjs` owns disposable loopback-only Keycloak and optional Valkey containers, generated secrets, local TLS, one Quarkus process, and its Playwright browser. It writes sanitized metadata and numeric reports under ignored `phase2-results/`, separate from Playwright's cleaned output directory, and must never be pointed at a shared or remote identity service.
+- The Phase 2 profile requires the stock process-local OIDC refresh cache with a positive short TTL; the tested value is 5 seconds for a single Quarkus instance. Cache-disabled hard-expired parallel refresh loses the session under strict refresh-token rotation.
+- The `valkey-token-state` Maven profile exists only for the bounded comparison and adds the preview Redis token-state extension at build time. The comparison currently fails parallel-refresh and bounded-outage gates; do not treat it as the selected runtime or add locks/CAS around it.
+- Stock RP-initiated logout is measured by the probe but is not an accepted application endpoint design: Quarkus triggers it with a state-changing GET and does not apply the REST CSRF filter to the framework-owned path. Omit it or add a separately reviewed POST anti-forgery boundary before adoption.
 - Cypress E2E tests live in `cypress/e2e/`; fixtures live in `cypress/fixtures/`.
 - Cypress loads `.env` through `cypress-dotenv` for an optional test-only `API_BASE_URL`; it intercepts runtime config before the app starts and must not contact production APIs.
 - Cypress fixtures for `/db/query/sources` should mirror the backend discovery response, including `application_name`, `fields`, and `similarity` when tests exercise dynamic sidebar or similarity behavior.
@@ -101,6 +110,7 @@
 - Docker uses Corepack with pnpm in the Node build stage, Maven and a Java 25 JDK in the Quarkus build stage, and only a Java 25 JRE at runtime.
 - `.dockerignore` intentionally keeps Docker context narrow; update it if new build inputs are added.
 - The Quarkus runtime container listens on port `8080`, runs as UID `1001`, and starts with an exec-form `java -jar quarkus-run.jar` entrypoint. Packaged application files remain root-owned and non-writable by the runtime user.
+- The production image is built with the ordinary profile, where `quarkus.oidc.tenant-enabled=false`; it requires no Keycloak, OIDC secret, or Valkey configuration for anonymous shell operation. The Phase 2 profile and fixture are experiment-only.
 - The app expects browser URLs under `/search/`. Current deployment uses Traefik `PathPrefix('/search')` plus prefix stripping before requests reach the container.
 - The current Traefik configuration redirects bare `/search` to `/search/` and strips `/search/` before requests reach Quarkus. Keep Docker, Quarkus, Vite base path, and Traefik assumptions in sync.
 - Dependabot does not currently cover Maven. Do not assume Quarkus dependency updates are automated.

@@ -1,0 +1,152 @@
+{
+  "realm": "spectrasearch-phase2",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "resetPasswordAllowed": false,
+  "rememberMe": false,
+  "verifyEmail": false,
+  "loginWithEmailAllowed": true,
+  "revokeRefreshToken": true,
+  "refreshTokenMaxReuse": 0,
+  "accessTokenLifespan": 15,
+  "ssoSessionIdleTimeout": 300,
+  "ssoSessionMaxLifespan": 1800,
+  "clientSessionIdleTimeout": 300,
+  "clientSessionMaxLifespan": 1800,
+  "eventsEnabled": true,
+  "eventsExpiration": 3600,
+  "eventsListeners": ["jboss-logging"],
+  "enabledEventTypes": ["LOGIN", "CODE_TO_TOKEN", "REFRESH_TOKEN", "REFRESH_TOKEN_ERROR", "LOGOUT"],
+  "roles": {
+    "realm": [
+      { "name": "aurora" },
+      { "name": "charisma" },
+      { "name": "sabyna" },
+      { "name": "biorima" },
+      { "name": "gov4nano" },
+      { "name": "gracious" },
+      { "name": "sunshine" },
+      { "name": "sabydoma" },
+      { "name": "sbd4nano" },
+      { "name": "riskgone" },
+      { "name": "patrols" },
+      { "name": "harmless" },
+      { "name": "plasticheal" },
+      { "name": "plasticfate" },
+      { "name": "polyrisk" },
+      { "name": "zerof" },
+      { "name": "calibrate" },
+      { "name": "momentum" },
+      { "name": "phantastic" },
+      { "name": "imptox" },
+      { "name": "nanoinformatix" },
+      { "name": "enanomapper" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "spectrasearch-phase2",
+      "name": "Disposable SpectraSearch Phase 2 client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${PHASE2_OIDC_CLIENT_SECRET}",
+      "publicClient": false,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "fullScopeAllowed": true,
+      "frontchannelLogout": false,
+      "rootUrl": "https://127.0.0.1:50722/search/",
+      "baseUrl": "https://127.0.0.1:50722/search/auth-probe.html",
+      "redirectUris": ["https://127.0.0.1:50722/search/api/auth/callback"],
+      "webOrigins": [
+        "https://spectra-dev.adma.ai",
+        "https://enm-dev.adma.ai",
+        "https://spectra.adma.ai",
+        "https://solr-kc.ideaconsult.net",
+        "https://plastic.adma.ai",
+        "https://search.charisma.ideaconsult.net",
+        "https://nambit.adma.ai",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://enm-experimental.adma.ai",
+        "https://search.data.enanomapper.net",
+        "http://localhost:50722",
+        "https://search-dev.data.enanomapper.net",
+        "http://127.0.0.1:8080",
+        "http://localhost:8080",
+        "https://enm-test.adma.ai",
+        "http://127.0.0.1:50722",
+        "https://search-experimental.data.enanomapper.net",
+        "https://enanomapper.adma.ai",
+        "https://enanomapper.adma.app"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://127.0.0.1:50722/search/api/auth/logged-out",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "oidc.ciba.grant.enabled": "false"
+      },
+      "defaultClientScopes": ["profile", "email", "roles", "web-origins"],
+      "optionalClientScopes": [],
+      "protocolMappers": [
+        {
+          "name": "top-level-realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "userinfo.token.claim": "false",
+            "introspection.token.claim": "false"
+          }
+        },
+        {
+          "name": "fixture-api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "fixture-api",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "introspection.token.claim": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "phase2-user",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Luchesar",
+      "lastName": "ILIEV",
+      "email": "phase2-user@example.invalid",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${PHASE2_TEST_USER_PASSWORD}",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "aurora", "charisma", "sabyna", "biorima", "gov4nano", "gracious",
+        "sunshine", "sabydoma", "sbd4nano", "riskgone", "patrols", "harmless",
+        "plasticheal", "plasticfate", "polyrisk", "zerof", "calibrate", "momentum",
+        "phantastic", "imptox", "nanoinformatix", "enanomapper"
+      ]
+    }
+  ]
+}

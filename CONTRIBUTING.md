@@ -148,6 +148,50 @@ Cypress intercepts runtime config and API startup requests before visiting the a
 
 Cypress fixtures for `/db/query/sources` should mirror the backend discovery response, including `application_name`, `fields`, and `similarity` when tests exercise dynamic sidebar or similarity behavior.
 
+### Phase 2 authentication experiment
+
+The Phase 2 probe is intentionally separate from the main SPA authentication and
+resource traffic. It exercises a confidential Quarkus OIDC client against a
+disposable local Keycloak realm; the ordinary production build keeps the Quarkus
+OIDC tenant disabled.
+
+Docker and the Playwright Chromium binary are required. Run the stock stateless
+encrypted-cookie mode first; the test command builds its matching artifact:
+
+```sh
+pnpm phase2:test:stateless
+```
+
+Run the independent Valkey comparison separately because the preview Redis
+token-state extension is selected at Quarkus build time. Its test command also
+builds first:
+
+```sh
+pnpm phase2:test:valkey
+```
+
+The harness owns uniquely labelled loopback-only containers, one Quarkus process,
+local TLS material, and generated credentials. It removes those resources on exit
+and writes sanitized metadata and numeric evidence under the ignored
+`phase2-results/` directory, separate from Playwright's cleaned output directory.
+Never configure this fixture to contact a shared, staging, or production identity
+service.
+
+The supported experiment boundary is one Quarkus instance. A positive short
+process-local refresh cache is required with strict refresh-token rotation; the
+validated value is 5 seconds. The Valkey mode is comparison evidence, not a
+selected deployment mode: it currently fails parallel-refresh session-retention
+and bounded-outage-response gates. Do not add distributed locks, CAS, replication,
+backup, or failover machinery to make this bounded experiment pass.
+
+The probe measures stock RP-initiated logout, but that framework-owned path uses
+a state-changing GET and is not protected by the REST CSRF filter. It is evidence,
+not an accepted application endpoint design. Omit it or add a separately reviewed
+POST anti-forgery boundary before adoption.
+
+After a Valkey build, run `pnpm shell:build` or another ordinary build before
+testing the default runtime artifact.
+
 To exercise the unchanged Cypress suite against Quarkus instead of the frontend-only `build-serve` server, first run `pnpm shell:build`, then run `pnpm shell:serve` in one terminal and `pnpm exec cypress run` in another. The shell launcher binds only to loopback, exposes `/search/` on port `50722`, and forwards stripped paths to Quarkus on port `50723`. It strips the prefix from the raw request target without URL canonicalization; this models the expected contract but does not replace a deployment-level Traefik check.
 
 ## Using specific Node.js versions

@@ -28,4 +28,5 @@ public/config.json
 cypress/downloads/
 playwright-report/
 test-results/
+phase2-results/
 target/

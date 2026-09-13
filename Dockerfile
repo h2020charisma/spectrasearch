@@ -11,7 +11,7 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN CI=true pnpm install --frozen-lockfile
 
-COPY index.html vite.config.js ./
+COPY index.html auth-probe.html vite.config.js ./
 COPY scripts/select-config.mjs ./scripts/select-config.mjs
 COPY public ./public
 COPY src ./src

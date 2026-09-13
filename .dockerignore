@@ -5,6 +5,7 @@
 !pnpm-lock.yaml
 !pnpm-workspace.yaml
 !index.html
+!auth-probe.html
 !vite.config.js
 !pom.xml
 !mvnw
