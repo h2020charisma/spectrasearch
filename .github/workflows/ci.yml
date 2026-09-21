@@ -120,7 +120,7 @@ jobs:
             type=raw,value=pr-${{ github.event.pull_request.number }}-${{ github.sha }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@v7.4.0
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -172,7 +172,7 @@ jobs:
 
       - name: Build and push Docker image
         id: build-and-push
-        uses: docker/build-push-action@v7.3.0
+        uses: docker/build-push-action@v7.4.0
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=max
